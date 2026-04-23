@@ -2,7 +2,7 @@ package services;
 
 import interfaces.IService;
 import models.ReponseEtudiant;
-import utils.DBConnection;
+import utils.MyDataBase;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +18,7 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
     public void add(ReponseEtudiant reponseEtudiant) {
         String req = "INSERT INTO reponse_etudiant (resultat_id, question_id, reponse_id, texte_libre, est_correct, points_obtenus) VALUES (?, ?, ?, ?, ?, ?)";
         try {
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, reponseEtudiant.getResultatId());
             ps.setInt(2, reponseEtudiant.getQuestionId());
             if (reponseEtudiant.getReponseId() == null) {
@@ -39,7 +39,7 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
     public void update(ReponseEtudiant reponseEtudiant) {
         String req = "UPDATE reponse_etudiant SET resultat_id = ?, question_id = ?, reponse_id = ?, texte_libre = ?, est_correct = ?, points_obtenus = ? WHERE id = ?";
         try {
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, reponseEtudiant.getResultatId());
             ps.setInt(2, reponseEtudiant.getQuestionId());
             if (reponseEtudiant.getReponseId() == null) {
@@ -61,7 +61,7 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
     public void delete(int id) {
         String req = "DELETE FROM reponse_etudiant WHERE id = ?";
         try {
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -73,7 +73,7 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
     public ReponseEtudiant getById(int id) {
         String req = "SELECT * FROM reponse_etudiant WHERE id = ?";
         try {
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
@@ -102,7 +102,7 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
         String req = "SELECT * FROM reponse_etudiant";
 
         try {
-            Statement stm = DBConnection.getInstance().getConnection().createStatement();
+            Statement stm = MyDataBase.getInstance().getConnection().createStatement();
             ResultSet rs = stm.executeQuery(req);
 
             while (rs.next()) {

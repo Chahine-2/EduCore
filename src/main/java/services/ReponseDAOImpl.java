@@ -2,7 +2,7 @@ package services;
 
 import interfaces.IService;
 import models.Reponse;
-import utils.DBConnection;
+import utils.MyDataBase;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +17,7 @@ public class ReponseDAOImpl implements IService<Reponse> {
     public void add(Reponse reponse) {
         String req = "INSERT INTO reponse (texte, est_correct, explication, ordre, question_id) VALUES (?, ?, ?, ?, ?)";
         try {
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setString(1, reponse.getTexte());
             ps.setBoolean(2, reponse.isEstCorrect());
             ps.setString(3, reponse.getExplication());
@@ -34,7 +34,7 @@ public class ReponseDAOImpl implements IService<Reponse> {
     public void update(Reponse reponse) {
         String req = "UPDATE reponse SET texte = ?, est_correct = ?, explication = ?, ordre = ?, question_id = ? WHERE id = ?";
         try {
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setString(1, reponse.getTexte());
             ps.setBoolean(2, reponse.isEstCorrect());
             ps.setString(3, reponse.getExplication());
@@ -52,7 +52,7 @@ public class ReponseDAOImpl implements IService<Reponse> {
     public void delete(int id) {
         String req = "DELETE FROM reponse WHERE id = ?";
         try {
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -64,7 +64,7 @@ public class ReponseDAOImpl implements IService<Reponse> {
     public Reponse getById(int id) {
         String req = "SELECT * FROM reponse WHERE id = ?";
         try {
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
@@ -91,7 +91,7 @@ public class ReponseDAOImpl implements IService<Reponse> {
         String req = "SELECT * FROM reponse";
 
         try {
-            Statement stm = DBConnection.getInstance().getConnection().createStatement();
+            Statement stm = MyDataBase.getInstance().getConnection().createStatement();
             ResultSet rs = stm.executeQuery(req);
 
             while (rs.next()) {

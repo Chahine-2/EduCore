@@ -4,7 +4,7 @@ import interfaces.IService;
 import models.Evaluation;
 import models.EvaluationStatut;
 import models.EvaluationType;
-import utils.DBConnection;
+import utils.MyDataBase;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,7 +22,7 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
         String req = "INSERT INTO evaluation (titre, description, type, duree_minutes, note_max, note_passage, nb_tentatives, ordre_aleatoire, afficher_correc, date_debut, date_fin, statut) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             LocalDateTime dateFin = resolveDateFin(evaluation);
-            PreparedStatement ps = DBConnection.getInstance().getConnection()
+            PreparedStatement ps = MyDataBase.getInstance().getConnection()
                     .prepareStatement(req);
             ps.setString(1, evaluation.getTitre());
             ps.setString(2, evaluation.getDescription());
@@ -52,7 +52,7 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
         String req = "UPDATE evaluation SET titre = ?, description = ?, type = ?, duree_minutes = ?, note_max = ?, note_passage = ?, nb_tentatives = ?, ordre_aleatoire = ?, afficher_correc = ?, date_debut = ?, date_fin = ?, statut = ? WHERE id = ?";
         try {
             LocalDateTime dateFin = resolveDateFin(evaluation);
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setString(1, evaluation.getTitre());
             ps.setString(2, evaluation.getDescription());
             ps.setString(3, evaluation.getType().getDbValue());
@@ -78,7 +78,7 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
     public void delete(int id) {
         String req = "DELETE FROM evaluation WHERE id = ?";
         try {
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, id);
 
             ps.executeUpdate();
@@ -92,7 +92,7 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
     public Evaluation getById(int id) {
         String req = "SELECT * FROM evaluation WHERE id = ?";
         try {
-            PreparedStatement ps = DBConnection.getInstance().getConnection().prepareStatement(req);
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
@@ -127,7 +127,7 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
         String req = "SELECT * FROM evaluation";
 
         try {
-            Statement stm = DBConnection.getInstance().getConnection().createStatement();
+            Statement stm = MyDataBase.getInstance().getConnection().createStatement();
             ResultSet rs = stm.executeQuery(req);
 
             while (rs.next()) {
