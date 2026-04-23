@@ -30,3 +30,26 @@ CREATE TABLE IF NOT EXISTS question (
     FOREIGN KEY (evaluation_id) REFERENCES evaluation(id)
 );
 
+CREATE TABLE IF NOT EXISTS reponse (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    texte TEXT NOT NULL,
+    est_correct BOOLEAN DEFAULT FALSE,
+    explication TEXT,
+    ordre INT DEFAULT 0,
+    question_id INT NOT NULL,
+    FOREIGN KEY (question_id) REFERENCES question(id)
+);
+
+CREATE TABLE IF NOT EXISTS reponse_etudiant (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    resultat_id INT NOT NULL,
+    question_id INT NOT NULL,
+    reponse_id INT,
+    texte_libre TEXT,
+    est_correct BOOLEAN DEFAULT FALSE,
+    points_obtenus FLOAT DEFAULT 0,
+    FOREIGN KEY (resultat_id) REFERENCES resultat(id),
+    FOREIGN KEY (question_id) REFERENCES question(id),
+    FOREIGN KEY (reponse_id) REFERENCES reponse(id)
+);
+

@@ -4,8 +4,12 @@ import models.EvaluationStatut;
 import models.EvaluationType;
 import models.Question;
 import models.QuestionType;
+import models.Reponse;
+import models.ReponseEtudiant;
 import services.EvaluationDAOImpl;
 import services.QuestionDAOImpl;
+import services.ReponseDAOImpl;
+import services.ReponseEtudiantDAOImpl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +24,8 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         IService<Evaluation> evaluationDAO = new EvaluationDAOImpl();
         IService<Question> questionDAO = new QuestionDAOImpl();
+        IService<Reponse> reponseDAO = new ReponseDAOImpl();
+        IService<ReponseEtudiant> reponseEtudiantDAO = new ReponseEtudiantDAOImpl();
 
         boolean running = true;
         while (running) {
@@ -53,6 +59,30 @@ public class Main {
                     case "8":
                         deleteQuestion(scanner, questionDAO);
                         break;
+                    case "9":
+                        addReponse(scanner, reponseDAO);
+                        break;
+                    case "10":
+                        showAllReponses(reponseDAO);
+                        break;
+                    case "11":
+                        updateReponse(scanner, reponseDAO);
+                        break;
+                    case "12":
+                        deleteReponse(scanner, reponseDAO);
+                        break;
+                    case "13":
+                        addReponseEtudiant(scanner, reponseEtudiantDAO);
+                        break;
+                    case "14":
+                        showAllReponsesEtudiant(reponseEtudiantDAO);
+                        break;
+                    case "15":
+                        updateReponseEtudiant(scanner, reponseEtudiantDAO);
+                        break;
+                    case "16":
+                        deleteReponseEtudiant(scanner, reponseEtudiantDAO);
+                        break;
                     case "0":
                         running = false;
                         System.out.println("Bye!");
@@ -82,6 +112,16 @@ public class Main {
         System.out.println("6. Show all questions");
         System.out.println("7. Update question");
         System.out.println("8. Delete question");
+        System.out.println("--- Reponse ---");
+        System.out.println("9. Add reponse");
+        System.out.println("10. Show all reponses");
+        System.out.println("11. Update reponse");
+        System.out.println("12. Delete reponse");
+        System.out.println("--- Reponse Etudiant ---");
+        System.out.println("13. Add reponse etudiant");
+        System.out.println("14. Show all reponses etudiant");
+        System.out.println("15. Update reponse etudiant");
+        System.out.println("16. Delete reponse etudiant");
         System.out.println("0. Exit");
     }
 
@@ -225,6 +265,126 @@ public class Main {
             return new Question(id, texte, type, points, explication, imageUrl, ordre, evaluationId);
         }
         return new Question(texte, type, points, explication, imageUrl, ordre, evaluationId);
+    }
+
+    private static void addReponse(Scanner scanner, IService<Reponse> dao) {
+        Reponse reponse = readReponseData(scanner, 0, false);
+        dao.add(reponse);
+    }
+
+    private static void showAllReponses(IService<Reponse> dao) {
+        List<Reponse> reponses = dao.getAll();
+        if (reponses.isEmpty()) {
+            System.out.println("No reponses found.");
+            return;
+        }
+
+        for (Reponse reponse : reponses) {
+            System.out.println(reponse);
+        }
+    }
+
+    private static void updateReponse(Scanner scanner, IService<Reponse> dao) {
+        System.out.print("Enter reponse id to update: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        Reponse current = dao.getById(id);
+        if (current == null) {
+            System.out.println("No reponse found with id " + id);
+            return;
+        }
+
+        Reponse updated = readReponseData(scanner, id, true);
+        dao.update(updated);
+    }
+
+    private static void deleteReponse(Scanner scanner, IService<Reponse> dao) {
+        System.out.print("Enter reponse id to delete: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        dao.delete(id);
+    }
+
+    private static Reponse readReponseData(Scanner scanner, int id, boolean includeId) {
+        System.out.print("Reponse texte: ");
+        String texte = scanner.nextLine();
+
+        boolean estCorrect = readBoolean(scanner, "Est correcte (true/false): ");
+
+        System.out.print("Explication: ");
+        String explication = scanner.nextLine();
+
+        System.out.print("Ordre: ");
+        int ordre = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Question ID: ");
+        int questionId = Integer.parseInt(scanner.nextLine());
+
+        if (includeId) {
+            return new Reponse(id, texte, estCorrect, explication, ordre, questionId);
+        }
+        return new Reponse(texte, estCorrect, explication, ordre, questionId);
+    }
+
+    private static void addReponseEtudiant(Scanner scanner, IService<ReponseEtudiant> dao) {
+        ReponseEtudiant reponseEtudiant = readReponseEtudiantData(scanner, 0, false);
+        dao.add(reponseEtudiant);
+    }
+
+    private static void showAllReponsesEtudiant(IService<ReponseEtudiant> dao) {
+        List<ReponseEtudiant> reponsesEtudiant = dao.getAll();
+        if (reponsesEtudiant.isEmpty()) {
+            System.out.println("No reponses etudiant found.");
+            return;
+        }
+
+        for (ReponseEtudiant reponseEtudiant : reponsesEtudiant) {
+            System.out.println(reponseEtudiant);
+        }
+    }
+
+    private static void updateReponseEtudiant(Scanner scanner, IService<ReponseEtudiant> dao) {
+        System.out.print("Enter reponse etudiant id to update: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        ReponseEtudiant current = dao.getById(id);
+        if (current == null) {
+            System.out.println("No reponse etudiant found with id " + id);
+            return;
+        }
+
+        ReponseEtudiant updated = readReponseEtudiantData(scanner, id, true);
+        dao.update(updated);
+    }
+
+    private static void deleteReponseEtudiant(Scanner scanner, IService<ReponseEtudiant> dao) {
+        System.out.print("Enter reponse etudiant id to delete: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        dao.delete(id);
+    }
+
+    private static ReponseEtudiant readReponseEtudiantData(Scanner scanner, int id, boolean includeId) {
+        System.out.print("Resultat ID: ");
+        int resultatId = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Question ID: ");
+        int questionId = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Reponse ID (leave empty if none): ");
+        String reponseIdInput = scanner.nextLine().trim();
+        Integer reponseId = reponseIdInput.isEmpty() ? null : Integer.parseInt(reponseIdInput);
+
+        System.out.print("Texte libre: ");
+        String texteLibre = scanner.nextLine();
+
+        boolean estCorrect = readBoolean(scanner, "Est correcte (true/false): ");
+
+        System.out.print("Points obtenus: ");
+        float pointsObtenus = Float.parseFloat(scanner.nextLine());
+
+        if (includeId) {
+            return new ReponseEtudiant(id, resultatId, questionId, reponseId, texteLibre, estCorrect, pointsObtenus);
+        }
+        return new ReponseEtudiant(resultatId, questionId, reponseId, texteLibre, estCorrect, pointsObtenus);
     }
 
     private static LocalDateTime readDateTime(Scanner scanner, String prompt) {
