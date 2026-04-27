@@ -1,4 +1,6 @@
 import interfaces.IService;
+import models.Bareme;
+import models.BaremeMention;
 import models.Evaluation;
 import models.EvaluationStatut;
 import models.EvaluationType;
@@ -7,6 +9,7 @@ import models.QuestionType;
 import models.Reponse;
 import models.ReponseEtudiant;
 import models.Resultat;
+import services.BaremeDAOImpl;
 import services.EvaluationDAOImpl;
 import services.QuestionDAOImpl;
 import services.ReponseDAOImpl;
@@ -29,6 +32,7 @@ public class Main {
         IService<Reponse> reponseDAO = new ReponseDAOImpl();
         IService<ReponseEtudiant> reponseEtudiantDAO = new ReponseEtudiantDAOImpl();
         IService<Resultat> resultatDAO = new ResultatDAOImpl();
+        IService<Bareme> baremeDAO = new BaremeDAOImpl();
 
         boolean running = true;
         while (running) {
@@ -98,6 +102,18 @@ public class Main {
                     case "20":
                         deleteResultat(scanner, resultatDAO);
                         break;
+                    case "21":
+                        addBareme(scanner, baremeDAO);
+                        break;
+                    case "22":
+                        showAllBaremes(baremeDAO);
+                        break;
+                    case "23":
+                        updateBareme(scanner, baremeDAO);
+                        break;
+                    case "24":
+                        deleteBareme(scanner, baremeDAO);
+                        break;
                     case "0":
                         running = false;
                         System.out.println("Bye!");
@@ -142,6 +158,11 @@ public class Main {
         System.out.println("18. Show all resultats");
         System.out.println("19. Update resultat");
         System.out.println("20. Delete resultat");
+        System.out.println("--- Bareme ---");
+        System.out.println("21. Add bareme");
+        System.out.println("22. Show all baremes");
+        System.out.println("23. Update bareme");
+        System.out.println("24. Delete bareme");
         System.out.println("0. Exit");
     }
 
@@ -491,5 +512,61 @@ public class Main {
             }
             System.out.println("Type true or false.");
         }
+    }
+
+    private static void addBareme(Scanner scanner, IService<Bareme> dao) {
+        Bareme bareme = readBaremeData(scanner, 0, false);
+        dao.add(bareme);
+    }
+
+    private static void showAllBaremes(IService<Bareme> dao) {
+        List<Bareme> baremes = dao.getAll();
+        if (baremes.isEmpty()) {
+            System.out.println("No baremes found.");
+            return;
+        }
+
+        for (Bareme bareme : baremes) {
+            System.out.println(bareme);
+        }
+    }
+
+    private static void updateBareme(Scanner scanner, IService<Bareme> dao) {
+        System.out.print("Enter bareme id to update: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        Bareme current = dao.getById(id);
+        if (current == null) {
+            System.out.println("No bareme found with id " + id);
+            return;
+        }
+
+        Bareme updated = readBaremeData(scanner, id, true);
+        dao.update(updated);
+    }
+
+    private static void deleteBareme(Scanner scanner, IService<Bareme> dao) {
+        System.out.print("Enter bareme id to delete: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        dao.delete(id);
+    }
+
+    private static Bareme readBaremeData(Scanner scanner, int id, boolean includeId) {
+        System.out.print("Evaluation ID: ");
+        int evaluationId = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Mention (EXCELLENT, BIEN, PASSABLE, INSUFFISANT): ");
+        BaremeMention mention = BaremeMention.fromDbValue(scanner.nextLine());
+
+        System.out.print("Note min: ");
+        float noteMin = Float.parseFloat(scanner.nextLine());
+
+        System.out.print("Note max: ");
+        float noteMax = Float.parseFloat(scanner.nextLine());
+
+        if (includeId) {
+            return new Bareme(id, evaluationId, mention, noteMin, noteMax);
+        }
+        return new Bareme(evaluationId, mention, noteMin, noteMax);
     }
 }
