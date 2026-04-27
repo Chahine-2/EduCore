@@ -18,6 +18,15 @@ CREATE TABLE IF NOT EXISTS evaluation (
     date_creation DATETIME DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS bareme (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    evaluation_id INT NOT NULL,
+    mention VARCHAR(50),
+    note_min FLOAT,
+    note_max FLOAT,
+    FOREIGN KEY (evaluation_id) REFERENCES evaluation(id)
+);
+
 CREATE TABLE IF NOT EXISTS question (
     id INT PRIMARY KEY AUTO_INCREMENT,
     texte TEXT NOT NULL,

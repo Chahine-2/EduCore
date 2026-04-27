@@ -3,14 +3,14 @@ package models;
 public class Bareme {
     private int id;
     private int evaluationId;
-    private String mention;
+    private BaremeMention mention;
     private float noteMin;
     private float noteMax;
 
     public Bareme() {
     }
 
-    public Bareme(int id, int evaluationId, String mention, float noteMin, float noteMax) {
+    public Bareme(int id, int evaluationId, BaremeMention mention, float noteMin, float noteMax) {
         this.id = id;
         this.evaluationId = evaluationId;
         this.mention = mention;
@@ -18,7 +18,7 @@ public class Bareme {
         this.noteMax = noteMax;
     }
 
-    public Bareme(int evaluationId, String mention, float noteMin, float noteMax) {
+    public Bareme(int evaluationId, BaremeMention mention, float noteMin, float noteMax) {
         this.evaluationId = evaluationId;
         this.mention = mention;
         this.noteMin = noteMin;
@@ -41,11 +41,11 @@ public class Bareme {
         this.evaluationId = evaluationId;
     }
 
-    public String getMention() {
+    public BaremeMention getMention() {
         return mention;
     }
 
-    public void setMention(String mention) {
+    public void setMention(BaremeMention mention) {
         this.mention = mention;
     }
 
@@ -70,10 +70,9 @@ public class Bareme {
         return "Bareme{" +
                 "id=" + id +
                 ", evaluationId=" + evaluationId +
-                ", mention='" + mention + '\'' +
+                ", mention=" + mention +
                 ", noteMin=" + noteMin +
                 ", noteMax=" + noteMax +
                 '}';
     }
 }
-
