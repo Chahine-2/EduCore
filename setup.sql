@@ -40,6 +40,18 @@ CREATE TABLE IF NOT EXISTS reponse (
     FOREIGN KEY (question_id) REFERENCES question(id)
 );
 
+CREATE TABLE IF NOT EXISTS resultat (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    score FLOAT NOT NULL,
+    score_pourcentage FLOAT,
+    est_reussi BOOLEAN DEFAULT FALSE,
+    temps_passe_min INT,
+    tentative_num INT DEFAULT 1,
+    date_passage DATETIME DEFAULT NOW(),
+    evaluation_id INT NOT NULL,
+    FOREIGN KEY (evaluation_id) REFERENCES evaluation(id)
+);
+
 CREATE TABLE IF NOT EXISTS reponse_etudiant (
     id INT PRIMARY KEY AUTO_INCREMENT,
     resultat_id INT NOT NULL,
@@ -52,4 +64,3 @@ CREATE TABLE IF NOT EXISTS reponse_etudiant (
     FOREIGN KEY (question_id) REFERENCES question(id),
     FOREIGN KEY (reponse_id) REFERENCES reponse(id)
 );
-
