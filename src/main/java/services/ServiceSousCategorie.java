@@ -23,7 +23,7 @@ public class ServiceSousCategorie implements IService<SousCategorie> {
             ps.setInt(4, s.getOrdre());
             ps.setString(5, s.getStatut());
             ps.executeUpdate();
-            System.out.println("Sous-catégorie ajoutée ✅");
+            System.out.println("Sous-catégorie ajoutée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -41,7 +41,7 @@ public class ServiceSousCategorie implements IService<SousCategorie> {
             ps.setString(5, s.getStatut());
             ps.setInt(6, s.getId());
             ps.executeUpdate();
-            System.out.println("Sous-catégorie modifiée ✅");
+            System.out.println("Sous-catégorie modifiée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -54,7 +54,7 @@ public class ServiceSousCategorie implements IService<SousCategorie> {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, s.getId());
             ps.executeUpdate();
-            System.out.println("Sous-catégorie supprimée ✅");
+            System.out.println("Sous-catégorie supprimée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

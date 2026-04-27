@@ -4,9 +4,9 @@ import services.*;
 public class Main {
     public static void main(String[] args) {
 
-        // ══════════════════════════════════════════
-        // 1️⃣ TEST CATEGORIE
-        // ══════════════════════════════════════════
+
+        // TEST CATEGORIE
+
         System.out.println("========== CATEGORIE ==========");
         ServiceCategorie serviceCategorie = new ServiceCategorie();
 
@@ -34,9 +34,9 @@ public class Main {
         System.out.println(serviceCategorie.getAll());
 
 
-        // ══════════════════════════════════════════
-        // 2️⃣ TEST SOUS-CATEGORIE
-        // ══════════════════════════════════════════
+
+        // TEST SOUS-CATEGORIE
+
         System.out.println("========== SOUS-CATEGORIE ==========");
         ServiceSousCategorie serviceSousCategorie = new ServiceSousCategorie();
 
@@ -64,9 +64,9 @@ public class Main {
         System.out.println(serviceSousCategorie.getAll());
 
 
-        // ══════════════════════════════════════════
-        // 3️⃣ TEST COURS
-        // ══════════════════════════════════════════
+
+        //  TEST COURS
+
         System.out.println("========== COURS ==========");
         ServiceCours serviceCours = new ServiceCours();
 
@@ -109,9 +109,9 @@ public class Main {
         System.out.println(serviceCours.getAll());
 
 
-        // ══════════════════════════════════════════
-        // 4️⃣ TEST CHAPITRE
-        // ══════════════════════════════════════════
+
+        // TEST CHAPITRE
+
         System.out.println("========== CHAPITRE ==========");
         ServiceChapitre serviceChapitre = new ServiceChapitre();
 
@@ -140,9 +140,9 @@ public class Main {
         System.out.println(serviceChapitre.getAll());
 
 
-        // ══════════════════════════════════════════
-        // 5️⃣ TEST LECON
-        // ══════════════════════════════════════════
+
+        // TEST LECON
+
         System.out.println("========== LECON ==========");
         ServiceLecon serviceLecon = new ServiceLecon();
 
@@ -179,9 +179,9 @@ public class Main {
         System.out.println(serviceLecon.getAll());
 
 
-        // ══════════════════════════════════════════
-        // 6️⃣ TEST RESSOURCE
-        // ══════════════════════════════════════════
+
+        //  TEST RESSOURCE
+
         System.out.println("========== RESSOURCE ==========");
         ServiceRessource serviceRessource = new ServiceRessource();
 
@@ -210,9 +210,9 @@ public class Main {
         System.out.println(serviceRessource.getAll());
 
 
-        // ══════════════════════════════════════════
-        // 7️⃣ TEST COMMENTAIRE
-        // ══════════════════════════════════════════
+
+        // TEST COMMENTAIRE
+
         System.out.println("========== COMMENTAIRE ==========");
         ServiceCommentaire serviceCommentaire = new ServiceCommentaire();
 
@@ -239,9 +239,9 @@ public class Main {
         serviceCommentaire.delete(com2);
         System.out.println("--- Après suppression ---");
         System.out.println(serviceCommentaire.getAll());
-// ══════════════════════════════════════════
+
 // 8️⃣ TEST PROGRAMME COURS
-// ══════════════════════════════════════════
+
         System.out.println("========== PROGRAMME COURS ==========");
         ServiceProgrammeCours serviceProgramme = new ServiceProgrammeCours();
 

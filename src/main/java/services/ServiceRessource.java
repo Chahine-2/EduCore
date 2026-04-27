@@ -24,7 +24,7 @@ public class ServiceRessource implements IService<Ressource> {
             ps.setInt(5, r.getLeconId());
             ps.setInt(6, r.getCoursId());
             ps.executeUpdate();
-            System.out.println("Ressource ajoutée ✅");
+            System.out.println("Ressource ajoutée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -43,7 +43,7 @@ public class ServiceRessource implements IService<Ressource> {
             ps.setInt(6, r.getCoursId());
             ps.setInt(7, r.getId());
             ps.executeUpdate();
-            System.out.println("Ressource modifiée ✅");
+            System.out.println("Ressource modifiée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -56,7 +56,7 @@ public class ServiceRessource implements IService<Ressource> {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, r.getId());
             ps.executeUpdate();
-            System.out.println("Ressource supprimée ✅");
+            System.out.println("Ressource supprimée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

@@ -23,7 +23,7 @@ public class ServiceCategorie implements IService<Categorie> {
             ps.setInt(4, c.getOrdre());
             ps.setString(5, c.getStatut());
             ps.executeUpdate();
-            System.out.println("Catégorie ajoutée ✅");
+            System.out.println("Catégorie ajoutée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -41,7 +41,7 @@ public class ServiceCategorie implements IService<Categorie> {
             ps.setString(5, c.getStatut());
             ps.setInt(6, c.getId());
             ps.executeUpdate();
-            System.out.println("Catégorie modifiée ✅");
+            System.out.println("Catégorie modifiée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -54,7 +54,7 @@ public class ServiceCategorie implements IService<Categorie> {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, c.getId());
             ps.executeUpdate();
-            System.out.println("Catégorie supprimée ✅");
+            System.out.println("Catégorie supprimée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

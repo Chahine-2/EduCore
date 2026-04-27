@@ -21,7 +21,7 @@ public class ServiceCommentaire implements IService<CommentaireCours> {
             ps.setInt(2, c.getNote());
             ps.setInt(3, c.getCoursId());
             ps.executeUpdate();
-            System.out.println("Commentaire ajouté ✅");
+            System.out.println("Commentaire ajouté ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -37,7 +37,7 @@ public class ServiceCommentaire implements IService<CommentaireCours> {
             ps.setInt(3, c.getCoursId());
             ps.setInt(4, c.getId());
             ps.executeUpdate();
-            System.out.println("Commentaire modifié ✅");
+            System.out.println("Commentaire modifié ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -50,7 +50,7 @@ public class ServiceCommentaire implements IService<CommentaireCours> {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, c.getId());
             ps.executeUpdate();
-            System.out.println("Commentaire supprimé ✅");
+            System.out.println("Commentaire supprimé ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

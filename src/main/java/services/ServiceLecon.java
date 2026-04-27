@@ -26,7 +26,7 @@ public class ServiceLecon implements IService<Lecon> {
             ps.setBoolean(7, l.isEstObligatoire());
             ps.setInt(8, l.getChapitreId());
             ps.executeUpdate();
-            System.out.println("Leçon ajoutée ✅");
+            System.out.println("Leçon ajoutée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -47,7 +47,7 @@ public class ServiceLecon implements IService<Lecon> {
             ps.setInt(8, l.getChapitreId());
             ps.setInt(9, l.getId());
             ps.executeUpdate();
-            System.out.println("Leçon modifiée ✅");
+            System.out.println("Leçon modifiée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -60,7 +60,7 @@ public class ServiceLecon implements IService<Lecon> {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, l.getId());
             ps.executeUpdate();
-            System.out.println("Leçon supprimée ✅");
+            System.out.println("Leçon supprimée ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

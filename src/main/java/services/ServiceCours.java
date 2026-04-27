@@ -27,7 +27,7 @@ public class ServiceCours implements IService<Cours> {
             ps.setInt(8, c.getCategorieId());
             ps.setString(9, c.getStatut());
             ps.executeUpdate();
-            System.out.println("Cours ajouté ✅");
+            System.out.println("Cours ajouté ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -49,7 +49,7 @@ public class ServiceCours implements IService<Cours> {
             ps.setString(9, c.getStatut());
             ps.setInt(10, c.getId());
             ps.executeUpdate();
-            System.out.println("Cours modifié ✅");
+            System.out.println("Cours modifié ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -62,7 +62,7 @@ public class ServiceCours implements IService<Cours> {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, c.getId());
             ps.executeUpdate();
-            System.out.println("Cours supprimé ✅");
+            System.out.println("Cours supprimé ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

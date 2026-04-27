@@ -24,7 +24,7 @@ public class ServiceChapitre implements IService<Chapitre> {
             ps.setBoolean(5, c.isEstGratuit());
             ps.setInt(6, c.getCoursId());
             ps.executeUpdate();
-            System.out.println("Chapitre ajouté ✅");
+            System.out.println("Chapitre ajouté ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -43,7 +43,7 @@ public class ServiceChapitre implements IService<Chapitre> {
             ps.setInt(6, c.getCoursId());
             ps.setInt(7, c.getId());
             ps.executeUpdate();
-            System.out.println("Chapitre modifié ✅");
+            System.out.println("Chapitre modifié ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -56,7 +56,7 @@ public class ServiceChapitre implements IService<Chapitre> {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, c.getId());
             ps.executeUpdate();
-            System.out.println("Chapitre supprimé ✅");
+            System.out.println("Chapitre supprimé ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
