@@ -6,10 +6,12 @@ import models.Question;
 import models.QuestionType;
 import models.Reponse;
 import models.ReponseEtudiant;
+import models.Resultat;
 import services.EvaluationDAOImpl;
 import services.QuestionDAOImpl;
 import services.ReponseDAOImpl;
 import services.ReponseEtudiantDAOImpl;
+import services.ResultatDAOImpl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,6 +28,7 @@ public class Main {
         IService<Question> questionDAO = new QuestionDAOImpl();
         IService<Reponse> reponseDAO = new ReponseDAOImpl();
         IService<ReponseEtudiant> reponseEtudiantDAO = new ReponseEtudiantDAOImpl();
+        IService<Resultat> resultatDAO = new ResultatDAOImpl();
 
         boolean running = true;
         while (running) {
@@ -83,6 +86,18 @@ public class Main {
                     case "16":
                         deleteReponseEtudiant(scanner, reponseEtudiantDAO);
                         break;
+                    case "17":
+                        addResultat(scanner, resultatDAO);
+                        break;
+                    case "18":
+                        showAllResultats(resultatDAO);
+                        break;
+                    case "19":
+                        updateResultat(scanner, resultatDAO);
+                        break;
+                    case "20":
+                        deleteResultat(scanner, resultatDAO);
+                        break;
                     case "0":
                         running = false;
                         System.out.println("Bye!");
@@ -122,6 +137,11 @@ public class Main {
         System.out.println("14. Show all reponses etudiant");
         System.out.println("15. Update reponse etudiant");
         System.out.println("16. Delete reponse etudiant");
+        System.out.println("--- Resultat ---");
+        System.out.println("17. Add resultat");
+        System.out.println("18. Show all resultats");
+        System.out.println("19. Update resultat");
+        System.out.println("20. Delete resultat");
         System.out.println("0. Exit");
     }
 
@@ -385,6 +405,69 @@ public class Main {
             return new ReponseEtudiant(id, resultatId, questionId, reponseId, texteLibre, estCorrect, pointsObtenus);
         }
         return new ReponseEtudiant(resultatId, questionId, reponseId, texteLibre, estCorrect, pointsObtenus);
+    }
+
+    private static void addResultat(Scanner scanner, IService<Resultat> dao) {
+        Resultat resultat = readResultatData(scanner, 0, false);
+        dao.add(resultat);
+    }
+
+    private static void showAllResultats(IService<Resultat> dao) {
+        List<Resultat> resultats = dao.getAll();
+        if (resultats.isEmpty()) {
+            System.out.println("No resultats found.");
+            return;
+        }
+
+        for (Resultat resultat : resultats) {
+            System.out.println(resultat);
+        }
+    }
+
+    private static void updateResultat(Scanner scanner, IService<Resultat> dao) {
+        System.out.print("Enter resultat id to update: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        Resultat current = dao.getById(id);
+        if (current == null) {
+            System.out.println("No resultat found with id " + id);
+            return;
+        }
+
+        Resultat updated = readResultatData(scanner, id, true);
+        dao.update(updated);
+    }
+
+    private static void deleteResultat(Scanner scanner, IService<Resultat> dao) {
+        System.out.print("Enter resultat id to delete: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        dao.delete(id);
+    }
+
+    private static Resultat readResultatData(Scanner scanner, int id, boolean includeId) {
+        System.out.print("Score: ");
+        float score = Float.parseFloat(scanner.nextLine());
+
+        System.out.print("Score pourcentage: ");
+        float scorePourcentage = Float.parseFloat(scanner.nextLine());
+
+        boolean estReussi = readBoolean(scanner, "Est reussi (true/false): ");
+
+        System.out.print("Temps passe en minutes: ");
+        int tempsPasseMin = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Tentative numero: ");
+        int tentativeNum = Integer.parseInt(scanner.nextLine());
+
+        LocalDateTime datePassage = readDateTime(scanner, "Date passage (yyyy-MM-dd HH:mm:ss): ");
+
+        System.out.print("Evaluation ID: ");
+        int evaluationId = Integer.parseInt(scanner.nextLine());
+
+        if (includeId) {
+            return new Resultat(id, score, scorePourcentage, estReussi, tempsPasseMin, tentativeNum, datePassage, evaluationId);
+        }
+        return new Resultat(score, scorePourcentage, estReussi, tempsPasseMin, tentativeNum, datePassage, evaluationId);
     }
 
     private static LocalDateTime readDateTime(Scanner scanner, String prompt) {
