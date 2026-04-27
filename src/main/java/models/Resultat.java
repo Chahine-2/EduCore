@@ -11,12 +11,13 @@ public class Resultat {
     private int tentativeNum;
     private LocalDateTime datePassage;
     private int evaluationId;
+    private int etudiantId;
 
     public Resultat() {
     }
 
     public Resultat(int id, float score, float scorePourcentage, boolean estReussi, int tempsPasseMin,
-                    int tentativeNum, LocalDateTime datePassage, int evaluationId) {
+                    int tentativeNum, LocalDateTime datePassage, int evaluationId, int etudiantId) {
         this.id = id;
         this.score = score;
         this.scorePourcentage = scorePourcentage;
@@ -25,10 +26,11 @@ public class Resultat {
         this.tentativeNum = tentativeNum;
         this.datePassage = datePassage;
         this.evaluationId = evaluationId;
+        this.etudiantId = etudiantId;
     }
 
     public Resultat(float score, float scorePourcentage, boolean estReussi, int tempsPasseMin,
-                    int tentativeNum, LocalDateTime datePassage, int evaluationId) {
+                    int tentativeNum, LocalDateTime datePassage, int evaluationId, int etudiantId) {
         this.score = score;
         this.scorePourcentage = scorePourcentage;
         this.estReussi = estReussi;
@@ -36,6 +38,7 @@ public class Resultat {
         this.tentativeNum = tentativeNum;
         this.datePassage = datePassage;
         this.evaluationId = evaluationId;
+        this.etudiantId = etudiantId;
     }
 
     public int getId() {
@@ -102,6 +105,14 @@ public class Resultat {
         this.evaluationId = evaluationId;
     }
 
+    public int getEtudiantId() {
+        return etudiantId;
+    }
+
+    public void setEtudiantId(int etudiantId) {
+        this.etudiantId = etudiantId;
+    }
+
     @Override
     public String toString() {
         return "Resultat{" +
@@ -113,6 +124,7 @@ public class Resultat {
                 ", tentativeNum=" + tentativeNum +
                 ", datePassage=" + datePassage +
                 ", evaluationId=" + evaluationId +
+                ", etudiantId=" + etudiantId +
                 '}';
     }
 }

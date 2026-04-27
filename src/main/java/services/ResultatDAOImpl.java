@@ -16,7 +16,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
 
     @Override
     public void add(Resultat resultat) {
-        String req = "INSERT INTO resultat (score, score_pourcentage, est_reussi, temps_passe_min, tentative_num, date_passage, evaluation_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO resultat (score, score_pourcentage, est_reussi, temps_passe_min, tentative_num, date_passage, evaluation_id, etudiant_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req)) {
             ps.setFloat(1, resultat.getScore());
             ps.setFloat(2, resultat.getScorePourcentage());
@@ -25,6 +25,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
             ps.setInt(5, resultat.getTentativeNum());
             ps.setTimestamp(6, Timestamp.valueOf(resultat.getDatePassage()));
             ps.setInt(7, resultat.getEvaluationId());
+            ps.setInt(8, resultat.getEtudiantId());
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -33,7 +34,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
 
     @Override
     public void update(Resultat resultat) {
-        String req = "UPDATE resultat SET score = ?, score_pourcentage = ?, est_reussi = ?, temps_passe_min = ?, tentative_num = ?, date_passage = ?, evaluation_id = ? WHERE id = ?";
+        String req = "UPDATE resultat SET score = ?, score_pourcentage = ?, est_reussi = ?, temps_passe_min = ?, tentative_num = ?, date_passage = ?, evaluation_id = ?, etudiant_id = ? WHERE id = ?";
         try (PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req)) {
             ps.setFloat(1, resultat.getScore());
             ps.setFloat(2, resultat.getScorePourcentage());
@@ -42,7 +43,8 @@ public class ResultatDAOImpl implements IService<Resultat> {
             ps.setInt(5, resultat.getTentativeNum());
             ps.setTimestamp(6, Timestamp.valueOf(resultat.getDatePassage()));
             ps.setInt(7, resultat.getEvaluationId());
-            ps.setInt(8, resultat.getId());
+            ps.setInt(8, resultat.getEtudiantId());
+            ps.setInt(9, resultat.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -76,6 +78,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
                     resultat.setTentativeNum(rs.getInt("tentative_num"));
                     resultat.setDatePassage(rs.getTimestamp("date_passage").toLocalDateTime());
                     resultat.setEvaluationId(rs.getInt("evaluation_id"));
+                    resultat.setEtudiantId(rs.getInt("etudiant_id"));
                     return resultat;
                 }
             }
@@ -104,6 +107,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
                 resultat.setTentativeNum(rs.getInt("tentative_num"));
                 resultat.setDatePassage(rs.getTimestamp("date_passage").toLocalDateTime());
                 resultat.setEvaluationId(rs.getInt("evaluation_id"));
+                resultat.setEtudiantId(rs.getInt("etudiant_id"));
                 resultats.add(resultat);
             }
         } catch (SQLException e) {

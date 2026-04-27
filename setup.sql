@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS resultat (
     tentative_num INT DEFAULT 1,
     date_passage DATETIME DEFAULT NOW(),
     evaluation_id INT NOT NULL,
+    etudiant_id INT NOT NULL,
     FOREIGN KEY (evaluation_id) REFERENCES evaluation(id)
 );
 

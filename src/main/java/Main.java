@@ -485,10 +485,13 @@ public class Main {
         System.out.print("Evaluation ID: ");
         int evaluationId = Integer.parseInt(scanner.nextLine());
 
+        System.out.print("Etudiant ID: ");
+        int etudiantId = Integer.parseInt(scanner.nextLine());
+
         if (includeId) {
-            return new Resultat(id, score, scorePourcentage, estReussi, tempsPasseMin, tentativeNum, datePassage, evaluationId);
+            return new Resultat(id, score, scorePourcentage, estReussi, tempsPasseMin, tentativeNum, datePassage, evaluationId, etudiantId);
         }
-        return new Resultat(score, scorePourcentage, estReussi, tempsPasseMin, tentativeNum, datePassage, evaluationId);
+        return new Resultat(score, scorePourcentage, estReussi, tempsPasseMin, tentativeNum, datePassage, evaluationId, etudiantId);
     }
 
     private static LocalDateTime readDateTime(Scanner scanner, String prompt) {
