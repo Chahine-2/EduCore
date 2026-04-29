@@ -4,8 +4,8 @@ public class Etudiant extends Utilisateur {
     private String numeroEtudiant;
     private String classe;
 
-    public Etudiant(int id, String nom, String prenom, int age, String email, int tel, String motDePasse, Role role, String numeroEtudiant, String classe) {
-        super(id, nom, prenom, age, email, tel, motDePasse, role);
+    public Etudiant(int id, String nom, String prenom, int age, String email, int tel, String motDePasse, Role role, String numeroEtudiant, String classe, boolean statutActif) {
+        super(id, nom, prenom, age, email, tel, motDePasse, role, statutActif);
         this.numeroEtudiant = numeroEtudiant;
         this.classe = classe;
     }

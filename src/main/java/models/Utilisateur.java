@@ -9,8 +9,9 @@ public abstract class Utilisateur {
     private int tel;
     private String motDePasse;
     private Role role; // The relationship to the Role class
+    private boolean statutActif = true;
 
-    public Utilisateur(int id, String nom, String prenom, int age, String email, int tel, String motDePasse, Role role) {
+    public Utilisateur(int id, String nom, String prenom, int age, String email, int tel, String motDePasse, Role role, boolean statutActif) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
@@ -19,6 +20,7 @@ public abstract class Utilisateur {
         this.tel = tel;
         this.motDePasse = motDePasse;
         this.role = role;
+        this.statutActif = statutActif;
     }
 
     // Getters
@@ -30,7 +32,7 @@ public abstract class Utilisateur {
     public int getTel() { return tel; }
     public String getMotDePasse() { return motDePasse; }
     public Role getRole() { return role; }
-
+    public boolean isStatutActif() { return statutActif; }
     // Setters
     public void setId(int id) { this.id = id; }
     public void setNom(String nom) { this.nom = nom; }
@@ -40,4 +42,5 @@ public abstract class Utilisateur {
     public void setTel(int tel) { this.tel = tel; }
     public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }
     public void setRole(Role role) { this.role = role; }
+    public void setStatutActif(boolean statutActif) { this.statutActif = statutActif; }
 }
