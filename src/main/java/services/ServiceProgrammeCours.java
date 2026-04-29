@@ -41,7 +41,7 @@ public class ServiceProgrammeCours implements IService<ProgrammeCours> {
             ps.setString(5, p.getFrequence());
             ps.setInt(6, p.getId());
             ps.executeUpdate();
-            System.out.println("Programme modifié ✅");
+            System.out.println("Programme modifié ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -54,7 +54,7 @@ public class ServiceProgrammeCours implements IService<ProgrammeCours> {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, p.getId());
             ps.executeUpdate();
-            System.out.println("Programme supprimé ✅");
+            System.out.println("Programme supprimé ");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
