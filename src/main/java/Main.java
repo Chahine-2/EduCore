@@ -35,33 +35,7 @@ public class Main {
 
 
 
-        // TEST SOUS-CATEGORIE
 
-        System.out.println("========== SOUS-CATEGORIE ==========");
-        ServiceSousCategorie serviceSousCategorie = new ServiceSousCategorie();
-
-        // Ajouter
-        SousCategorie sc1 = new SousCategorie("Java", "Programmation Java", 1, 1, "active");
-        SousCategorie sc2 = new SousCategorie("Python", "Programmation Python", 1, 2, "active");
-        serviceSousCategorie.add(sc1);
-        serviceSousCategorie.add(sc2);
-
-        // Afficher tout
-        System.out.println("--- Toutes les sous-catégories ---");
-        System.out.println(serviceSousCategorie.getAll());
-
-        // Modifier
-        sc1.setId(1);
-        sc1.setNom("Java Avancé");
-        serviceSousCategorie.update(sc1);
-        System.out.println("--- Après modification ---");
-        System.out.println(serviceSousCategorie.getAll());
-
-        // Supprimer
-        sc2.setId(2);
-        serviceSousCategorie.delete(sc2);
-        System.out.println("--- Après suppression ---");
-        System.out.println(serviceSousCategorie.getAll());
 
 
 
@@ -211,62 +185,10 @@ public class Main {
 
 
 
-        // TEST COMMENTAIRE
 
-        System.out.println("========== COMMENTAIRE ==========");
-        ServiceCommentaire serviceCommentaire = new ServiceCommentaire();
 
-        // Ajouter  (cours_id = 1 → doit exister dans la table cours)
-        CommentaireCours com1 = new CommentaireCours("Excellent cours, très bien expliqué !", 5, 1);
-        CommentaireCours com2 = new CommentaireCours("Bon cours mais manque d'exercices", 3, 1);
-        serviceCommentaire.add(com1);
-        serviceCommentaire.add(com2);
 
-        // Afficher tout
-        System.out.println("--- Tous les commentaires ---");
-        System.out.println(serviceCommentaire.getAll());
 
-        // Modifier
-        com1.setId(1);
-        com1.setContenu("Très bon cours, je recommande !");
-        com1.setNote(4);
-        serviceCommentaire.update(com1);
-        System.out.println("--- Après modification ---");
-        System.out.println(serviceCommentaire.getAll());
 
-        // Supprimer
-        com2.setId(2);
-        serviceCommentaire.delete(com2);
-        System.out.println("--- Après suppression ---");
-        System.out.println(serviceCommentaire.getAll());
-
-// 8️⃣ TEST PROGRAMME COURS
-
-        System.out.println("========== PROGRAMME COURS ==========");
-        ServiceProgrammeCours serviceProgramme = new ServiceProgrammeCours();
-
-// Ajouter  (cours_id = 1 → doit exister dans cours)
-        ProgrammeCours prog1 = new ProgrammeCours(1, "Lundi", "08:00", "10:00", "hebdomadaire");
-        ProgrammeCours prog2 = new ProgrammeCours(1, "Jeudi", "14:00", "16:00", "hebdomadaire");
-        serviceProgramme.add(prog1);
-        serviceProgramme.add(prog2);
-
-// Afficher tout
-        System.out.println("--- Tous les programmes ---");
-        System.out.println(serviceProgramme.getAll());
-
-// Modifier
-        prog1.setId(1);
-        prog1.setJour("Mardi");
-        prog1.setHeureDebut("09:00");
-        serviceProgramme.update(prog1);
-        System.out.println("--- Après modification ---");
-        System.out.println(serviceProgramme.getAll());
-
-// Supprimer
-        prog2.setId(2);
-        serviceProgramme.delete(prog2);
-        System.out.println("--- Après suppression ---");
-        System.out.println(serviceProgramme.getAll());
     }
 }

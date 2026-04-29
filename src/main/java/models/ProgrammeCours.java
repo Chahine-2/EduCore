@@ -3,7 +3,7 @@ package models;
 public class ProgrammeCours {
     private int id;
     private int coursId;
-    private String jour;        // Lundi / Mardi ...
+    private String jour;        // Lundi / Mardi / Mercredi ...
     private String heureDebut;
     private String heureFin;
     private String frequence;   // hebdomadaire / bimensuel / mensuel
@@ -38,6 +38,8 @@ public class ProgrammeCours {
 
     @Override
     public String toString() {
-        return "ProgrammeCours{id=" + id + ", jour='" + jour + "', " + heureDebut + "-" + heureFin + "}\n";
+        return "ProgrammeCours{id=" + id + ", coursId=" + coursId +
+                ", jour='" + jour + "', " + heureDebut + "-" + heureFin +
+                ", frequence='" + frequence + "'}\n";
     }
 }
