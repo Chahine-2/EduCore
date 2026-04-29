@@ -15,4 +15,5 @@ public interface IUtilisateurService {
 
     // Opération Métier Avancée
     boolean changerStatutCompte(int id, boolean rendreActif);
+    void consulterHistoriqueConnexions();
 }

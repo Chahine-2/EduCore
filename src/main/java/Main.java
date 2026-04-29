@@ -68,6 +68,7 @@ public class Main {
             System.out.println("3. Modifier l'email d'un utilisateur (UPDATE)");
             System.out.println("4. Supprimer un utilisateur (DELETE)");
             System.out.println("5. Suspendre / Activer un compte (MÉTIER)");
+            System.out.println("6.consulterHistorique");
             System.out.println("0. Se déconnecter");
             System.out.print("Choix : ");
 
@@ -145,7 +146,10 @@ public class Main {
                         System.out.println("❌ Erreur lors de la mise à jour.");
                     }
                     break;
-
+                // Ajoutez ceci juste en dessous du case 5
+                case 6:
+                    service.consulterHistoriqueConnexions();
+                    break;
                 case 0:
                     continuer = false;
                     System.out.println("Déconnexion...");

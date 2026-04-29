@@ -32,25 +32,29 @@ public class UtilisateurService implements IUtilisateurService {
             if (resultSet.next()) {
                 boolean isActif = resultSet.getBoolean("statut_actif");
 
-                // Règle Métier : Si le compte est suspendu, on refuse la connexion
                 if (!isActif) {
-                    System.out.println("⚠️ ALERTE : Ce compte a été suspendu par un administrateur.");
+                    System.out.println("⚠️ ALERTE : Ce compte a été suspendu.");
+                    enregistrerTentativeConnexion(email, false); // ÉCHEC : Compte suspendu
                     return null;
                 }
 
                 String motDePasseHache = resultSet.getString("mot_de_passe");
 
-                // Règle Métier : Vérification du mot de passe avec BCrypt
                 if (BCrypt.checkpw(motDePasse, motDePasseHache)) {
                     Role role = new Role(resultSet.getInt("role_id"), resultSet.getString("nom_role"));
+
+                    enregistrerTentativeConnexion(email, true); // SUCCÈS !
+
                     return new Etudiant(resultSet.getInt("id"), resultSet.getString("nom"), resultSet.getString("prenom"),
                             resultSet.getInt("age"), email, resultSet.getInt("tel"),
-                            motDePasseHache, role, "N/A", "N/A", true);
+                            motDePasseHache, role, "N/A", "N/A",true);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        enregistrerTentativeConnexion(email, false); // ÉCHEC : Mauvais mot de passe ou email introuvable
         return null;
     }
 
@@ -156,6 +160,36 @@ public class UtilisateurService implements IUtilisateurService {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+    // --- NOUVELLE FONCTIONNALITÉ : JOURNAL D'AUDIT ---
+    private void enregistrerTentativeConnexion(String email, boolean succes) {
+        String query = "INSERT INTO historique_connexions (email_tente, statut_reussite) VALUES (?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, email);
+            ps.setBoolean(2, succes);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'enregistrement de l'audit : " + e.getMessage());
+        }
+    }
+    @Override
+    public void consulterHistoriqueConnexions() {
+        // On récupère les 10 dernières tentatives
+        String query = "SELECT email_tente, date_tentative, statut_reussite FROM historique_connexions ORDER BY date_tentative DESC LIMIT 10";
+        try (PreparedStatement ps = connection.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            System.out.println("\n--- 10 DERNIÈRES TENTATIVES DE CONNEXION ---");
+            while (rs.next()) {
+                String date = rs.getString("date_tentative");
+                String email = rs.getString("email_tente");
+                String statut = rs.getBoolean("statut_reussite") ? "✅ SUCCÈS" : "❌ ÉCHEC ";
+
+                System.out.println("[" + date + "] " + statut + " | Email : " + email);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
