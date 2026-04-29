@@ -7,9 +7,12 @@ import java.util.List;
 public interface IUtilisateurService {
     Utilisateur authentifier(String email, String motDePasse);
 
-    // CRUD Operations for Admin
-    boolean ajouterEtudiant(Etudiant etudiant); // CREATE
-    List<Utilisateur> listerUtilisateurs();     // READ
-    boolean modifierEmailUtilisateur(int id, String nouvelEmail); // UPDATE
-    boolean supprimerUtilisateur(int id);       // DELETE
+    // Opérations CRUD pour l'Administrateur
+    boolean ajouterEtudiant(Etudiant etudiant);
+    List<Utilisateur> listerUtilisateurs();
+    boolean modifierEmailUtilisateur(int id, String nouvelEmail);
+    boolean supprimerUtilisateur(int id);
+
+    // Opération Métier Avancée
+    boolean changerStatutCompte(int id, boolean rendreActif);
 }
