@@ -4,7 +4,7 @@ This project contains a student-friendly JDBC CRUD application for the `evaluati
 
 ## Architecture
 
-- `src/main/java/Main.java` - Console menu and app entry point
+- `src/main/java/test.Main.java` - Console menu and app entry point
 - `src/main/java/models/Evaluation.java` - Entity model
 - `src/main/java/models/EvaluationType.java` - Enum for `type`
 - `src/main/java/interfaces/EvaluationDAO.java` - DAO contract
@@ -41,7 +41,7 @@ mvn clean compile
 2. Run the menu:
 
 ```powershell
-mvn exec:java -Dexec.mainClass="Main"
+mvn exec:java -Dexec.mainClass="test.Main"
 ```
 
 Date input format in menu:

@@ -1,0 +1,218 @@
+.root-pane {
+    -fx-background-color: #f4f7fb;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.app-header {
+    -fx-background-color: linear-gradient(to right, #173554, #234f78);
+    -fx-padding: 18 24;
+}
+
+.app-title {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+}
+
+.app-subtitle {
+    -fx-text-fill: rgba(255, 255, 255, 0.86);
+    -fx-font-size: 13px;
+}
+
+.badge-chip {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-border-color: rgba(255, 255, 255, 0.32);
+    -fx-border-radius: 18;
+    -fx-background-radius: 18;
+    -fx-text-fill: #f4f8ff;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-padding: 7 12;
+}
+
+.main-split {
+    -fx-padding: 18;
+}
+
+.main-split > .split-pane-divider {
+    -fx-padding: 0 1 0 1;
+    -fx-background-color: #d6e0ea;
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-border-color: #dce5ef;
+    -fx-border-width: 1;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(17, 45, 78, 0.10), 16, 0.14, 0, 4);
+}
+
+.form-scroll {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.form-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.form-card {
+    -fx-padding: 18;
+    -fx-min-width: 430;
+}
+
+.table-card {
+    -fx-padding: 18;
+}
+
+.section-title {
+    -fx-text-fill: #18324d;
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}
+
+.section-hint {
+    -fx-text-fill: #6f8093;
+    -fx-font-size: 12px;
+}
+
+.field-label {
+    -fx-text-fill: #22364a;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.input-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cad6e4;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 9 11;
+    -fx-prompt-text-fill: #94a2b3;
+}
+
+.input-field:focused {
+    -fx-border-color: #3f7fcd;
+    -fx-effect: dropshadow(gaussian, rgba(63, 127, 205, 0.16), 8, 0.2, 0, 0);
+}
+
+.textarea-field {
+    -fx-pref-row-count: 4;
+}
+
+.check-row {
+    -fx-padding: 2 0 0 0;
+}
+
+.check-item {
+    -fx-text-fill: #2f4256;
+}
+
+.form-actions {
+    -fx-padding: 2 0 0 0;
+}
+
+.search-row {
+    -fx-padding: 2 0 0 0;
+}
+
+.search-field {
+    -fx-min-width: 240;
+}
+
+.action-button {
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.action-button:hover {
+    -fx-opacity: 0.94;
+}
+
+.action-button:pressed {
+    -fx-opacity: 0.86;
+}
+
+.primary-button {
+    -fx-background-color: #2f80ed;
+}
+
+.success-button {
+    -fx-background-color: #2da562;
+}
+
+.neutral-button {
+    -fx-background-color: #5f6d7f;
+}
+
+.danger-button {
+    -fx-background-color: #d94c3d;
+}
+
+.evaluation-table {
+    -fx-background-color: transparent;
+    -fx-border-color: #d8e2ee;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+.evaluation-table .column-header-background {
+    -fx-background-color: #ecf2f9;
+    -fx-background-radius: 12 12 0 0;
+}
+
+.evaluation-table .column-header,
+.evaluation-table .filler {
+    -fx-background-color: transparent;
+    -fx-size: 38px;
+    -fx-border-color: transparent transparent #d8e2ee transparent;
+}
+
+.evaluation-table .column-header .label {
+    -fx-text-fill: #23384d;
+    -fx-font-weight: 700;
+}
+
+.evaluation-table .table-row-cell {
+    -fx-cell-size: 36px;
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #edf2f7 transparent;
+}
+
+.evaluation-table .table-row-cell:filled:hover {
+    -fx-background-color: #f5f9ff;
+}
+
+.evaluation-table .table-row-cell:selected {
+    -fx-background-color: #dbe9fb;
+}
+
+.table-placeholder {
+    -fx-text-fill: #728397;
+    -fx-font-size: 13px;
+}
+
+.table-actions {
+    -fx-padding: 4 0 0 0;
+}
+
+.status-bar {
+    -fx-background-color: white;
+    -fx-border-color: #dce5ef transparent transparent transparent;
+    -fx-padding: 10 18;
+}
+
+.status-label {
+    -fx-text-fill: #2a9c58;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+
+

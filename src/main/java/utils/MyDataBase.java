@@ -13,12 +13,16 @@ public class MyDataBase {
     private Connection cnx ;
 
     private MyDataBase() {
-
         try {
-            this.cnx = DriverManager.getConnection(URL,USERNAME,PASSWORD);
-            System.out.println("Conncted ......");
+            this.cnx = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            System.out.println("✓ Database connected successfully!");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.err.println("✗ Database connection failed!");
+            System.err.println("Error: " + e.getMessage());
+            System.err.println("URL: " + URL);
+            System.err.println("Username: " + USERNAME);
+            System.err.println("Please ensure MySQL is running and the database 'educore' exists.");
+            this.cnx = null;
         }
 
     }

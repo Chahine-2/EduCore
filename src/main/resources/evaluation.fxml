@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.EvaluationController"
+            prefWidth="1460"
+            prefHeight="900"
+            stylesheets="@evaluation.css"
+            styleClass="root-pane">
+    <top>
+        <HBox styleClass="app-header" alignment="CENTER_LEFT">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="EDUCORE - Gestion des evaluations" styleClass="app-title"/>
+                <Label text="Créez, modifiez et suivez les évaluations depuis un espace unifié." styleClass="app-subtitle"/>
+            </VBox>
+            <Label text="Module Evaluation" styleClass="badge-chip"/>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.34" styleClass="main-split">
+            <items>
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="form-scroll">
+                    <VBox spacing="16" styleClass="card form-card">
+                        <VBox spacing="2">
+                            <Label text="Formulaire" styleClass="section-title"/>
+                            <Label text="Saisissez ou mettez à jour une évaluation." styleClass="section-hint"/>
+                        </VBox>
+
+                        <VBox spacing="6">
+                            <Label text="Titre" styleClass="field-label"/>
+                            <TextField fx:id="titreField" promptText="Ex: Quiz Mathématiques" styleClass="input-field"/>
+                        </VBox>
+
+                        <VBox spacing="6">
+                            <Label text="Description" styleClass="field-label"/>
+                            <TextArea fx:id="descriptionField" prefRowCount="4" promptText="Détails de l'évaluation" wrapText="true" styleClass="input-field textarea-field"/>
+                        </VBox>
+
+                        <GridPane hgap="12" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <VBox spacing="6" GridPane.columnIndex="0">
+                                <Label text="Type" styleClass="field-label"/>
+                                <ComboBox fx:id="typeCombo" maxWidth="Infinity" styleClass="input-field"/>
+                            </VBox>
+                            <VBox spacing="6" GridPane.columnIndex="1">
+                                <Label text="Statut" styleClass="field-label"/>
+                                <ComboBox fx:id="statutCombo" maxWidth="Infinity" styleClass="input-field"/>
+                            </VBox>
+                        </GridPane>
+
+                        <GridPane hgap="12" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <VBox spacing="6" GridPane.columnIndex="0">
+                                <Label text="Durée (min)" styleClass="field-label"/>
+                                <TextField fx:id="dureeField" promptText="Ex: 60" styleClass="input-field"/>
+                            </VBox>
+                            <VBox spacing="6" GridPane.columnIndex="1">
+                                <Label text="Note max" styleClass="field-label"/>
+                                <TextField fx:id="noteMaxField" promptText="Ex: 100" styleClass="input-field"/>
+                            </VBox>
+                        </GridPane>
+
+                        <GridPane hgap="12" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <VBox spacing="6" GridPane.columnIndex="0">
+                                <Label text="Note passage" styleClass="field-label"/>
+                                <TextField fx:id="notePassageField" promptText="Ex: 50" styleClass="input-field"/>
+                            </VBox>
+                            <VBox spacing="6" GridPane.columnIndex="1">
+                                <Label text="Tentatives" styleClass="field-label"/>
+                                <TextField fx:id="nbTentativesField" promptText="Ex: 3" styleClass="input-field"/>
+                            </VBox>
+                        </GridPane>
+
+                        <VBox spacing="6">
+                            <Label text="Date de début (yyyy-MM-dd HH:mm:ss)" styleClass="field-label"/>
+                            <TextField fx:id="dateDebutField" promptText="2026-05-01 08:00:00" styleClass="input-field"/>
+                        </VBox>
+
+                        <HBox spacing="18" styleClass="check-row">
+                            <CheckBox fx:id="ordreAleatoireCheck" text="Ordre aléatoire" styleClass="check-item"/>
+                            <CheckBox fx:id="afficherCorrecCheck" text="Afficher correction" styleClass="check-item"/>
+                        </HBox>
+
+                        <HBox spacing="10" styleClass="form-actions">
+                            <Button text="Ajouter" prefHeight="38" prefWidth="120" styleClass="action-button success-button" onAction="#handleAdd"/>
+                            <Button text="Modifier" prefHeight="38" prefWidth="120" styleClass="action-button primary-button" onAction="#handleUpdate"/>
+                            <Button text="Effacer" prefHeight="38" prefWidth="120" styleClass="action-button neutral-button" onAction="#handleClear"/>
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
+
+                <VBox spacing="14" styleClass="card table-card">
+                    <VBox spacing="2">
+                        <Label text="Liste des évaluations" styleClass="section-title"/>
+                        <Label text="Recherchez par titre puis sélectionnez une ligne pour charger les détails." styleClass="section-hint"/>
+                    </VBox>
+
+                    <HBox spacing="10" styleClass="search-row">
+                        <TextField fx:id="searchField" promptText="Rechercher par titre..." HBox.hgrow="ALWAYS" styleClass="input-field search-field"/>
+                        <Button text="Rechercher" prefHeight="38" prefWidth="128" styleClass="action-button primary-button" onAction="#handleSearch"/>
+                        <Button text="Afficher tout" prefHeight="38" prefWidth="128" styleClass="action-button neutral-button" onAction="#handleShowAll"/>
+                    </HBox>
+
+                    <TableView fx:id="evaluationTable" VBox.vgrow="ALWAYS" styleClass="evaluation-table">
+                        <placeholder>
+                            <Label text="Aucune évaluation à afficher" styleClass="table-placeholder"/>
+                        </placeholder>
+                        <columns>
+                            <TableColumn text="ID" prefWidth="55"/>
+                            <TableColumn text="Titre" prefWidth="160"/>
+                            <TableColumn text="Description" prefWidth="260"/>
+                            <TableColumn text="Type" prefWidth="105"/>
+                            <TableColumn text="Date début" prefWidth="160"/>
+                            <TableColumn text="Durée" prefWidth="85"/>
+                            <TableColumn text="Note max" prefWidth="95"/>
+                            <TableColumn text="Note passage" prefWidth="110"/>
+                            <TableColumn text="Tentatives" prefWidth="95"/>
+                            <TableColumn text="Statut" prefWidth="95"/>
+                            <TableColumn text="Date création" prefWidth="160"/>
+                        </columns>
+                    </TableView>
+
+                    <HBox spacing="10" styleClass="table-actions">
+                        <Button text="Charger les détails" prefHeight="38" prefWidth="176" styleClass="action-button primary-button" onAction="#handleLoadDetails"/>
+                        <Button text="Supprimer" prefHeight="38" prefWidth="132" styleClass="action-button danger-button" onAction="#handleDelete"/>
+                    </HBox>
+                </VBox>
+            </items>
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" styleClass="status-bar">
+            <Label fx:id="statusLabel" text="Prêt" styleClass="status-label"/>
+        </HBox>
+    </bottom>
+</BorderPane>
+
+
+
+
+
