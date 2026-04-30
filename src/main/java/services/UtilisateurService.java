@@ -322,4 +322,30 @@ public class UtilisateurService implements IUtilisateurService {
             try { connection.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
+    @Override
+    public boolean ajouterClasse(String nomClasse) {
+        String query = "INSERT INTO classes (nom_classe) VALUES (?)";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, nomClasse);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Erreur : Cette classe existe peut-être déjà.");
+            return false;
+        }
+    }
+
+    @Override
+    public List<String> listerToutesLesClasses() {
+        List<String> classes = new ArrayList<>();
+        String query = "SELECT nom_classe FROM classes ORDER BY nom_classe ASC";
+        try (PreparedStatement ps = connection.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                classes.add(rs.getString("nom_classe"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return classes;
+    }
 }

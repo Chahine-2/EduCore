@@ -22,4 +22,8 @@ public interface IUtilisateurService {
     List<String> listerClassesExistantes();
     List<Utilisateur> listerEtudiantsParClasse(String classe);
     boolean marquerPresence(int enseignantId, String classe, List<Integer> etudiantsPresents, List<Integer> etudiantsAbsents);
+
+    // --- Gestion des Classes (Administrateur) ---
+    boolean ajouterClasse(String nomClasse);
+    List<String> listerToutesLesClasses();
 }

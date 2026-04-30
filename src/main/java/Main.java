@@ -71,6 +71,7 @@ public class Main {
             System.out.println("5. Suspendre / Activer un compte (MÉTIER)");
             System.out.println("6.consulterHistorique");
             System.out.println("7. Ajouter un enseignant (CREATE)");
+            System.out.println("8. Ajouter une classe (CREATE)");
             System.out.println("0. Se déconnecter");
             System.out.print("Choix : ");
 
@@ -94,17 +95,48 @@ public class Main {
 
                 case 2:
                     System.out.println("\n--- AJOUTER UN ETUDIANT ---");
+
+                    // 1. On récupère la liste des classes disponibles
+                    List<String> classesDispo = service.listerToutesLesClasses();
+                    if (classesDispo.isEmpty()) {
+                        System.out.println("⚠️ Aucune classe n'existe dans le système !");
+                        System.out.println("Veuillez d'abord créer une classe avec l'option 8.");
+                        break;
+                    }
+
                     System.out.print("Nom : "); String nom = scanner.nextLine();
                     System.out.print("Prénom : "); String prenom = scanner.nextLine();
                     System.out.print("Email : "); String email = scanner.nextLine();
                     System.out.print("Mot de passe : "); String mdp = scanner.nextLine();
                     System.out.print("Numéro Etudiant (ex: ETUD-123) : "); String numEtud = scanner.nextLine();
 
+                    // 2. On affiche les classes pour que l'Admin choisisse
+                    System.out.println("\nChoisissez la classe de l'étudiant :");
+                    for (int i = 0; i < classesDispo.size(); i++) {
+                        System.out.println((i + 1) + ". " + classesDispo.get(i));
+                    }
+                    System.out.print("Votre choix (numéro) : ");
+                    int choixClasse;
+                    try {
+                        choixClasse = Integer.parseInt(scanner.nextLine()) - 1;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Choix invalide. Annulation de la création.");
+                        break;
+                    }
+
+                    if (choixClasse < 0 || choixClasse >= classesDispo.size()) {
+                        System.out.println("Numéro de classe invalide. Annulation.");
+                        break;
+                    }
+
+                    String classeChoisie = classesDispo.get(choixClasse);
+
                     Role roleEtudiant = new Role(3, "Etudiant");
-                    Etudiant nouvelEtudiant = new Etudiant(0, nom, prenom, 20, email, 12345678, mdp, roleEtudiant, "N/A", "N/A", true);
+                    // On injecte 'classeChoisie' dans l'objet au lieu du "GL-3" statique !
+                    Etudiant nouvelEtudiant = new Etudiant(0, nom, prenom, 20, email, 12345678, mdp, roleEtudiant, numEtud, classeChoisie,true);
 
                     if (service.ajouterEtudiant(nouvelEtudiant)) {
-                        System.out.println("✅ Étudiant ajouté avec succès ! (Mot de passe haché dans la BDD)");
+                        System.out.println("✅ Étudiant ajouté avec succès dans la classe " + classeChoisie + " !");
                     } else {
                         System.out.println("❌ Erreur lors de l'ajout.");
                     }
@@ -177,6 +209,22 @@ public class Main {
                         System.out.println("✅ Enseignant ajouté avec succès !");
                     } else {
                         System.out.println("❌ Erreur lors de l'ajout.");
+                    }
+                    break;
+                case 8: // <-- NOUVELLE OPTION POUR CRÉER UNE CLASSE
+                    System.out.println("\n--- AJOUTER UNE NOUVELLE CLASSE ---");
+                    System.out.print("Nom de la nouvelle classe (ex: INFO-1) : ");
+                    String nouvelleClasse = scanner.nextLine().trim().toUpperCase();
+
+                    if (nouvelleClasse.isEmpty()) {
+                        System.out.println("Le nom de la classe ne peut pas être vide.");
+                        break;
+                    }
+
+                    if (service.ajouterClasse(nouvelleClasse)) {
+                        System.out.println("✅ La classe " + nouvelleClasse + " a été ajoutée avec succès !");
+                    } else {
+                        System.out.println("❌ Impossible d'ajouter cette classe.");
                     }
                     break;
 
