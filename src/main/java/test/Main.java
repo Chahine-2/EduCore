@@ -117,6 +117,9 @@ public class Main {
                     case "24":
                         deleteBareme(scanner, baremeDAO);
                         break;
+                    case "25":
+                        corrigerResultat(scanner, resultatDAO);
+                        break;
                     case "0":
                         running = false;
                         System.out.println("Bye!");
@@ -166,6 +169,7 @@ public class Main {
         System.out.println("22. Show all baremes");
         System.out.println("23. Update bareme");
         System.out.println("24. Delete bareme");
+        System.out.println("25. Corriger resultat (auto-correction)");
         System.out.println("0. Exit");
     }
 
@@ -922,6 +926,37 @@ public class Main {
 
         dao.delete(id);
         System.out.println("✓ Bareme deleted successfully.");
+    }
+
+    /**
+     * Menu helper to trigger auto-correction for a resultat.
+     */
+    private static void corrigerResultat(Scanner scanner, IService<Resultat> dao) {
+        int id;
+        while (true) {
+            System.out.print("Enter resultat id to corriger (auto-correction): ");
+            String idStr = scanner.nextLine();
+            if (ValidationUtil.isValidPositiveInteger(idStr)) {
+                id = Integer.parseInt(idStr);
+                break;
+            }
+            System.out.println("❌ ID must be a positive integer");
+        }
+
+        // The implementation method is specific to ResultatDAOImpl, so we try to cast.
+        boolean success = false;
+        if (dao instanceof ResultatDAOImpl) {
+            success = ((ResultatDAOImpl) dao).corrigerEvaluation(id);
+        } else {
+            // Fallback: create a new DAO instance and call the method
+            success = new ResultatDAOImpl().corrigerEvaluation(id);
+        }
+
+        if (success) {
+            System.out.println("✓ Auto-correction executed for resultat id " + id);
+        } else {
+            System.out.println("✗ Auto-correction failed for resultat id " + id + ". See logs for details.");
+        }
     }
 
     private static Bareme readBaremeData(Scanner scanner, int id, boolean includeId) {
