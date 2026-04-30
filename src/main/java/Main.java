@@ -96,7 +96,7 @@ public class Main {
                 case 2:
                     System.out.println("\n--- AJOUTER UN ETUDIANT ---");
 
-                    // 1. On récupère la liste des classes disponibles
+                    // 1. Vérification des classes disponibles
                     List<String> classesDispo = service.listerToutesLesClasses();
                     if (classesDispo.isEmpty()) {
                         System.out.println("⚠️ Aucune classe n'existe dans le système !");
@@ -104,13 +104,30 @@ public class Main {
                         break;
                     }
 
+                    // 2. Saisie manuelle de TOUS les champs
                     System.out.print("Nom : "); String nom = scanner.nextLine();
                     System.out.print("Prénom : "); String prenom = scanner.nextLine();
+
+                    System.out.print("Âge : ");
+                    int age = 0;
+                    try { age = Integer.parseInt(scanner.nextLine()); }
+                    catch (NumberFormatException e) { System.out.println("⚠️ Âge invalide, mis à 0 par défaut."); }
+
                     System.out.print("Email : "); String email = scanner.nextLine();
+
+                    System.out.print("Numéro de téléphone : ");
+                    int tel = 0;
+                    try { tel = Integer.parseInt(scanner.nextLine()); }
+                    catch (NumberFormatException e) { System.out.println("⚠️ Numéro invalide, mis à 0 par défaut."); }
+
                     System.out.print("Mot de passe : "); String mdp = scanner.nextLine();
                     System.out.print("Numéro Etudiant (ex: ETUD-123) : "); String numEtud = scanner.nextLine();
 
-                    // 2. On affiche les classes pour que l'Admin choisisse
+                    System.out.print("Le compte est-il actif immédiatement ? (O/N) : ");
+                    String repActif = scanner.nextLine().trim().toUpperCase();
+                    boolean statutActif = repActif.equals("O") || repActif.equals("OUI");
+
+                    // 3. Choix de la classe
                     System.out.println("\nChoisissez la classe de l'étudiant :");
                     for (int i = 0; i < classesDispo.size(); i++) {
                         System.out.println((i + 1) + ". " + classesDispo.get(i));
@@ -120,25 +137,26 @@ public class Main {
                     try {
                         choixClasse = Integer.parseInt(scanner.nextLine()) - 1;
                     } catch (NumberFormatException e) {
-                        System.out.println("Choix invalide. Annulation de la création.");
+                        System.out.println("❌ Choix invalide. Annulation de la création.");
                         break;
                     }
 
                     if (choixClasse < 0 || choixClasse >= classesDispo.size()) {
-                        System.out.println("Numéro de classe invalide. Annulation.");
+                        System.out.println("❌ Numéro de classe invalide. Annulation.");
                         break;
                     }
 
                     String classeChoisie = classesDispo.get(choixClasse);
-
                     Role roleEtudiant = new Role(3, "Etudiant");
-                    // On injecte 'classeChoisie' dans l'objet au lieu du "GL-3" statique !
-                    Etudiant nouvelEtudiant = new Etudiant(0, nom, prenom, 20, email, 12345678, mdp, roleEtudiant, numEtud, classeChoisie,true);
 
+                    // 4. Création de l'objet avec les variables saisies (Vérifiez l'ordre selon votre constructeur Etudiant)
+                    Etudiant nouvelEtudiant = new Etudiant(0, nom, prenom, age, email, tel, mdp, roleEtudiant, numEtud,"N/A",true);
+
+                    // 5. Appel au service pour l'insertion en BDD
                     if (service.ajouterEtudiant(nouvelEtudiant)) {
                         System.out.println("✅ Étudiant ajouté avec succès dans la classe " + classeChoisie + " !");
                     } else {
-                        System.out.println("❌ Erreur lors de l'ajout.");
+                        System.out.println("❌ Erreur lors de l'ajout en base de données.");
                     }
                     break;
 
