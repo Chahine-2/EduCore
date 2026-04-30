@@ -37,7 +37,7 @@ public class Main {
 
         if (roleName.equals("Administrateur")) {
             System.out.println("✅ Connexion réussie ! Bienvenue Admin " + user.getPrenom() + ".");
-            afficherMenuAdmin(scanner, service);
+            afficherMenuAdmin(scanner, service, user.getId());
         }
         else if (roleName.equals("Etudiant")) {
             System.out.println("✅ Connexion réussie ! Bienvenue " + user.getPrenom() + ".");
@@ -56,7 +56,7 @@ public class Main {
     }
 
     // --- 3. MENU ADMINISTRATEUR ---
-    private static void afficherMenuAdmin(Scanner scanner, IUtilisateurService service) {
+    private static void afficherMenuAdmin(Scanner scanner, IUtilisateurService service, int monIdAdmin) {
         boolean continuer = true;
 
         while (continuer) {
@@ -135,6 +135,13 @@ public class Main {
                     System.out.println("\n--- SUSPENDRE / ACTIVER UN COMPTE ---");
                     System.out.print("Entrez l'ID de l'utilisateur : ");
                     int idStatut = Integer.parseInt(scanner.nextLine());
+
+                    // --- LA SÉCURITÉ ANTI-LOCKOUT ---
+                    if (idStatut == monIdAdmin) {
+                        System.out.println("❌ ACTION REFUSÉE : Vous ne pouvez pas suspendre votre propre compte !");
+                        break; // On arrête l'action ici
+                    }
+
                     System.out.print("Voulez-vous (1) Activer ou (2) Suspendre ce compte ? : ");
                     int choixStatut = Integer.parseInt(scanner.nextLine());
 
