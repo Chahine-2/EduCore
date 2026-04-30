@@ -69,6 +69,7 @@ public class Main {
             System.out.println("4. Supprimer un utilisateur (DELETE)");
             System.out.println("5. Suspendre / Activer un compte (MÉTIER)");
             System.out.println("6.consulterHistorique");
+            System.out.println("7. Ajouter un enseignant (CREATE)");
             System.out.println("0. Se déconnecter");
             System.out.print("Choix : ");
 
@@ -157,6 +158,27 @@ public class Main {
                 case 6:
                     service.consulterHistoriqueConnexions();
                     break;
+                case 7:
+                    System.out.println("\n--- AJOUTER UN ENSEIGNANT ---");
+                    System.out.print("Nom : "); String nomProf = scanner.nextLine();
+                    System.out.print("Prénom : "); String prenomProf = scanner.nextLine();
+                    System.out.print("Email : "); String emailProf = scanner.nextLine();
+                    System.out.print("Mot de passe : "); String mdpProf = scanner.nextLine();
+                    System.out.print("Spécialité (ex: Informatique) : "); String specialite = scanner.nextLine();
+                    System.out.print("Matricule (ex: PROF-101) : "); String matricule = scanner.nextLine();
+
+                    Role roleProf = new Role(2, "Enseignant");
+
+                    // Création de l'objet (l'âge et le tél sont mis à 30 et 0000 par défaut ici pour l'exemple)
+                    models.Enseignant nouvelEnseignant = new models.Enseignant(0, nomProf, prenomProf, 30, emailProf, 00000000, mdpProf, roleProf, specialite, matricule,true);
+
+                    if (service.ajouterEnseignant(nouvelEnseignant)) {
+                        System.out.println("✅ Enseignant ajouté avec succès !");
+                    } else {
+                        System.out.println("❌ Erreur lors de l'ajout.");
+                    }
+                    break;
+
                 case 0:
                     continuer = false;
                     System.out.println("Déconnexion...");

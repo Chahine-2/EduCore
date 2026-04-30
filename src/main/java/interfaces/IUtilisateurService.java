@@ -9,6 +9,7 @@ public interface IUtilisateurService {
 
     // Opérations CRUD pour l'Administrateur
     boolean ajouterEtudiant(Etudiant etudiant);
+    boolean ajouterEnseignant(models.Enseignant enseignant);
     List<Utilisateur> listerUtilisateurs();
     boolean modifierEmailUtilisateur(int id, String nouvelEmail);
     boolean supprimerUtilisateur(int id);

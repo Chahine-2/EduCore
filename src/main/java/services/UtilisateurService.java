@@ -192,4 +192,50 @@ public class UtilisateurService implements IUtilisateurService {
             e.printStackTrace();
         }
     }
+    @Override
+    public boolean ajouterEnseignant(Enseignant enseignant) {
+        // Hachage du mot de passe
+        String motDePasseSecurise = BCrypt.hashpw(enseignant.getMotDePasse(), BCrypt.gensalt());
+
+        String queryUtilisateur = "INSERT INTO utilisateurs (nom, prenom, age, email, tel, mot_de_passe, role_id, statut_actif) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String queryEnseignant = "INSERT INTO enseignants (utilisateur_id, specialite, matricule) VALUES (?, ?, ?)";
+
+        try {
+            connection.setAutoCommit(false); // Début transaction
+
+            try (PreparedStatement psUser = connection.prepareStatement(queryUtilisateur, Statement.RETURN_GENERATED_KEYS)) {
+                psUser.setString(1, enseignant.getNom());
+                psUser.setString(2, enseignant.getPrenom());
+                psUser.setInt(3, enseignant.getAge());
+                psUser.setString(4, enseignant.getEmail());
+                psUser.setInt(5, enseignant.getTel());
+                psUser.setString(6, motDePasseSecurise);
+                psUser.setInt(7, 2); // 2 = ID du rôle Enseignant dans la BDD
+                psUser.setBoolean(8, true);
+
+                psUser.executeUpdate();
+
+                ResultSet rs = psUser.getGeneratedKeys();
+                if (rs.next()) {
+                    int newUserId = rs.getInt(1);
+
+                    // Insertion dans la table spécifique des enseignants
+                    try (PreparedStatement psEns = connection.prepareStatement(queryEnseignant)) {
+                        psEns.setInt(1, newUserId);
+                        psEns.setString(2, enseignant.getSpecialite()); // ex: Mathématiques
+                        psEns.setString(3, enseignant.getMatricule());  // ex: PROF-2024
+                        psEns.executeUpdate();
+                    }
+                }
+            }
+            connection.commit();
+            return true;
+        } catch (SQLException e) {
+            try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { connection.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+        }
+    }
 }
