@@ -17,4 +17,9 @@ public interface IUtilisateurService {
     // Opération Métier Avancée
     boolean changerStatutCompte(int id, boolean rendreActif);
     void consulterHistoriqueConnexions();
+
+    // --- Fonctionnalités Enseignant (Présences) ---
+    List<String> listerClassesExistantes();
+    List<Utilisateur> listerEtudiantsParClasse(String classe);
+    boolean marquerPresence(int enseignantId, String classe, List<Integer> etudiantsPresents, List<Integer> etudiantsAbsents);
 }

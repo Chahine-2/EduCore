@@ -4,6 +4,7 @@ import models.Role;
 import models.Utilisateur;
 import services.UtilisateurService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -45,7 +46,7 @@ public class Main {
         }
         else if (roleName.equals("Enseignant")) {
             System.out.println("✅ Connexion réussie ! Bienvenue Professeur " + user.getPrenom() + ".");
-            System.out.println("(Le menu enseignant est en cours de développement...)");
+            afficherMenuEnseignant(scanner, service, user);
         }
         else {
             System.out.println("Rôle non reconnu.");
@@ -229,4 +230,86 @@ public class Main {
             }
         }
     }
+    // --- 5. MENU ENSEIGNANT (NOUVEAU) ---
+    private static void afficherMenuEnseignant(Scanner scanner, IUtilisateurService service, Utilisateur enseignant) {
+        boolean continuer = true;
+
+        while (continuer) {
+            System.out.println("\n=======================================");
+            System.out.println("          ESPACE ENSEIGNANT            ");
+            System.out.println("=======================================");
+            System.out.println("1. Faire l'appel (Marquer les présences)");
+            System.out.println("0. Se déconnecter");
+            System.out.print("Choix : ");
+
+            int choix = -1;
+            try {
+                choix = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Veuillez entrer un nombre valide.");
+                continue;
+            }
+
+            switch (choix) {
+                case 1:
+                    System.out.println("\n--- FAIRE L'APPEL ---");
+                    List<String> classes = service.listerClassesExistantes();
+                    if (classes.isEmpty()) {
+                        System.out.println("Aucune classe trouvée.");
+                        break;
+                    }
+
+                    System.out.println("Classes disponibles :");
+                    for (int i = 0; i < classes.size(); i++) {
+                        System.out.println((i + 1) + ". " + classes.get(i));
+                    }
+
+                    System.out.print("Sélectionnez le numéro de la classe : ");
+                    int choixClasse = Integer.parseInt(scanner.nextLine()) - 1;
+
+                    if (choixClasse < 0 || choixClasse >= classes.size()) {
+                        System.out.println("Choix invalide.");
+                        break;
+                    }
+
+                    String classeSelectionnee = classes.get(choixClasse);
+                    List<Utilisateur> etudiants = service.listerEtudiantsParClasse(classeSelectionnee);
+
+                    if (etudiants.isEmpty()) {
+                        System.out.println("Aucun étudiant actif trouvé dans cette classe.");
+                        break;
+                    }
+
+                    List<Integer> presents = new ArrayList<>();
+                    List<Integer> absents = new ArrayList<>();
+
+                    System.out.println("\nAppel pour la classe " + classeSelectionnee + " :");
+                    for (Utilisateur etu : etudiants) {
+                        System.out.print(etu.getPrenom() + " " + etu.getNom() + " est-il/elle présent(e) ? (O/N) : ");
+                        String reponse = scanner.nextLine().trim().toUpperCase();
+
+                        if (reponse.equals("O")) {
+                            presents.add(etu.getId());
+                        } else {
+                            absents.add(etu.getId());
+                        }
+                    }
+
+                    if (service.marquerPresence(enseignant.getId(), classeSelectionnee, presents, absents)) {
+                        System.out.println("✅ L'appel a été enregistré avec succès !");
+                    } else {
+                        System.out.println("❌ Erreur lors de l'enregistrement de l'appel.");
+                    }
+                    break;
+
+                case 0:
+                    continuer = false;
+                    System.out.println("Déconnexion...");
+                    break;
+                default:
+                    System.out.println("Choix invalide.");
+            }
+        }
+    }
+
 }

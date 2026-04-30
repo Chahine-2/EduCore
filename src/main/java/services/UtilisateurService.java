@@ -238,4 +238,88 @@ public class UtilisateurService implements IUtilisateurService {
             try { connection.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
+    @Override
+    public List<String> listerClassesExistantes() {
+        List<String> classes = new ArrayList<>();
+        // On cherche toutes les classes uniques dans la table etudiants
+        String query = "SELECT DISTINCT classe FROM etudiants WHERE classe IS NOT NULL";
+        try (PreparedStatement ps = connection.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                classes.add(rs.getString("classe"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return classes;
+    }
+
+    @Override
+    public List<Utilisateur> listerEtudiantsParClasse(String classe) {
+        List<Utilisateur> etudiants = new ArrayList<>();
+        // On fait une jointure pour récupérer les infos de l'utilisateur ET de l'étudiant
+        String query = "SELECT u.id, u.nom, u.prenom, u.email FROM utilisateurs u " +
+                "JOIN etudiants e ON u.id = e.utilisateur_id " +
+                "WHERE e.classe = ? AND u.statut_actif = true";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, classe);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                // On utilise la classe parente juste pour transporter les données
+                Role roleEtud = new Role(3, "Etudiant");
+                Utilisateur u = new Utilisateur(rs.getInt("id"), rs.getString("nom"), rs.getString("prenom"), 0, rs.getString("email"), 0, "", roleEtud, true) {};
+                etudiants.add(u);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return etudiants;
+    }
+
+    @Override
+    public boolean marquerPresence(int enseignantId, String classe, List<Integer> etudiantsPresents, List<Integer> etudiantsAbsents) {
+        String querySession = "INSERT INTO sessions (classe, enseignant_id) VALUES (?, ?)";
+        String queryPresence = "INSERT INTO presences (session_id, etudiant_id, statut) VALUES (?, ?, ?)";
+
+        try {
+            connection.setAutoCommit(false); // Début de la transaction
+
+            // 1. Créer la session
+            try (PreparedStatement psSession = connection.prepareStatement(querySession, Statement.RETURN_GENERATED_KEYS)) {
+                psSession.setString(1, classe);
+                psSession.setInt(2, enseignantId);
+                psSession.executeUpdate();
+
+                ResultSet rs = psSession.getGeneratedKeys();
+                if (rs.next()) {
+                    int sessionId = rs.getInt(1);
+
+                    // 2. Insérer les présences
+                    try (PreparedStatement psPres = connection.prepareStatement(queryPresence)) {
+                        for (int id : etudiantsPresents) {
+                            psPres.setInt(1, sessionId);
+                            psPres.setInt(2, id);
+                            psPres.setString(3, "Présent");
+                            psPres.addBatch();
+                        }
+                        for (int id : etudiantsAbsents) {
+                            psPres.setInt(1, sessionId);
+                            psPres.setInt(2, id);
+                            psPres.setString(3, "Absent");
+                            psPres.addBatch();
+                        }
+                        psPres.executeBatch(); // Exécuter toutes les insertions d'un coup
+                    }
+                }
+            }
+            connection.commit();
+            return true;
+        } catch (SQLException e) {
+            try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { connection.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+        }
+    }
 }
