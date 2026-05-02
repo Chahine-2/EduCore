@@ -1,23 +1,31 @@
 package models;
 
+import java.time.LocalDate;
+
 public class Chapitre {
     private int id;
     private String titre;
     private String description;
     private int ordre;
     private int dureeMinutes;
-    private boolean estGratuit;
+    private String typeContenu;   // video / texte / pdf / quiz
+    private String urlContenu;
+    private LocalDate dateCreation;
     private int coursId;
 
     public Chapitre() {}
 
-    public Chapitre(String titre, String description, int ordre, int dureeMinutes, boolean estGratuit, int coursId) {
-        this.titre = titre;
-        this.description = description;
-        this.ordre = ordre;
-        this.dureeMinutes = dureeMinutes;
-        this.estGratuit = estGratuit;
-        this.coursId = coursId;
+    public Chapitre(String titre, String description, int ordre,
+                    int dureeMinutes, String typeContenu,
+                    String urlContenu, LocalDate dateCreation, int coursId) {
+        this.titre         = titre;
+        this.description   = description;
+        this.ordre         = ordre;
+        this.dureeMinutes  = dureeMinutes;
+        this.typeContenu   = typeContenu;
+        this.urlContenu    = urlContenu;
+        this.dateCreation  = dateCreation;
+        this.coursId       = coursId;
     }
 
     public int getId() { return id; }
@@ -35,14 +43,29 @@ public class Chapitre {
     public int getDureeMinutes() { return dureeMinutes; }
     public void setDureeMinutes(int dureeMinutes) { this.dureeMinutes = dureeMinutes; }
 
-    public boolean isEstGratuit() { return estGratuit; }
-    public void setEstGratuit(boolean estGratuit) { this.estGratuit = estGratuit; }
+    public String getTypeContenu() { return typeContenu; }
+    public void setTypeContenu(String typeContenu) { this.typeContenu = typeContenu; }
+
+    public String getUrlContenu() { return urlContenu; }
+    public void setUrlContenu(String urlContenu) { this.urlContenu = urlContenu; }
+
+    public LocalDate getDateCreation() { return dateCreation; }
+    public void setDateCreation(LocalDate dateCreation) { this.dateCreation = dateCreation; }
 
     public int getCoursId() { return coursId; }
     public void setCoursId(int coursId) { this.coursId = coursId; }
 
     @Override
     public String toString() {
-        return "Chapitre{id=" + id + ", titre='" + titre + "', ordre=" + ordre + ", coursId=" + coursId + "}\n";
+        return "Chapitre{" +
+                "id=" + id +
+                ", titre='" + titre + "'" +
+                ", ordre=" + ordre +
+                ", type='" + typeContenu + "'" +
+                ", duree=" + dureeMinutes + "min" +
+                ", url='" + urlContenu + "'" +
+                ", dateCreation=" + dateCreation +
+                ", coursId=" + coursId +
+                "}\n";
     }
 }
