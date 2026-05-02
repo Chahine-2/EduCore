@@ -10,18 +10,23 @@
 
     <!-- HAUT - INFORMATIONS DU COURS -->
     <top>
-        <VBox spacing="15" style="-fx-padding: 15; -fx-background-color: #ecf0f1; -fx-border-bottom: 2 solid #bdc3c7;">
-            <Label fx:id="lblTitre" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
-            <HBox spacing="20">
-                <Label fx:id="lblNiveau"/>
-                <Label fx:id="lblCategorie"/>
-                <Label fx:id="lblDuree"/>
-                <Label fx:id="lblCertifiant"/>
+        <VBox spacing="15" style="-fx-padding: 15; -fx-background-color: #2c3e50; -fx-border-bottom: 2 solid #bdc3c7;">
+            <HBox spacing="15">
+                <Label fx:id="lblTitre" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="← Retour" onAction="#retour"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 8 15;"/>
+            </HBox>
+            <HBox spacing="20" style="-fx-text-fill: white;">
+                <Label fx:id="lblNiveau" style="-fx-text-fill: white;"/>
+                <Label fx:id="lblCategorie" style="-fx-text-fill: white;"/>
+                <Label fx:id="lblDuree" style="-fx-text-fill: white;"/>
+                <Label fx:id="lblCertifiant" style="-fx-text-fill: white;"/>
             </HBox>
             <Separator/>
-            <Label text="Description:" style="-fx-font-weight: bold;"/>
+            <Label text="Description:" style="-fx-font-weight: bold; -fx-text-fill: white;"/>
             <TextArea fx:id="taDescription" wrapText="true" prefRowCount="2" editable="false"/>
-            <Label text="Objectifs:" style="-fx-font-weight: bold;"/>
+            <Label text="Objectifs:" style="-fx-font-weight: bold; -fx-text-fill: white;"/>
             <TextArea fx:id="taObjectifs" wrapText="true" prefRowCount="2" editable="false"/>
         </VBox>
     </top>

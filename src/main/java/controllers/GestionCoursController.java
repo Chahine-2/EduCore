@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import models.Cours;
 import services.ServiceCours;
 
@@ -15,21 +16,23 @@ public class GestionCoursController {
 
     // fx:id du FXML → doivent correspondre exactement
     @FXML private TextField tfTitre;
-    @FXML private TextArea taDescription;   // était TextField, doit être TextArea
-    @FXML private TextArea taObjectifs;     // manquait
-    @FXML private Spinner<Integer> spinDuree; // était TextField tfDuree
+    @FXML private TextArea taDescription;
+    @FXML private TextArea taObjectifs;
+    @FXML private Spinner<Integer> spinDuree;
     @FXML private ComboBox<String> cbNiveau;
     @FXML private ComboBox<String> cbCategorie;
-    @FXML private CheckBox cbCertifiant;    // était chkCertifiant
-    @FXML private DatePicker dpDebut;       // manquait
-    @FXML private DatePicker dpFin;         // manquait
-    @FXML private TableView<Cours> tableViewCours;  // manquait
+    @FXML private CheckBox cbCertifiant;
+    @FXML private DatePicker dpDebut;
+    @FXML private DatePicker dpFin;
+    @FXML private TableView<Cours> tableViewCours;
     @FXML private TableColumn<Cours, Integer> colId;
     @FXML private TableColumn<Cours, String> colTitre;
     @FXML private TableColumn<Cours, String> colNiveau;
     @FXML private TableColumn<Cours, String> colCategorie;
     @FXML private TableColumn<Cours, Integer> colDuree;
     @FXML private TableColumn<Cours, Boolean> colCertifiant;
+
+    private Cours coursEnEdition = null;  // Stocke le cours en cours de modification
 
     @FXML
     void initialize() {
@@ -55,6 +58,9 @@ public class GestionCoursController {
         colCertifiant.setCellValueFactory(
                 new javafx.scene.control.cell.PropertyValueFactory<>("estCertifiant"));
 
+        // Ajouter listener pour sélectionner une ligne dans la table
+        tableViewCours.setOnMouseClicked(this::selectCoursInTable);
+
         // Charger les cours dans la table
         refreshTable();
     }
@@ -64,10 +70,52 @@ public class GestionCoursController {
         tableViewCours.getItems().setAll(sc.getAll());
     }
 
+    // Remplir le formulaire avec les données du cours sélectionné
+    private void selectCoursInTable(MouseEvent event) {
+        Cours selected = tableViewCours.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            coursEnEdition = selected;
+            remplirFormulaire(selected);
+        }
+    }
+
+    // Remplir le formulaire avec les données d'un cours
+    private void remplirFormulaire(Cours c) {
+        tfTitre.setText(c.getTitre());
+        taDescription.setText(c.getDescription());
+        taObjectifs.setText(c.getObjectifs());
+        spinDuree.getValueFactory().setValue(c.getDureeHeures());
+        cbNiveau.setValue(c.getNiveau());
+        cbCategorie.setValue(c.getCategorie());
+        cbCertifiant.setSelected(c.isEstCertifiant());
+        dpDebut.setValue(c.getDateDebut());
+        dpFin.setValue(c.getDateFin());
+    }
+
+    // Nettoyer/réinitialiser le formulaire
+    private void clearForm() {
+        tfTitre.clear();
+        taDescription.clear();
+        taObjectifs.clear();
+        spinDuree.getValueFactory().setValue(1);
+        cbNiveau.setValue(null);
+        cbCategorie.setValue(null);
+        cbCertifiant.setSelected(false);
+        dpDebut.setValue(LocalDate.now());
+        dpFin.setValue(LocalDate.now().plusMonths(6));
+        tableViewCours.getSelectionModel().clearSelection();
+        coursEnEdition = null;
+    }
+
     @FXML
     public void ajouterCours(ActionEvent event) {
-        ServiceCours sc = new ServiceCours();
+        // Valider les champs obligatoires
+        if (tfTitre.getText().isEmpty() || cbNiveau.getValue() == null || cbCategorie.getValue() == null) {
+            showAlert("Erreur", "Veuillez remplir tous les champs obligatoires!", Alert.AlertType.WARNING);
+            return;
+        }
 
+        ServiceCours sc = new ServiceCours();
         Cours c = new Cours();
         c.setTitre(tfTitre.getText());
         c.setDescription(taDescription.getText());
@@ -81,8 +129,10 @@ public class GestionCoursController {
 
         sc.add(c);
         refreshTable();
+        clearForm();
+        showAlert("Succès", "✅ Cours ajouté avec succès!", Alert.AlertType.INFORMATION);
 
-        // Passer à la scène 2
+        // Passer à la scène des détails
         try {
             DetailsCoursController.cours = c;
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DetailsCours.fxml"));
@@ -95,16 +145,86 @@ public class GestionCoursController {
 
     @FXML
     public void modifierCours(ActionEvent event) {
-        // TODO
+        if (coursEnEdition == null) {
+            showAlert("Erreur", "❌ Veuillez sélectionner un cours à modifier!", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Valider les champs
+        if (tfTitre.getText().isEmpty() || cbNiveau.getValue() == null || cbCategorie.getValue() == null) {
+            showAlert("Erreur", "Veuillez remplir tous les champs obligatoires!", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Mettre à jour les données du cours
+        coursEnEdition.setTitre(tfTitre.getText());
+        coursEnEdition.setDescription(taDescription.getText());
+        coursEnEdition.setObjectifs(taObjectifs.getText());
+        coursEnEdition.setDureeHeures(spinDuree.getValue());
+        coursEnEdition.setNiveau(cbNiveau.getValue());
+        coursEnEdition.setCategorie(cbCategorie.getValue());
+        coursEnEdition.setEstCertifiant(cbCertifiant.isSelected());
+        coursEnEdition.setDateDebut(dpDebut.getValue());
+        coursEnEdition.setDateFin(dpFin.getValue());
+
+        // Persister en base de données
+        ServiceCours sc = new ServiceCours();
+        sc.update(coursEnEdition);
+
+        refreshTable();
+        clearForm();
+        showAlert("Succès", "✅ Cours modifié avec succès!", Alert.AlertType.INFORMATION);
     }
 
     @FXML
     public void supprimerCours(ActionEvent event) {
-        // TODO
+        Cours selected = tableViewCours.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert("Erreur", "❌ Veuillez sélectionner un cours à supprimer!", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Demander confirmation
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Supprimer le cours");
+        alert.setContentText("Êtes-vous sûr de vouloir supprimer le cours \"" + selected.getTitre() + "\" ?");
+        
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            ServiceCours sc = new ServiceCours();
+            sc.delete(selected);
+            refreshTable();
+            clearForm();
+            showAlert("Succès", "✅ Cours supprimé avec succès!", Alert.AlertType.INFORMATION);
+        }
     }
 
     @FXML
     public void afficherDetails(ActionEvent event) {
-        // TODO
+        Cours selected = tableViewCours.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert("Erreur", "❌ Veuillez sélectionner un cours!", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Passer le cours sélectionné au contrôleur des détails
+        DetailsCoursController.cours = selected;
+        
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DetailsCours.fxml"));
+            Parent root = loader.load();
+            tableViewCours.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.out.println("Erreur lors du chargement: " + e.getMessage());
+        }
+    }
+
+    // Afficher une alerte
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

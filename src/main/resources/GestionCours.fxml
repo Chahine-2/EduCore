@@ -90,7 +90,6 @@
                 </HBox>
 
                 <!-- Boutons -->
-                <!-- Boutons -->
                 <HBox spacing="10">
                     <Button fx:id="btnAjouter" text="Ajouter"
                             onAction="#ajouterCours"
@@ -111,8 +110,10 @@
 
     <!-- BAS - BARRE DE STATUT -->
     <bottom>
-        <HBox style="-fx-background-color: #ecf0f1; -fx-padding: 10; -fx-border-top: 1 solid #bdc3c7;">
-            <Label text="Prêt" HBox.hgrow="ALWAYS"/>
+        <HBox spacing="15" style="-fx-background-color: #ecf0f1; -fx-padding: 10; -fx-border-top: 1 solid #bdc3c7;">
+            <Label text="✅ Prêt" HBox.hgrow="ALWAYS"/>
+            <Separator orientation="VERTICAL"/>
+            <Label text="👆 Sélectionnez un cours dans le tableau pour le modifier ou voir les détails"/>
         </HBox>
     </bottom>
 </BorderPane>

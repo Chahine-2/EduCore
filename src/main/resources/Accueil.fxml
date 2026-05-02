@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AccueilController">
+
+    <!-- HAUT -->
+    <top>
+        <VBox style="-fx-background-color: #1a5276; -fx-padding: 20;">
+            <Label text="🎓 Bienvenue sur EduCore"
+                   style="-fx-text-fill: white; -fx-font-size: 26; -fx-font-weight: bold;"/>
+            <Label text="Choisissez votre catégorie et votre niveau pour commencer"
+                   style="-fx-text-fill: #aed6f1; -fx-font-size: 14;"/>
+        </VBox>
+    </top>
+
+    <!-- CENTER -->
+    <center>
+        <VBox spacing="40"
+              alignment="CENTER"
+              style="-fx-padding: 60; -fx-background-color: #f4f6f7;">
+
+            <!-- Titre -->
+            <Label text="📋 Sélectionnez vos préférences"
+                   style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+            <!-- Catégorie -->
+            <VBox spacing="10" alignment="CENTER">
+                <Label text="🏷️ Catégorie :"
+                       style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                <HBox spacing="20" alignment="CENTER">
+                    <ToggleButton fx:id="tbInfo"
+                                  text="💻 Informatique"
+                                  onAction="#selectionnerCategorie"
+                                  style="-fx-font-size: 14; -fx-padding: 15 30; -fx-background-radius: 10;"/>
+                    <ToggleButton fx:id="tbMeca"
+                                  text="⚙️ Mécanique"
+                                  onAction="#selectionnerCategorie"
+                                  style="-fx-font-size: 14; -fx-padding: 15 30; -fx-background-radius: 10;"/>
+                    <ToggleButton fx:id="tbElec"
+                                  text="⚡ Électrique"
+                                  onAction="#selectionnerCategorie"
+                                  style="-fx-font-size: 14; -fx-padding: 15 30; -fx-background-radius: 10;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Niveau -->
+            <VBox spacing="10" alignment="CENTER">
+                <Label text="📊 Niveau :"
+                       style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                <HBox spacing="20" alignment="CENTER">
+                    <ToggleButton fx:id="tbDebutant"
+                                  text="🟢 Débutant"
+                                  onAction="#selectionnerNiveau"
+                                  style="-fx-font-size: 14; -fx-padding: 15 30; -fx-background-radius: 10;"/>
+                    <ToggleButton fx:id="tbIntermediaire"
+                                  text="🟡 Intermédiaire"
+                                  onAction="#selectionnerNiveau"
+                                  style="-fx-font-size: 14; -fx-padding: 15 30; -fx-background-radius: 10;"/>
+                    <ToggleButton fx:id="tbAvance"
+                                  text="🔴 Avancé"
+                                  onAction="#selectionnerNiveau"
+                                  style="-fx-font-size: 14; -fx-padding: 15 30; -fx-background-radius: 10;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Résumé sélection -->
+            <VBox spacing="5" alignment="CENTER"
+                  style="-fx-background-color: #eaf4fb; -fx-padding: 15; -fx-background-radius: 10;">
+                <Label fx:id="lblSelection"
+                       text="Aucune sélection"
+                       style="-fx-font-size: 14; -fx-text-fill: #1a5276;"/>
+            </VBox>
+
+            <!-- Bouton continuer -->
+            <Button fx:id="btnContinuer"
+                    text="▶ Voir mes cours"
+                    onAction="#continuer"
+                    disable="true"
+                    style="-fx-background-color: #1a5276; -fx-text-fill: white;
+                           -fx-font-size: 16; -fx-padding: 15 50;
+                           -fx-background-radius: 10; -fx-font-weight: bold;"/>
+        </VBox>
+    </center>
+
+    <!-- BAS -->
+    <bottom>
+        <HBox style="-fx-background-color: #d6eaf8; -fx-padding: 10;">
+            <Label text="EduCore — Plateforme d'apprentissage"
+                   style="-fx-text-fill: #1a5276;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
+
