@@ -13,6 +13,7 @@ public class Cours {
     private boolean estCertifiant;
     private LocalDate dateDebut;
     private LocalDate dateFin;
+    private boolean visible = true;  // Visible par défaut
 
     public Cours() {}
 
@@ -60,6 +61,9 @@ public class Cours {
 
     public LocalDate getDateFin() { return dateFin; }
     public void setDateFin(LocalDate dateFin) { this.dateFin = dateFin; }
+
+    public boolean isVisible() { return visible; }
+    public void setVisible(boolean visible) { this.visible = visible; }
 
     @Override
     public String toString() {

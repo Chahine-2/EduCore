@@ -12,6 +12,7 @@ public class Chapitre {
     private String urlContenu;
     private LocalDate dateCreation;
     private int coursId;
+    private boolean visible = true;  // Visible par défaut
 
     public Chapitre() {}
 
@@ -54,6 +55,9 @@ public class Chapitre {
 
     public int getCoursId() { return coursId; }
     public void setCoursId(int coursId) { this.coursId = coursId; }
+
+    public boolean isVisible() { return visible; }
+    public void setVisible(boolean visible) { this.visible = visible; }
 
     @Override
     public String toString() {

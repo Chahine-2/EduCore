@@ -45,6 +45,7 @@
                     <TableColumn fx:id="colTitreChap" prefWidth="250" text="Titre"/>
                     <TableColumn fx:id="colType" prefWidth="100" text="Type"/>
                     <TableColumn fx:id="colDureeMin" prefWidth="100" text="Durée (min)"/>
+                    <TableColumn fx:id="colVisible" prefWidth="80" text="Visible"/>
                 </columns>
             </TableView>
         </VBox>

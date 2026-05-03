@@ -14,7 +14,7 @@ public class ServiceChapitre implements IService<Chapitre> {
 
     @Override
     public void add(Chapitre c) {
-        String req = "INSERT INTO chapitre (titre, description, ordre, duree_minutes, type_contenu, url_contenu, date_creation, cours_id) VALUES (?,?,?,?,?,?,?,?)";
+        String req = "INSERT INTO chapitre (titre, description, ordre, duree_minutes, type_contenu, url_contenu, date_creation, cours_id, visible) VALUES (?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setString(1, c.getTitre());
@@ -23,18 +23,21 @@ public class ServiceChapitre implements IService<Chapitre> {
             ps.setInt(4, c.getDureeMinutes());
             ps.setString(5, c.getTypeContenu());
             ps.setString(6, c.getUrlContenu());
-            ps.setDate(7, Date.valueOf(c.getDateCreation()));
+            // Protection contre dateCreation null
+            java.time.LocalDate dateCreation = c.getDateCreation() != null ? c.getDateCreation() : java.time.LocalDate.now();
+            ps.setDate(7, Date.valueOf(dateCreation));
             ps.setInt(8, c.getCoursId());
+            ps.setBoolean(9, c.isVisible());
             ps.executeUpdate();
             System.out.println("Chapitre ajouté ✅");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erreur add chapitre : " + e.getMessage());
         }
     }
 
     @Override
     public void update(Chapitre c) {
-        String req = "UPDATE chapitre SET titre=?, description=?, ordre=?, duree_minutes=?, type_contenu=?, url_contenu=?, date_creation=?, cours_id=? WHERE id=?";
+        String req = "UPDATE chapitre SET titre=?, description=?, ordre=?, duree_minutes=?, type_contenu=?, url_contenu=?, date_creation=?, cours_id=?, visible=? WHERE id=?";
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setString(1, c.getTitre());
@@ -43,13 +46,16 @@ public class ServiceChapitre implements IService<Chapitre> {
             ps.setInt(4, c.getDureeMinutes());
             ps.setString(5, c.getTypeContenu());
             ps.setString(6, c.getUrlContenu());
-            ps.setDate(7, Date.valueOf(c.getDateCreation()));
+            // Protection contre dateCreation null
+            java.time.LocalDate dateCreation = c.getDateCreation() != null ? c.getDateCreation() : java.time.LocalDate.now();
+            ps.setDate(7, Date.valueOf(dateCreation));
             ps.setInt(8, c.getCoursId());
-            ps.setInt(9, c.getId());
+            ps.setBoolean(9, c.isVisible());
+            ps.setInt(10, c.getId());
             ps.executeUpdate();
             System.out.println("Chapitre modifié ✅");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erreur update chapitre : " + e.getMessage());
         }
     }
 
@@ -120,6 +126,11 @@ public class ServiceChapitre implements IService<Chapitre> {
         if (rs.getDate("date_creation") != null)
             c.setDateCreation(rs.getDate("date_creation").toLocalDate());
         c.setCoursId(rs.getInt("cours_id"));
+        try {
+            c.setVisible(rs.getBoolean("visible"));  // ✅ Lire la visibilité depuis la BDD
+        } catch (SQLException ignored) {
+            c.setVisible(true); // Par défaut visible si la colonne n'existe pas
+        }
         return c;
     }
 }

@@ -87,6 +87,7 @@
                 <!-- Certifiant -->
                 <HBox spacing="15">
                     <CheckBox fx:id="cbCertifiant" text="Cours certifiant"/>
+                    <CheckBox fx:id="cbVisible" text="Visible pour les étudiants"/>
                 </HBox>
 
                 <!-- Boutons -->
