@@ -22,10 +22,7 @@ public class GestionCoursController {
     @FXML private ComboBox<String> cbNiveau;
     @FXML private ComboBox<String> cbCategorie;
     @FXML private CheckBox cbCertifiant;
-<<<<<<< HEAD
-=======
     @FXML private CheckBox cbVisible;
->>>>>>> 1b03cb2 (interface5)
     @FXML private DatePicker dpDebut;
     @FXML private DatePicker dpFin;
     @FXML private TableView<Cours> tableViewCours;
@@ -37,10 +34,7 @@ public class GestionCoursController {
     @FXML private TableColumn<Cours, Boolean> colCertifiant;
 
     private Cours coursEnEdition = null;  // Stocke le cours en cours de modification
-<<<<<<< HEAD
-=======
     private int lastSelectedIndex = -1;  // Pour permettre la désélection
->>>>>>> 1b03cb2 (interface5)
 
     @FXML
     void initialize() {
@@ -80,12 +74,6 @@ public class GestionCoursController {
 
     // Remplir le formulaire avec les données du cours sélectionné
     private void selectCoursInTable(MouseEvent event) {
-<<<<<<< HEAD
-        Cours selected = tableViewCours.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            coursEnEdition = selected;
-            remplirFormulaire(selected);
-=======
         int selectedIndex = tableViewCours.getSelectionModel().getSelectedIndex();
         Cours selected = tableViewCours.getSelectionModel().getSelectedItem();
         
@@ -98,7 +86,6 @@ public class GestionCoursController {
             coursEnEdition = selected;
             remplirFormulaire(selected);
             lastSelectedIndex = selectedIndex;
->>>>>>> 1b03cb2 (interface5)
         }
     }
 
@@ -111,10 +98,7 @@ public class GestionCoursController {
         cbNiveau.setValue(c.getNiveau());
         cbCategorie.setValue(c.getCategorie());
         cbCertifiant.setSelected(c.isEstCertifiant());
-<<<<<<< HEAD
-=======
         cbVisible.setSelected(c.isVisible());
->>>>>>> 1b03cb2 (interface5)
         dpDebut.setValue(c.getDateDebut());
         dpFin.setValue(c.getDateFin());
     }
@@ -128,10 +112,7 @@ public class GestionCoursController {
         cbNiveau.setValue(null);
         cbCategorie.setValue(null);
         cbCertifiant.setSelected(false);
-<<<<<<< HEAD
-=======
         cbVisible.setSelected(true);
->>>>>>> 1b03cb2 (interface5)
         dpDebut.setValue(LocalDate.now());
         dpFin.setValue(LocalDate.now().plusMonths(6));
         tableViewCours.getSelectionModel().clearSelection();
@@ -196,10 +177,7 @@ public class GestionCoursController {
         coursEnEdition.setNiveau(cbNiveau.getValue());
         coursEnEdition.setCategorie(cbCategorie.getValue());
         coursEnEdition.setEstCertifiant(cbCertifiant.isSelected());
-<<<<<<< HEAD
-=======
         coursEnEdition.setVisible(cbVisible.isSelected());
->>>>>>> 1b03cb2 (interface5)
         coursEnEdition.setDateDebut(dpDebut.getValue());
         coursEnEdition.setDateFin(dpFin.getValue());
 

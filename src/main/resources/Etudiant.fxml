@@ -3,113 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<<<<<<< HEAD
-
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.EtudiantController">
-
-    <!-- HAUT - TITRE -->
-    <top>
-        <VBox style="-fx-background-color: #1a5276; -fx-padding: 15;">
-            <Label text="🎓 Espace Étudiant — EduCore"
-                   style="-fx-text-fill: white; -fx-font-size: 22; -fx-font-weight: bold;"/>
-            <Label text="Consultez les cours disponibles"
-                   style="-fx-text-fill: #aed6f1; -fx-font-size: 13;"/>
-        </VBox>
-    </top>
-
-    <!-- CENTER -->
-    <center>
-        <SplitPane dividerPositions="0.55">
-
-            <!-- GAUCHE - LISTE DES COURS -->
-            <VBox spacing="10" style="-fx-padding: 15;">
-                <Label text="📚 Cours disponibles"
-                       style="-fx-font-size: 15; -fx-font-weight: bold;"/>
-
-                <!-- Barre de recherche + filtres -->
-                <HBox spacing="10">
-                    <TextField fx:id="tfRecherche"
-                               promptText="🔍 Rechercher un cours..."
-                               prefWidth="200"
-                               onKeyReleased="#rechercherCours"/>
-                    <ComboBox fx:id="cbFiltreNiveau"
-                              promptText="Niveau"
-                              prefWidth="130"
-                              onAction="#filtrerParNiveau"/>
-                    <ComboBox fx:id="cbFiltreCategorie"
-                              promptText="Catégorie"
-                              prefWidth="130"
-                              onAction="#filtrerParCategorie"/>
-                    <Button text="🔄 Reset"
-                            onAction="#resetFiltres"
-                            style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 6 12;"/>
-                </HBox>
-
-                <!-- Tableau des cours -->
-                <TableView fx:id="tableViewCours" VBox.vgrow="ALWAYS">
-                    <columns>
-                        <TableColumn fx:id="colTitre"     prefWidth="200" text="Titre"/>
-                        <TableColumn fx:id="colNiveau"    prefWidth="100" text="Niveau"/>
-                        <TableColumn fx:id="colCategorie" prefWidth="110" text="Catégorie"/>
-                        <TableColumn fx:id="colDuree"     prefWidth="80"  text="Durée (h)"/>
-                        <TableColumn fx:id="colCertif"    prefWidth="80"  text="Certifiant"/>
-                    </columns>
-                </TableView>
-
-                <!-- Compteur -->
-                <Label fx:id="lblCompteur"
-                       style="-fx-font-size: 12; -fx-text-fill: #7f8c8d;"/>
-            </VBox>
-
-            <!-- DROITE - DETAILS DU COURS SÉLECTIONNÉ -->
-            <VBox spacing="12" style="-fx-padding: 15;">
-                <Label text="📖 Détails du cours"
-                       style="-fx-font-size: 15; -fx-font-weight: bold;"/>
-
-                <!-- Infos cours -->
-                <VBox spacing="5"
-                      style="-fx-background-color: #eaf4fb; -fx-padding: 12; -fx-background-radius: 8;">
-                    <Label fx:id="lblTitre"
-                           style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #1a5276;"/>
-                    <HBox spacing="15">
-                        <Label fx:id="lblNiveau"    style="-fx-text-fill: #2980b9;"/>
-                        <Label fx:id="lblCategorie" style="-fx-text-fill: #8e44ad;"/>
-                        <Label fx:id="lblDuree"     style="-fx-text-fill: #27ae60;"/>
-                        <Label fx:id="lblCertifiant"/>
-                    </HBox>
-                    <Separator/>
-                    <Label text="Description :" style="-fx-font-weight: bold;"/>
-                    <TextArea fx:id="taDescription"
-                              wrapText="true"
-                              prefRowCount="3"
-                              editable="false"
-                              style="-fx-background-color: transparent;"/>
-                    <Label text="Objectifs :" style="-fx-font-weight: bold;"/>
-                    <TextArea fx:id="taObjectifs"
-                              wrapText="true"
-                              prefRowCount="3"
-                              editable="false"
-                              style="-fx-background-color: transparent;"/>
-                </VBox>
-
-                <!-- Chapitres du cours -->
-                <Label text="📑 Chapitres"
-                       style="-fx-font-size: 13; -fx-font-weight: bold;"/>
-                <TableView fx:id="tableViewChapitres" VBox.vgrow="ALWAYS">
-                    <columns>
-                        <TableColumn fx:id="colOrdre"    prefWidth="50"  text="N°"/>
-                        <TableColumn fx:id="colChapTitre" prefWidth="180" text="Titre"/>
-                        <TableColumn fx:id="colType"     prefWidth="80"  text="Type"/>
-                        <TableColumn fx:id="colDureeMin" prefWidth="80"  text="Durée (min)"/>
-                    </columns>
-                </TableView>
-                <Label fx:id="lblTotalChapitres"
-                       style="-fx-font-size: 12; -fx-text-fill: #7f8c8d;"/>
-            </VBox>
-        </SplitPane>
-=======
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
@@ -175,24 +68,10 @@
 
             </VBox>
         </ScrollPane>
->>>>>>> 1b03cb2 (interface5)
     </center>
 
     <!-- BAS -->
     <bottom>
-<<<<<<< HEAD
-        <HBox spacing="15"
-              style="-fx-background-color: #eaf4fb; -fx-padding: 10; -fx-border-top: 1 solid #aed6f1;">
-            <Button text="← Retour"
-                    onAction="#retour"
-                    style="-fx-background-color: #1a5276; -fx-text-fill: white;
-                       -fx-padding: 8 20; -fx-background-radius: 8;"/>
-            <Label text="🎓 Mode Étudiant — Consultation uniquement"
-                   style="-fx-text-fill: #1a5276; -fx-font-weight: bold;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label text="👆 Cliquez sur un cours pour voir ses chapitres"
-                   style="-fx-text-fill: #7f8c8d;"/>
-=======
         <HBox alignment="CENTER_LEFT" spacing="15"
               style="-fx-background-color: #ffffff; -fx-padding: 15 30; -fx-border-color: #e9ecef; -fx-border-width: 1 0 0 0;">
             <Button text="← Retour à l'accueil"
@@ -200,12 +79,7 @@
                     style="-fx-background-color: transparent; -fx-text-fill: #0d6efd; -fx-font-weight: bold; -fx-cursor: hand;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label text="Mode Étudiant" style="-fx-text-fill: #adb5bd;"/>
->>>>>>> 1b03cb2 (interface5)
         </HBox>
     </bottom>
 
 </BorderPane>
-<<<<<<< HEAD
-
-=======
->>>>>>> 1b03cb2 (interface5)

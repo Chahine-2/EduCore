@@ -8,26 +8,22 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-<<<<<<< HEAD
-=======
+
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
->>>>>>> 1b03cb2 (interface5)
 import models.Chapitre;
 import models.Cours;
 import services.ServiceChapitre;
 
 import java.io.File;
 import java.io.IOException;
-<<<<<<< HEAD
-=======
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
->>>>>>> 1b03cb2 (interface5)
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -47,10 +43,7 @@ public class DetailsCoursController {
     @FXML private TableColumn<Chapitre, String> colTitreChap;
     @FXML private TableColumn<Chapitre, String> colType;
     @FXML private TableColumn<Chapitre, Integer> colDureeMin;
-<<<<<<< HEAD
-=======
     @FXML private TableColumn<Chapitre, Boolean> colVisible;
->>>>>>> 1b03cb2 (interface5)
     @FXML private Label lblTotalChapitres;
     @FXML private Button btnAjouterChapitre;
     @FXML private Button btnModifierChapitre;
@@ -70,8 +63,6 @@ public class DetailsCoursController {
                 new javafx.scene.control.cell.PropertyValueFactory<>("typeContenu"));
         colDureeMin.setCellValueFactory(
                 new javafx.scene.control.cell.PropertyValueFactory<>("dureeMinutes"));
-<<<<<<< HEAD
-=======
         colVisible.setCellValueFactory(
                 new javafx.scene.control.cell.PropertyValueFactory<>("visible"));
 
@@ -88,7 +79,6 @@ public class DetailsCoursController {
                 }
             }
         });
->>>>>>> 1b03cb2 (interface5)
 
         // Ajouter listener pour sélectionner une ligne
         tableViewChapitres.setOnMouseClicked(this::selectChapitreInTable);
@@ -133,10 +123,6 @@ public class DetailsCoursController {
         dialog.setTitle("Ajouter un Chapitre");
         dialog.setHeaderText("Créer un nouveau chapitre");
 
-<<<<<<< HEAD
-        // Créer les contrôles
-=======
->>>>>>> 1b03cb2 (interface5)
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -156,10 +142,6 @@ public class DetailsCoursController {
         ComboBox<String> cbType = new ComboBox<>();
         cbType.getItems().addAll("video", "texte", "pdf", "quiz");
 
-<<<<<<< HEAD
-        TextField tfUrl = new TextField();
-        tfUrl.setPromptText("URL du contenu");
-=======
         // ── Champ fichier / URL ─────────────────────────────────
         TextField tfUrl = new TextField();
         tfUrl.setPromptText("URL ou chemin du fichier");
@@ -184,7 +166,6 @@ public class DetailsCoursController {
         });
 
         HBox hboxFichier = new HBox(8, tfUrl, btnParcourir);
->>>>>>> 1b03cb2 (interface5)
 
         grid.add(new Label("Titre:"), 0, 0);
         grid.add(tfTitre, 1, 0);
@@ -196,17 +177,12 @@ public class DetailsCoursController {
         grid.add(spinDuree, 1, 3);
         grid.add(new Label("Type:"), 0, 4);
         grid.add(cbType, 1, 4);
-<<<<<<< HEAD
-        grid.add(new Label("URL:"), 0, 5);
-        grid.add(tfUrl, 1, 5);
-=======
         grid.add(new Label("Fichier / URL:"), 0, 5);
         grid.add(hboxFichier, 1, 5);
         grid.add(new Label("Visible pour les étudiants:"), 0, 6);
         CheckBox cbVisible = new CheckBox("Oui");
         cbVisible.setSelected(true);
         grid.add(cbVisible, 1, 6);
->>>>>>> 1b03cb2 (interface5)
 
         dialog.getDialogPane().setContent(grid);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -224,10 +200,7 @@ public class DetailsCoursController {
                 ch.setDureeMinutes(spinDuree.getValue());
                 ch.setTypeContenu(cbType.getValue());
                 ch.setUrlContenu(tfUrl.getText());
-<<<<<<< HEAD
-=======
                 ch.setVisible(cbVisible.isSelected());
->>>>>>> 1b03cb2 (interface5)
                 ch.setDateCreation(LocalDate.now());
                 ch.setCoursId(cours.getId());
                 return ch;
@@ -239,10 +212,7 @@ public class DetailsCoursController {
         if (result.isPresent()) {
             serviceChapitre.add(result.get());
             chargerChapitres();
-<<<<<<< HEAD
-=======
             tableViewChapitres.refresh();  // Force le rafraîchissement de l'affichage
->>>>>>> 1b03cb2 (interface5)
             showAlert("Succès", "✅ Chapitre ajouté avec succès!", Alert.AlertType.INFORMATION);
         }
     }
@@ -258,10 +228,6 @@ public class DetailsCoursController {
         dialog.setTitle("Modifier Chapitre");
         dialog.setHeaderText("Modifier : " + chapitreEnEdition.getTitre());
 
-<<<<<<< HEAD
-        // Créer les contrôles avec les valeurs existantes
-=======
->>>>>>> 1b03cb2 (interface5)
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -279,9 +245,6 @@ public class DetailsCoursController {
         cbType.getItems().addAll("video", "texte", "pdf", "quiz");
         cbType.setValue(chapitreEnEdition.getTypeContenu());
 
-<<<<<<< HEAD
-        TextField tfUrl = new TextField(chapitreEnEdition.getUrlContenu());
-=======
         // ── Champ fichier / URL ─────────────────────────────────
         TextField tfUrl = new TextField(
             chapitreEnEdition.getUrlContenu() != null ? chapitreEnEdition.getUrlContenu() : "");
@@ -305,7 +268,6 @@ public class DetailsCoursController {
         });
 
         HBox hboxFichier = new HBox(8, tfUrl, btnParcourir);
->>>>>>> 1b03cb2 (interface5)
 
         grid.add(new Label("Titre:"), 0, 0);
         grid.add(tfTitre, 1, 0);
@@ -317,17 +279,12 @@ public class DetailsCoursController {
         grid.add(spinDuree, 1, 3);
         grid.add(new Label("Type:"), 0, 4);
         grid.add(cbType, 1, 4);
-<<<<<<< HEAD
-        grid.add(new Label("URL:"), 0, 5);
-        grid.add(tfUrl, 1, 5);
-=======
         grid.add(new Label("Fichier / URL:"), 0, 5);
         grid.add(hboxFichier, 1, 5);
         grid.add(new Label("Visible pour les étudiants:"), 0, 6);
         CheckBox cbVisible = new CheckBox("Oui");
         cbVisible.setSelected(chapitreEnEdition.isVisible());
         grid.add(cbVisible, 1, 6);
->>>>>>> 1b03cb2 (interface5)
 
         dialog.getDialogPane().setContent(grid);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -344,10 +301,7 @@ public class DetailsCoursController {
                 chapitreEnEdition.setDureeMinutes(spinDuree.getValue());
                 chapitreEnEdition.setTypeContenu(cbType.getValue());
                 chapitreEnEdition.setUrlContenu(tfUrl.getText());
-<<<<<<< HEAD
-=======
                 chapitreEnEdition.setVisible(cbVisible.isSelected());
->>>>>>> 1b03cb2 (interface5)
                 return chapitreEnEdition;
             }
             return null;
@@ -356,12 +310,8 @@ public class DetailsCoursController {
         Optional<Chapitre> result = dialog.showAndWait();
         if (result.isPresent()) {
             serviceChapitre.update(result.get());
-<<<<<<< HEAD
-            chargerChapitres();
-=======
             // Mettre à jour l'item dans la table directement sans recharger
             tableViewChapitres.refresh();  // Rafraîchit l'affichage de tous les items
->>>>>>> 1b03cb2 (interface5)
             chapitreEnEdition = null;
             tableViewChapitres.getSelectionModel().clearSelection();
             showAlert("Succès", "✅ Chapitre modifié avec succès!", Alert.AlertType.INFORMATION);
@@ -384,10 +334,7 @@ public class DetailsCoursController {
         if (alert.showAndWait().get() == ButtonType.OK) {
             serviceChapitre.delete(selected);
             chargerChapitres();
-<<<<<<< HEAD
-=======
             tableViewChapitres.refresh();
->>>>>>> 1b03cb2 (interface5)
             chapitreEnEdition = null;
             tableViewChapitres.getSelectionModel().clearSelection();
             showAlert("Succès", "✅ Chapitre supprimé avec succès!", Alert.AlertType.INFORMATION);
@@ -412,8 +359,6 @@ public class DetailsCoursController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-<<<<<<< HEAD
-=======
 
     // ── FileChooser : ouvrir la boîte de sélection de fichier ───
     private File ouvrirFileChooser() {
@@ -454,5 +399,4 @@ public class DetailsCoursController {
         int idx = nomFichier.lastIndexOf('.');
         return idx >= 0 ? nomFichier.substring(idx + 1) : "";
     }
->>>>>>> 1b03cb2 (interface5)
 }

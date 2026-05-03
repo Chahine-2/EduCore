@@ -17,21 +17,6 @@ public class MainFx extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-<<<<<<< HEAD
-        try {
-            // 👇 Écran d'accueil par défaut
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
-            // Pour tester directement:
-            // - Enseignant (Gestion) → "/GestionCours.fxml"
-            // - Étudiant             → "/Etudiant.fxml"
-            // - Accueil              → "/Accueil.fxml" ← DÉFAUT
-
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("EduCore - Plateforme d'Apprentissage");
-=======
-
         // ── Fenêtre de choix du rôle ────────────
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("EduCore");
@@ -56,7 +41,6 @@ public class MainFx extends Application {
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setTitle("EduCore");
->>>>>>> 1b03cb2 (interface5)
             primaryStage.setMaximized(true);
             primaryStage.show();
         } catch (IOException e) {
