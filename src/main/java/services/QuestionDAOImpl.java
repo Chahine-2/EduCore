@@ -109,5 +109,49 @@ public class QuestionDAOImpl implements IService<Question> {
 
         return questions;
     }
+
+    /** Questions belonging to one evaluation, stable order by id. */
+    public List<Question> findByEvaluationId(int evaluationId) {
+        List<Question> questions = new ArrayList<>();
+        String req = "SELECT * FROM question WHERE evaluation_id = ? ORDER BY id ASC";
+        try {
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
+            ps.setInt(1, evaluationId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Question question = new Question();
+                question.setId(rs.getInt("id"));
+                question.setTexte(rs.getString("texte"));
+                question.setType(QuestionType.fromDbValue(rs.getString("type")));
+                question.setPoints(rs.getFloat("points"));
+                question.setEvaluationId(rs.getInt("evaluation_id"));
+                questions.add(question);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return questions;
+    }
+
+    /** Insert and return generated primary key, or -1 on failure. */
+    public int insertAndGetId(Question question) {
+        String req = "INSERT INTO question (texte, type, points, evaluation_id) VALUES (?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = MyDataBase.getInstance().getConnection()
+                    .prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, question.getTexte());
+            ps.setString(2, question.getType().getDbValue());
+            ps.setFloat(3, question.getPoints());
+            ps.setInt(4, question.getEvaluationId());
+            ps.executeUpdate();
+            ResultSet keys = ps.getGeneratedKeys();
+            if (keys.next()) {
+                return keys.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return -1;
+    }
 }
 

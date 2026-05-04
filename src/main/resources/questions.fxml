@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:id="root"
+            fx:controller="controllers.QuestionsController"
+            styleClass="root-questions"
+            stylesheets="/styles/evaluation-management.css,/styles/questions-management.css"
+            prefWidth="960" prefHeight="760">
+
+    <left>
+        <Region styleClass="q-sidebar"/>
+    </left>
+
+    <top>
+        <VBox spacing="0">
+            <HBox styleClass="q-header" alignment="CENTER_LEFT" spacing="20">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Questions Management" styleClass="q-title"/>
+                    <Label fx:id="evaluationTitleLabel" text="Evaluation" styleClass="q-eval-name"/>
+                    <Label text="Build your questionnaire: MCQ options, true/false, or open text."
+                           wrapText="true" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+                </VBox>
+                <Button text="Evaluations" styleClass="btn-q-ghost" onAction="#handleClose"/>
+            </HBox>
+            <HBox styleClass="q-toolbar" alignment="CENTER_LEFT" spacing="14">
+                <Button fx:id="addQuestionBtn" text="+ Add question" styleClass="btn-q-primary" onAction="#handleAddQuestion"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="questionCountLabel" text="0 questions" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <StackPane style="-fx-background-color: transparent;">
+            <ScrollPane fitToWidth="true" styleClass="q-scroll" hbarPolicy="NEVER">
+                <VBox fx:id="questionsContainer" styleClass="questions-list"/>
+            </ScrollPane>
+            <Label fx:id="emptyLabel"
+                   text="No questions yet. Use Add question to create your first item."
+                   styleClass="empty-questions"
+                   visible="true"
+                   StackPane.alignment="CENTER"/>
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox styleClass="q-footer" alignment="CENTER_LEFT">
+            <Label fx:id="statusLabel" text="Ready" styleClass="footer-status footer-status-ok"/>
+        </HBox>
+    </bottom>
+</BorderPane>

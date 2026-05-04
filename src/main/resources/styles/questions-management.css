@@ -1,0 +1,210 @@
+/* Questions Management — matches EDUCORE admin style */
+
+.root-questions {
+    -fx-font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #f1f5f9;
+}
+
+.q-sidebar {
+    -fx-background-color: #0f172a;
+    -fx-min-width: 4px;
+    -fx-max-width: 4px;
+}
+
+.q-header {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 20 28 18 28;
+}
+
+.q-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0f172a;
+}
+
+.q-eval-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #4338ca;
+    -fx-padding: 6 0 0 0;
+}
+
+.q-toolbar {
+    -fx-padding: 14 28;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.root-questions .button.btn-q-primary {
+    -fx-padding: 10 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-background-color: #4f46e5;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+}
+
+.root-questions .button.btn-q-primary:hover {
+    -fx-background-color: #4338ca;
+}
+
+.root-questions .button.btn-q-ghost {
+    -fx-padding: 10 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #475569;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+}
+
+.root-questions .button.btn-q-ghost:hover {
+    -fx-background-color: #f8fafc;
+}
+
+.q-scroll {
+    -fx-background-color: transparent;
+    -fx-padding: 24 28 28 28;
+}
+
+.q-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.questions-list {
+    -fx-spacing: 12;
+}
+
+.question-titled-pane {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.05), 14, 0, 0, 1);
+}
+
+.question-titled-pane > .title {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 8 8 0 0;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 12 14;
+}
+
+.question-titled-pane > .title > .text {
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+    -fx-text-fill: #0f172a;
+}
+
+.question-titled-pane > *.content {
+    -fx-border-width: 0;
+    -fx-background-color: #ffffff;
+    -fx-padding: 16 18 18 18;
+}
+
+.q-meta-row {
+    -fx-spacing: 10;
+    -fx-padding: 0 0 12 0;
+}
+
+.q-body-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #334155;
+    -fx-wrap-text: true;
+}
+
+.badge-type {
+    -fx-padding: 3 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 4;
+}
+
+.badge-qcm {
+    -fx-background-color: #dbeafe;
+    -fx-text-fill: #1e40af;
+}
+
+.badge-vf {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #92400e;
+}
+
+.badge-texte {
+    -fx-background-color: #ede9fe;
+    -fx-text-fill: #5b21b6;
+}
+
+.badge-points {
+    -fx-padding: 3 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #475569;
+    -fx-background-radius: 4;
+}
+
+.q-section-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #64748b;
+    -fx-padding: 8 0 6 0;
+}
+
+.answer-row {
+    -fx-padding: 8 12;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-border-color: #e2e8f0;
+    -fx-background-color: #fafafa;
+}
+
+.answer-row-correct {
+    -fx-background-color: #ecfdf5;
+    -fx-border-color: #6ee7b7;
+}
+
+.answer-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #334155;
+}
+
+.badge-correct {
+    -fx-padding: 2 8;
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-background-color: #22c55e;
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+}
+
+.q-actions {
+    -fx-spacing: 8;
+}
+
+.empty-questions {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 14px;
+    -fx-padding: 48;
+    -fx-wrap-text: true;
+    -fx-max-width: 420;
+}
+
+.q-footer {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 10 28;
+}

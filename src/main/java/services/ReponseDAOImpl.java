@@ -102,5 +102,37 @@ public class ReponseDAOImpl implements IService<Reponse> {
 
         return reponses;
     }
+
+    public List<Reponse> findByQuestionId(int questionId) {
+        List<Reponse> reponses = new ArrayList<>();
+        String req = "SELECT * FROM reponse WHERE question_id = ? ORDER BY id ASC";
+        try {
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
+            ps.setInt(1, questionId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Reponse reponse = new Reponse();
+                reponse.setId(rs.getInt("id"));
+                reponse.setTexte(rs.getString("texte"));
+                reponse.setEstCorrect(rs.getBoolean("est_correct"));
+                reponse.setQuestionId(rs.getInt("question_id"));
+                reponses.add(reponse);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return reponses;
+    }
+
+    public void deleteByQuestionId(int questionId) {
+        String req = "DELETE FROM reponse WHERE question_id = ?";
+        try {
+            PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
+            ps.setInt(1, questionId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
 

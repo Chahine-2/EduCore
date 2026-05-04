@@ -4,9 +4,14 @@ import interfaces.IService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
 import models.Evaluation;
 import services.EvaluationDAOImpl;
@@ -507,11 +512,26 @@ public class EvaluationController {
     }
 
     private void handleManageQuestions(Evaluation evaluation) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Manage questions");
-        alert.setHeaderText(evaluation.getTitre());
-        alert.setContentText("Question management screen is not enabled in this build.");
-        alert.showAndWait();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/questions.fxml"));
+            Parent root = loader.load();
+            QuestionsController controller = loader.getController();
+            controller.setEvaluation(evaluation);
+            Stage stage = new Stage();
+            stage.setTitle("Questions — " + evaluation.getTitre());
+            stage.setScene(new Scene(root, 980, 760));
+            stage.setMinWidth(720);
+            stage.setMinHeight(520);
+            if (evaluationTable.getScene() != null && evaluationTable.getScene().getWindow() != null) {
+                stage.initOwner(evaluationTable.getScene().getWindow());
+                stage.initModality(Modality.WINDOW_MODAL);
+            }
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not open questions: " + e.getMessage());
+        }
     }
 
     private void loadAllEvaluations() {
