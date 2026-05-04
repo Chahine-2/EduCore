@@ -25,6 +25,9 @@ import java.util.Optional;
  */
 public class QuestionsController {
 
+    private static final String VF_LABEL_VRAI = "Vrai";
+    private static final String VF_LABEL_FAUX = "Faux";
+
     @FXML private BorderPane root;
     @FXML private Label evaluationTitleLabel;
     @FXML private Label questionCountLabel;
@@ -73,7 +76,7 @@ public class QuestionsController {
         emptyLabel.setManaged(questions.isEmpty());
 
         for (Question q : questions) {
-            List<Reponse> reps = q.getType() == QuestionType.QCM
+            List<Reponse> reps = (q.getType() == QuestionType.QCM || q.getType() == QuestionType.VRAI_FAUX)
                     ? reponseDAO.findByQuestionId(q.getId())
                     : List.of();
             questionsContainer.getChildren().add(buildQuestionCard(q, reps));
@@ -170,6 +173,36 @@ public class QuestionsController {
                 list.getChildren().add(row);
             }
             body.getChildren().addAll(sec, list);
+        } else if (q.getType() == QuestionType.VRAI_FAUX) {
+            Label sec = new Label("Vrai / Faux");
+            sec.getStyleClass().add("q-section-label");
+            VBox list = new VBox(8);
+            if (reponses.isEmpty() || reponses.size() < 2) {
+                Label emptyAns = new Label("Open Edit and save to create the “Vrai” and “Faux” options and mark the correct one.");
+                emptyAns.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
+                emptyAns.setWrapText(true);
+                list.getChildren().add(emptyAns);
+            }
+            for (Reponse r : orderVraiFaux(reponses)) {
+                HBox row = new HBox(10);
+                row.setAlignment(Pos.CENTER_LEFT);
+                row.getStyleClass().add("answer-row");
+                if (r.isEstCorrect()) {
+                    row.getStyleClass().add("answer-row-correct");
+                }
+                Label txt = new Label(r.getTexte());
+                txt.getStyleClass().add("answer-text");
+                txt.setWrapText(true);
+                HBox.setHgrow(txt, Priority.ALWAYS);
+                row.getChildren().add(txt);
+                if (r.isEstCorrect()) {
+                    Label ok = new Label("Correct");
+                    ok.getStyleClass().add("badge-correct");
+                    row.getChildren().add(ok);
+                }
+                list.getChildren().add(row);
+            }
+            body.getChildren().addAll(sec, list);
         }
 
         pane.setContent(body);
@@ -206,6 +239,34 @@ public class QuestionsController {
             case VRAI_FAUX -> "Vrai / Faux";
             case TEXTE_LIBRE -> "Texte libre";
         };
+    }
+
+    /** Puts Vrai before Faux for a stable list order in the UI. */
+    private static List<Reponse> orderVraiFaux(List<Reponse> reps) {
+        if (reps == null || reps.isEmpty()) {
+            return List.of();
+        }
+        List<Reponse> copy = new ArrayList<>(reps);
+        copy.sort((a, b) -> {
+            int oa = orderKey(a.getTexte());
+            int ob = orderKey(b.getTexte());
+            return Integer.compare(oa, ob);
+        });
+        return copy;
+    }
+
+    private static int orderKey(String texte) {
+        if (texte == null) {
+            return 2;
+        }
+        String t = texte.trim();
+        if (t.equalsIgnoreCase(VF_LABEL_VRAI)) {
+            return 0;
+        }
+        if (t.equalsIgnoreCase(VF_LABEL_FAUX)) {
+            return 1;
+        }
+        return 2;
     }
 
     private void deleteQuestion(Question q) {
@@ -296,6 +357,21 @@ public class QuestionsController {
         VBox answerList = new VBox(6);
         List<AnswerRow> answerRows = new ArrayList<>();
 
+        ToggleGroup vfGroup = new ToggleGroup();
+        RadioButton rbVrai = new RadioButton(VF_LABEL_VRAI);
+        RadioButton rbFaux = new RadioButton(VF_LABEL_FAUX);
+        rbVrai.setToggleGroup(vfGroup);
+        rbFaux.setToggleGroup(vfGroup);
+        HBox vfRow = new HBox(20, rbVrai, rbFaux);
+        vfRow.setAlignment(Pos.CENTER_LEFT);
+        VBox vfSection = new VBox(8);
+        Label vfTitle = new Label("Correct answer (Vrai / Faux)");
+        vfTitle.getStyleClass().add("q-section-label");
+        Label vfHint = new Label("Same pattern as QCM: two fixed choices (Vrai and Faux) are stored; choose which one is correct.");
+        vfHint.setWrapText(true);
+        vfHint.setStyle("-fx-text-fill: #64748b; -fx-font-size: 12px;");
+        vfSection.getChildren().addAll(vfTitle, vfRow, vfHint);
+
         Runnable refillForQcm = () -> {
             answerList.getChildren().clear();
             answerRows.clear();
@@ -315,6 +391,24 @@ public class QuestionsController {
             }
         };
 
+        Runnable refillForVf = () -> {
+            vfGroup.selectToggle(null);
+            if (existing != null && existing.getType() == QuestionType.VRAI_FAUX) {
+                List<Reponse> reps = reponseDAO.findByQuestionId(existing.getId());
+                Reponse rVrai = findReponseByLabel(reps, VF_LABEL_VRAI);
+                Reponse rFaux = findReponseByLabel(reps, VF_LABEL_FAUX);
+                if (rVrai != null && rVrai.isEstCorrect()) {
+                    vfGroup.selectToggle(rbVrai);
+                } else if (rFaux != null && rFaux.isEstCorrect()) {
+                    vfGroup.selectToggle(rbFaux);
+                } else {
+                    vfGroup.selectToggle(rbVrai);
+                }
+            } else {
+                vfGroup.selectToggle(rbVrai);
+            }
+        };
+
         Button addOptionBtn = new Button("+ Add option");
         addOptionBtn.getStyleClass().add("btn-q-ghost");
         addOptionBtn.setOnAction(e -> addAnswerRow(answerList, answerRows, "", false));
@@ -323,15 +417,24 @@ public class QuestionsController {
 
         Runnable updateAnswerVisibility = () -> {
             boolean qcm = typeCombo.getValue() == QuestionType.QCM;
+            boolean vf = typeCombo.getValue() == QuestionType.VRAI_FAUX;
             answerSection.setManaged(qcm);
             answerSection.setVisible(qcm);
+            vfSection.setManaged(vf);
+            vfSection.setVisible(vf);
             if (qcm) {
                 refillForQcm.run();
+            }
+            if (vf) {
+                refillForVf.run();
             }
         };
 
         typeCombo.valueProperty().addListener((o, a, b) -> updateAnswerVisibility.run());
         updateAnswerVisibility.run();
+
+        StackPane answerStack = new StackPane();
+        answerStack.getChildren().addAll(answerSection, vfSection);
 
         GridPane grid = new GridPane();
         grid.setHgap(12);
@@ -342,7 +445,7 @@ public class QuestionsController {
         grid.add(typeCombo, 1, 1);
         grid.add(new Label("Points"), 0, 2);
         grid.add(pointsField, 1, 2);
-        grid.add(answerSection, 0, 3, 2, 1);
+        grid.add(answerStack, 0, 3, 2, 1);
 
         ColumnConstraints c0 = new ColumnConstraints();
         c0.setPercentWidth(18);
@@ -356,17 +459,30 @@ public class QuestionsController {
         Button ok = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
         ok.setText("Save");
         ok.addEventFilter(javafx.event.ActionEvent.ACTION, ev -> {
-            if (!validateQuestionForm(textArea, pointsField, typeCombo.getValue(), answerRows)) {
+            if (!validateQuestionForm(textArea, pointsField, typeCombo.getValue(), answerRows, vfGroup)) {
                 ev.consume();
             }
         });
 
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            persistQuestion(existing, textArea.getText(), typeCombo.getValue(), parsePoints(pointsField.getText()), answerRows);
+            persistQuestion(existing, textArea.getText(), typeCombo.getValue(), parsePoints(pointsField.getText()),
+                    answerRows, vfGroup, rbVrai);
             refreshQuestions();
             setFooterStatus(existing == null ? "Question created." : "Question updated.", true);
         }
+    }
+
+    private static Reponse findReponseByLabel(List<Reponse> reps, String label) {
+        if (reps == null) {
+            return null;
+        }
+        for (Reponse r : reps) {
+            if (r.getTexte() != null && r.getTexte().trim().equalsIgnoreCase(label)) {
+                return r;
+            }
+        }
+        return null;
     }
 
     private void addAnswerRow(VBox answerList, List<AnswerRow> models, String initialText, boolean correct) {
@@ -390,7 +506,7 @@ public class QuestionsController {
     }
 
     private boolean validateQuestionForm(TextArea textArea, TextField pointsField, QuestionType type,
-                                         List<AnswerRow> answerRows) {
+                                         List<AnswerRow> answerRows, ToggleGroup vfGroup) {
         if (textArea.getText() == null || textArea.getText().trim().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Question text is required.");
             return false;
@@ -426,6 +542,10 @@ public class QuestionsController {
                 return false;
             }
         }
+        if (type == QuestionType.VRAI_FAUX && (vfGroup == null || vfGroup.getSelectedToggle() == null)) {
+            showAlert(Alert.AlertType.ERROR, "Select whether Vrai or Faux is the correct answer.");
+            return false;
+        }
         return true;
     }
 
@@ -433,7 +553,8 @@ public class QuestionsController {
         return Float.parseFloat(s.trim());
     }
 
-    private void persistQuestion(Question existing, String texte, QuestionType type, float points, List<AnswerRow> rows) {
+    private void persistQuestion(Question existing, String texte, QuestionType type, float points, List<AnswerRow> rows,
+                                 ToggleGroup vfGroup, RadioButton rbVrai) {
         if (existing == null) {
             Question q = new Question(texte.trim(), type, points, evaluation.getId());
             if (type == QuestionType.QCM) {
@@ -449,6 +570,13 @@ public class QuestionsController {
                     }
                     reponseDAO.add(new Reponse(t, row.correct.isSelected(), id));
                 }
+            } else if (type == QuestionType.VRAI_FAUX) {
+                int id = questionDAO.insertAndGetId(q);
+                if (id <= 0) {
+                    showAlert(Alert.AlertType.ERROR, "Could not save the question.");
+                    return;
+                }
+                addVraiFauxReponses(id, vfGroup, rbVrai);
             } else {
                 questionDAO.add(q);
             }
@@ -464,8 +592,16 @@ public class QuestionsController {
                     }
                     reponseDAO.add(new Reponse(t, row.correct.isSelected(), existing.getId()));
                 }
+            } else if (type == QuestionType.VRAI_FAUX) {
+                addVraiFauxReponses(existing.getId(), vfGroup, rbVrai);
             }
         }
+    }
+
+    private void addVraiFauxReponses(int questionId, ToggleGroup vfGroup, RadioButton rbVrai) {
+        boolean vraiCorrect = vfGroup.getSelectedToggle() == rbVrai;
+        reponseDAO.add(new Reponse(VF_LABEL_VRAI, vraiCorrect, questionId));
+        reponseDAO.add(new Reponse(VF_LABEL_FAUX, !vraiCorrect, questionId));
     }
 
     private static VBox wrapDialogContent(VBox inner) {

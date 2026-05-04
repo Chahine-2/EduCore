@@ -122,6 +122,63 @@ public class ResultatDAOImpl implements IService<Resultat> {
         return resultats;
     }
 
+    /** Insert and return generated id, or -1 on failure. */
+    public int insertAndGetId(Resultat resultat) {
+        String req = "INSERT INTO resultat (student_id, evaluation_id, score, date_passage) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = MyDataBase.getInstance().getConnection()
+                .prepareStatement(req, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, resultat.getStudentId());
+            ps.setInt(2, resultat.getEvaluationId());
+            if (resultat.getScore() == null) {
+                ps.setNull(3, java.sql.Types.FLOAT);
+            } else {
+                ps.setFloat(3, resultat.getScore());
+            }
+            ps.setTimestamp(4, resultat.getDatePassage() == null ? null : Timestamp.valueOf(resultat.getDatePassage()));
+            ps.executeUpdate();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    return keys.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return -1;
+    }
+
+    /** Most recent attempt for this student on this evaluation, or null. */
+    public Resultat findLatestByStudentAndEvaluation(int studentId, int evaluationId) {
+        String req = "SELECT * FROM resultat WHERE student_id = ? AND evaluation_id = ? ORDER BY date_passage DESC, id DESC LIMIT 1";
+        try (PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req)) {
+            ps.setInt(1, studentId);
+            ps.setInt(2, evaluationId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    private static Resultat mapRow(ResultSet rs) throws SQLException {
+        Resultat resultat = new Resultat();
+        resultat.setId(rs.getInt("id"));
+        resultat.setStudentId(rs.getInt("student_id"));
+        resultat.setEvaluationId(rs.getInt("evaluation_id"));
+        java.sql.Timestamp ts = rs.getTimestamp("date_passage");
+        resultat.setDatePassage(ts == null ? null : ts.toLocalDateTime());
+        float s = rs.getFloat("score");
+        if (rs.wasNull()) {
+            resultat.setScore(null);
+        } else {
+            resultat.setScore(s);
+        }
+        return resultat;
+    }
 
     public boolean corrigerEvaluation(int resultatId) {
         Connection conn = null;

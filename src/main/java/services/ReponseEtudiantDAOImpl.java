@@ -115,5 +115,28 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
 
         return reponsesEtudiant;
     }
+
+    public List<ReponseEtudiant> findByResultatId(int resultatId) {
+        List<ReponseEtudiant> list = new ArrayList<>();
+        String req = "SELECT * FROM reponse_etudiant WHERE resultat_id = ? ORDER BY id ASC";
+        try (PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req)) {
+            ps.setInt(1, resultatId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ReponseEtudiant re = new ReponseEtudiant();
+                    re.setId(rs.getInt("id"));
+                    re.setResultatId(rs.getInt("resultat_id"));
+                    re.setQuestionId(rs.getInt("question_id"));
+                    int reponseId = rs.getInt("reponse_id");
+                    re.setReponseId(rs.wasNull() ? null : reponseId);
+                    re.setTexteLibre(rs.getString("texte_libre"));
+                    list.add(re);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
 }
 

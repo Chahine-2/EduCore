@@ -14,10 +14,10 @@ public class MainFx extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/evaluation.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/student-portal.fxml"));
             var scene = new Scene(loader.load());
 
-            stage.setTitle("EDUCORE · Evaluations");
+            stage.setTitle("EDUCORE · Student");
             stage.setMinWidth(880);
             stage.setMinHeight(600);
             stage.setWidth(1480);

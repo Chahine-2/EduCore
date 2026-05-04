@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:id="root"
+            fx:controller="controllers.StudentQuizController"
+            styleClass="root-quiz quiz-root quiz-live"
+            stylesheets="/styles/student-quiz.css"
+            prefWidth="900" prefHeight="780">
+
+    <top>
+        <VBox spacing="0">
+            <HBox styleClass="quiz-top-bar" alignment="CENTER_LEFT" spacing="24">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label fx:id="titleLabel" text="Evaluation" styleClass="quiz-title"/>
+                    <Label fx:id="subtitleLabel" text="Read each question carefully." styleClass="quiz-sub" wrapText="true"/>
+                </VBox>
+                <VBox styleClass="quiz-timer-wrap">
+                    <Label fx:id="timerCaptionLabel" text="TIME LEFT" styleClass="quiz-timer-label"/>
+                    <Label fx:id="timerLabel" text="60:00" styleClass="quiz-timer"/>
+                </VBox>
+            </HBox>
+            <HBox styleClass="quiz-progress-strip" alignment="CENTER_LEFT">
+                <ProgressBar fx:id="progressBar" progress="0" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="quiz-progress-bar"/>
+                <Label fx:id="progressLabel" text="Question 1 / 1" styleClass="quiz-progress-text"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="quiz-scroll" fx:id="quizScroll" hbarPolicy="NEVER">
+            <VBox fx:id="questionHost" alignment="TOP_CENTER" spacing="0"/>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox styleClass="quiz-footer" alignment="CENTER">
+            <Button fx:id="prevBtn" text="Previous" onAction="#handlePrevious" styleClass="quiz-nav quiz-nav-secondary"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="navHintLabel" text="" styleClass="quiz-hint"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button fx:id="nextBtn" text="Next" onAction="#handleNext" styleClass="quiz-nav quiz-nav-secondary"/>
+                <Button fx:id="submitBtn" text="Submit quiz" onAction="#handleSubmitClick" styleClass="quiz-nav quiz-submit"/>
+            </HBox>
+        </HBox>
+    </bottom>
+</BorderPane>

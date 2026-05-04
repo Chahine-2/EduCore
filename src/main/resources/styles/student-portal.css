@@ -1,0 +1,230 @@
+/* Student portal — available quizzes (professional LMS learner view) */
+
+.portal-root {
+    -fx-font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: linear-gradient(to bottom right, #e0e7ff 0%, #fae8ff 35%, #ccfbf1 70%, #fef3c7 100%);
+}
+
+.portal-hero {
+    -fx-background-color: linear-gradient(to right, rgba(255, 255, 255, 0.92), rgba(224, 231, 255, 0.55));
+    -fx-padding: 28 36 20 36;
+    -fx-border-color: rgba(99, 102, 241, 0.25);
+    -fx-border-width: 0 0 1 0;
+    -fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.12), 20, 0, 0, 2);
+}
+
+.portal-brand {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 0.12em;
+    -fx-text-fill: #6366f1;
+}
+
+.portal-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #0f172a;
+    -fx-padding: 6 0 0 0;
+}
+
+.portal-sub {
+    -fx-font-size: 14px;
+    -fx-text-fill: #64748b;
+    -fx-padding: 8 0 0 0;
+    -fx-max-width: 520;
+    -fx-wrap-text: true;
+}
+
+.portal-id-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #475569;
+}
+
+.portal-id-field {
+    -fx-padding: 10 14;
+    -fx-background-radius: 8;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-background-color: #f8fafc;
+    -fx-font-feature-settings: "tnum";
+}
+
+.portal-id-field:focused {
+    -fx-border-color: #6366f1;
+    -fx-background-color: #ffffff;
+}
+
+.portal-toolbar {
+    -fx-background-color: rgba(255, 255, 255, 0.75);
+    -fx-padding: 12 36;
+    -fx-border-color: rgba(99, 102, 241, 0.2);
+    -fx-border-width: 0 0 1 0;
+    -fx-spacing: 16;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.portal-count {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #334155;
+}
+
+.portal-main {
+    -fx-padding: 28 36 36 36;
+    -fx-background-color: transparent;
+}
+
+.portal-scroll {
+    -fx-background-color: transparent;
+}
+
+.portal-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.portal-flow {
+    -fx-padding: 4 0 40 0;
+}
+
+.portal-card {
+    -fx-background-color: rgba(255, 255, 255, 0.88);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(148, 163, 184, 0.45);
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 22 24;
+    -fx-pref-width: 340;
+    -fx-max-width: 380;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.08), 18, 0, 0, 2);
+}
+
+.portal-card-done {
+    -fx-background-color: rgba(254, 252, 232, 0.92);
+    -fx-border-color: rgba(234, 179, 8, 0.35);
+}
+
+.portal-card:hover {
+    -fx-border-color: #a5b4fc;
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.22), 22, 0, 0, 3);
+}
+
+.portal-card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0f172a;
+    -fx-wrap-text: true;
+}
+
+.portal-card-desc {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748b;
+    -fx-wrap-text: true;
+    -fx-padding: 8 0 0 0;
+}
+
+.portal-meta {
+    -fx-font-size: 12px;
+    -fx-text-fill: #94a3b8;
+    -fx-padding: 12 0 0 0;
+}
+
+.portal-badge-live {
+    -fx-padding: 4 10;
+    -fx-background-color: linear-gradient(to right, #bbf7d0, #a7f3d0);
+    -fx-text-fill: #14532d;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 999;
+}
+
+.portal-badge-done {
+    -fx-padding: 4 10;
+    -fx-background-color: linear-gradient(to right, #fde68a, #fcd34d);
+    -fx-text-fill: #78350f;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 999;
+}
+
+.root-portal .button.portal-start {
+    -fx-padding: 12 20;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-background-color: #4f46e5;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+}
+
+.root-portal .button.portal-start:hover {
+    -fx-background-color: #4338ca;
+}
+
+.root-portal .button.portal-view {
+    -fx-padding: 12 20;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-text-fill: #4338ca;
+    -fx-border-color: #6366f1;
+    -fx-border-radius: 8;
+    -fx-border-width: 2;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+}
+
+.root-portal .button.portal-view:hover {
+    -fx-background-color: #eef2ff;
+}
+
+.root-portal .button.portal-ghost {
+    -fx-padding: 8 16;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-background-color: transparent;
+    -fx-text-fill: #475569;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+}
+
+.root-portal .button.portal-ghost:hover {
+    -fx-background-color: #f8fafc;
+}
+
+.portal-footer {
+    -fx-background-color: rgba(255, 255, 255, 0.82);
+    -fx-border-color: rgba(99, 102, 241, 0.2);
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 14 36;
+}
+
+.portal-footer-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: #94a3b8;
+}
+
+.portal-empty {
+    -fx-font-size: 15px;
+    -fx-text-fill: #64748b;
+    -fx-padding: 48;
+    -fx-wrap-text: true;
+    -fx-max-width: 420;
+    -fx-text-alignment: center;
+}
+
+.hyperlink.portal-link {
+    -fx-border-width: 0;
+    -fx-text-fill: #4f46e5;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.hyperlink.portal-link:hover {
+    -fx-text-fill: #4338ca;
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:id="root"
+            fx:controller="controllers.StudentPortalController"
+            styleClass="root-portal portal-root"
+            stylesheets="/styles/student-portal.css"
+            prefWidth="1100" prefHeight="820">
+
+    <top>
+        <VBox spacing="0">
+            <HBox styleClass="portal-hero" alignment="TOP_LEFT" spacing="24">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="EDUCORE" styleClass="portal-brand"/>
+                    <Label text="Your assessments" styleClass="portal-title"/>
+                    <Label text="Quizzes that are open right now appear below. Enter your student ID once, then start an assessment."
+                           styleClass="portal-sub" wrapText="true"/>
+                </VBox>
+                <VBox spacing="6" alignment="CENTER_RIGHT">
+                    <Label text="Student ID" styleClass="portal-id-label"/>
+                    <TextField fx:id="studentIdField" promptText="e.g. 1" prefWidth="120" styleClass="portal-id-field"/>
+                </VBox>
+            </HBox>
+            <HBox styleClass="portal-toolbar">
+                <Label fx:id="countLabel" text="0 assessments available" styleClass="portal-count"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Refresh list" onAction="#handleRefresh" styleClass="portal-ghost"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <StackPane styleClass="portal-main" VBox.vgrow="ALWAYS">
+            <ScrollPane fitToWidth="true" styleClass="portal-scroll" hbarPolicy="NEVER">
+                <FlowPane fx:id="cardsFlow" styleClass="portal-flow" hgap="20" vgap="20" alignment="TOP_CENTER"/>
+            </ScrollPane>
+            <Label fx:id="emptyLabel"
+                   text="There are no active assessments at the moment. Check back when your instructor opens a quiz window."
+                   styleClass="portal-empty"
+                   visible="false"
+                   StackPane.alignment="CENTER"/>
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox styleClass="portal-footer" alignment="CENTER_LEFT" spacing="20">
+            <Label text="Need to manage courses or evaluations?" styleClass="portal-footer-text"/>
+            <Hyperlink text="Open administration" onAction="#handleOpenAdmin" styleClass="portal-link"/>
+        </HBox>
+    </bottom>
+</BorderPane>
