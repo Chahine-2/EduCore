@@ -17,7 +17,9 @@ public class MainFx extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/evaluation.fxml"));
             var scene = new Scene(loader.load());
 
-            stage.setTitle("EDUCORE - Gestion des Évaluations");
+            stage.setTitle("EDUCORE · Evaluations");
+            stage.setMinWidth(880);
+            stage.setMinHeight(600);
             stage.setWidth(1480);
             stage.setHeight(940);
             stage.centerOnScreen();

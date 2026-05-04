@@ -16,21 +16,16 @@ public class QuestionDAOImpl implements IService<Question> {
 
     @Override
     public void add(Question question) {
-        String req = "INSERT INTO question (texte, type, points, explication, image_url, ordre, evaluation_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO question (texte, type, points, evaluation_id) VALUES (?, ?, ?, ?)";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getConnection()
                     .prepareStatement(req);
             ps.setString(1, question.getTexte());
             ps.setString(2, question.getType().getDbValue());
             ps.setFloat(3, question.getPoints());
-            ps.setString(4, question.getExplication());
-            ps.setString(5, question.getImageUrl());
-            ps.setInt(6, question.getOrdre());
-            ps.setInt(7, question.getEvaluationId());
+            ps.setInt(4, question.getEvaluationId());
 
             ps.executeUpdate();
-
-            ps.getGeneratedKeys();
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -39,17 +34,14 @@ public class QuestionDAOImpl implements IService<Question> {
 
     @Override
     public void update(Question question) {
-        String req = "UPDATE question SET texte = ?, type = ?, points = ?, explication = ?, image_url = ?, ordre = ?, evaluation_id = ? WHERE id = ?";
+        String req = "UPDATE question SET texte = ?, type = ?, points = ?, evaluation_id = ? WHERE id = ?";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setString(1, question.getTexte());
             ps.setString(2, question.getType().getDbValue());
             ps.setFloat(3, question.getPoints());
-            ps.setString(4, question.getExplication());
-            ps.setString(5, question.getImageUrl());
-            ps.setInt(6, question.getOrdre());
-            ps.setInt(7, question.getEvaluationId());
-            ps.setInt(8, question.getId());
+            ps.setInt(4, question.getEvaluationId());
+            ps.setInt(5, question.getId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -83,9 +75,6 @@ public class QuestionDAOImpl implements IService<Question> {
                 question.setTexte(rs.getString("texte"));
                 question.setType(QuestionType.fromDbValue(rs.getString("type")));
                 question.setPoints(rs.getFloat("points"));
-                question.setExplication(rs.getString("explication"));
-                question.setImageUrl(rs.getString("image_url"));
-                question.setOrdre(rs.getInt("ordre"));
                 question.setEvaluationId(rs.getInt("evaluation_id"));
                 return question;
             }
@@ -111,9 +100,6 @@ public class QuestionDAOImpl implements IService<Question> {
                 question.setTexte(rs.getString("texte"));
                 question.setType(QuestionType.fromDbValue(rs.getString("type")));
                 question.setPoints(rs.getFloat("points"));
-                question.setExplication(rs.getString("explication"));
-                question.setImageUrl(rs.getString("image_url"));
-                question.setOrdre(rs.getInt("ordre"));
                 question.setEvaluationId(rs.getInt("evaluation_id"));
                 questions.add(question);
             }

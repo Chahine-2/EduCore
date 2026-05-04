@@ -2,60 +2,47 @@ package models;
 
 import java.time.LocalDateTime;
 
+/**
+ * Model adapted to your current DB schema for `evaluation`:
+ * columns: id, titre, description, note_max, note_passage, duree_minutes, date_debut, date_fin, date_creation
+ */
 public class Evaluation {
     private int id;
     private String titre;
     private String description;
-    private EvaluationType type;
+
     private int dureeMinutes;
     private float noteMax;
     private float notePassage;
-    private int nbTentatives;
-    private boolean ordreAleatoire;
-    private boolean afficherCorrec;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
-    private EvaluationStatut statut;
     private LocalDateTime dateCreation;
 
     public Evaluation() {
     }
 
-    public Evaluation(int id, String titre, String description, EvaluationType type, int dureeMinutes, float noteMax,
-                      float notePassage, int nbTentatives, boolean ordreAleatoire, boolean afficherCorrec,
-                      LocalDateTime dateDebut, LocalDateTime dateFin, EvaluationStatut statut,
-                      LocalDateTime dateCreation) {
+    public Evaluation(int id, String titre, String description, int dureeMinutes, float noteMax,
+                      float notePassage, LocalDateTime dateDebut, LocalDateTime dateFin, LocalDateTime dateCreation) {
         this.id = id;
         this.titre = titre;
         this.description = description;
-        this.type = type;
         this.dureeMinutes = dureeMinutes;
         this.noteMax = noteMax;
         this.notePassage = notePassage;
-        this.nbTentatives = nbTentatives;
-        this.ordreAleatoire = ordreAleatoire;
-        this.afficherCorrec = afficherCorrec;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
-        this.statut = statut;
         this.dateCreation = dateCreation;
     }
 
-    public Evaluation(String titre, String description, EvaluationType type, int dureeMinutes, float noteMax,
-                      float notePassage, int nbTentatives, boolean ordreAleatoire, boolean afficherCorrec,
-                      LocalDateTime dateDebut, LocalDateTime dateFin, EvaluationStatut statut) {
+    public Evaluation(String titre, String description, int dureeMinutes, float noteMax,
+                      float notePassage, LocalDateTime dateDebut, LocalDateTime dateFin) {
         this.titre = titre;
         this.description = description;
-        this.type = type;
         this.dureeMinutes = dureeMinutes;
         this.noteMax = noteMax;
         this.notePassage = notePassage;
-        this.nbTentatives = nbTentatives;
-        this.ordreAleatoire = ordreAleatoire;
-        this.afficherCorrec = afficherCorrec;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
-        this.statut = statut;
     }
 
     public int getId() {
@@ -82,14 +69,6 @@ public class Evaluation {
         this.description = description;
     }
 
-    public EvaluationType getType() {
-        return type;
-    }
-
-    public void setType(EvaluationType type) {
-        this.type = type;
-    }
-
     public int getDureeMinutes() {
         return dureeMinutes;
     }
@@ -114,30 +93,6 @@ public class Evaluation {
         this.notePassage = notePassage;
     }
 
-    public int getNbTentatives() {
-        return nbTentatives;
-    }
-
-    public void setNbTentatives(int nbTentatives) {
-        this.nbTentatives = nbTentatives;
-    }
-
-    public boolean isOrdreAleatoire() {
-        return ordreAleatoire;
-    }
-
-    public void setOrdreAleatoire(boolean ordreAleatoire) {
-        this.ordreAleatoire = ordreAleatoire;
-    }
-
-    public boolean isAfficherCorrec() {
-        return afficherCorrec;
-    }
-
-    public void setAfficherCorrec(boolean afficherCorrec) {
-        this.afficherCorrec = afficherCorrec;
-    }
-
     public LocalDateTime getDateDebut() {
         return dateDebut;
     }
@@ -154,14 +109,6 @@ public class Evaluation {
         this.dateFin = dateFin;
     }
 
-    public EvaluationStatut getStatut() {
-        return statut;
-    }
-
-    public void setStatut(EvaluationStatut statut) {
-        this.statut = statut;
-    }
-
     public LocalDateTime getDateCreation() {
         return dateCreation;
     }
@@ -176,16 +123,11 @@ public class Evaluation {
                 "id=" + id +
                 ", titre='" + titre + '\'' +
                 ", description='" + description + '\'' +
-                ", type=" + type +
                 ", dureeMinutes=" + dureeMinutes +
                 ", noteMax=" + noteMax +
                 ", notePassage=" + notePassage +
-                ", nbTentatives=" + nbTentatives +
-                ", ordreAleatoire=" + ordreAleatoire +
-                ", afficherCorrec=" + afficherCorrec +
                 ", dateDebut=" + dateDebut +
                 ", dateFin=" + dateFin +
-                ", statut=" + statut +
                 ", dateCreation=" + dateCreation +
                 '}';
     }

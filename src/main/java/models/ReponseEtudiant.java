@@ -6,31 +6,24 @@ public class ReponseEtudiant {
     private int questionId;
     private Integer reponseId;
     private String texteLibre;
-    private boolean estCorrect;
-    private float pointsObtenus;
+
 
     public ReponseEtudiant() {
     }
 
-    public ReponseEtudiant(int id, int resultatId, int questionId, Integer reponseId, String texteLibre,
-                           boolean estCorrect, float pointsObtenus) {
+    public ReponseEtudiant(int id, int resultatId, int questionId, Integer reponseId, String texteLibre) {
         this.id = id;
         this.resultatId = resultatId;
         this.questionId = questionId;
         this.reponseId = reponseId;
         this.texteLibre = texteLibre;
-        this.estCorrect = estCorrect;
-        this.pointsObtenus = pointsObtenus;
     }
 
-    public ReponseEtudiant(int resultatId, int questionId, Integer reponseId, String texteLibre,
-                           boolean estCorrect, float pointsObtenus) {
+    public ReponseEtudiant(int resultatId, int questionId, Integer reponseId, String texteLibre) {
         this.resultatId = resultatId;
         this.questionId = questionId;
         this.reponseId = reponseId;
         this.texteLibre = texteLibre;
-        this.estCorrect = estCorrect;
-        this.pointsObtenus = pointsObtenus;
     }
 
     public int getId() {
@@ -73,21 +66,6 @@ public class ReponseEtudiant {
         this.texteLibre = texteLibre;
     }
 
-    public boolean isEstCorrect() {
-        return estCorrect;
-    }
-
-    public void setEstCorrect(boolean estCorrect) {
-        this.estCorrect = estCorrect;
-    }
-
-    public float getPointsObtenus() {
-        return pointsObtenus;
-    }
-
-    public void setPointsObtenus(float pointsObtenus) {
-        this.pointsObtenus = pointsObtenus;
-    }
 
     @Override
     public String toString() {
@@ -97,8 +75,7 @@ public class ReponseEtudiant {
                 ", questionId=" + questionId +
                 ", reponseId=" + reponseId +
                 ", texteLibre='" + texteLibre + '\'' +
-                ", estCorrect=" + estCorrect +
-                ", pointsObtenus=" + pointsObtenus +
+                ", texteLibre='" + texteLibre + '\'' +
                 '}';
     }
 }

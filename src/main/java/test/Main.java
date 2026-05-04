@@ -1,17 +1,13 @@
 package test;
 
 import interfaces.IService;
-import models.Bareme;
-import models.BaremeMention;
 import models.Evaluation;
-import models.EvaluationStatut;
-import models.EvaluationType;
 import models.Question;
 import models.QuestionType;
 import models.Reponse;
 import models.ReponseEtudiant;
 import models.Resultat;
-import services.BaremeDAOImpl;
+// Bareme model/service removed from runtime
 import services.EvaluationDAOImpl;
 import services.QuestionDAOImpl;
 import services.ReponseDAOImpl;
@@ -35,7 +31,7 @@ public class Main {
         IService<Reponse> reponseDAO = new ReponseDAOImpl();
         IService<ReponseEtudiant> reponseEtudiantDAO = new ReponseEtudiantDAOImpl();
         IService<Resultat> resultatDAO = new ResultatDAOImpl();
-        IService<Bareme> baremeDAO = new BaremeDAOImpl();
+        // Bareme functionality removed
 
         boolean running = true;
         while (running) {
@@ -105,18 +101,7 @@ public class Main {
                     case "20":
                         deleteResultat(scanner, resultatDAO);
                         break;
-                    case "21":
-                        addBareme(scanner, baremeDAO);
-                        break;
-                    case "22":
-                        showAllBaremes(baremeDAO);
-                        break;
-                    case "23":
-                        updateBareme(scanner, baremeDAO);
-                        break;
-                    case "24":
-                        deleteBareme(scanner, baremeDAO);
-                        break;
+                    // Bareme options removed (21-24)
                     case "25":
                         corrigerResultat(scanner, resultatDAO);
                         break;
@@ -164,11 +149,7 @@ public class Main {
         System.out.println("18. Show all resultats");
         System.out.println("19. Update resultat");
         System.out.println("20. Delete resultat");
-        System.out.println("--- Bareme ---");
-        System.out.println("21. Add bareme");
-        System.out.println("22. Show all baremes");
-        System.out.println("23. Update bareme");
-        System.out.println("24. Delete bareme");
+        // Bareme commands removed
         System.out.println("25. Corriger resultat (auto-correction)");
         System.out.println("0. Exit");
     }
@@ -249,18 +230,6 @@ public class Main {
         System.out.print("Description: ");
         String description = scanner.nextLine();
 
-        // Type validation
-        EvaluationType type;
-        while (true) {
-            System.out.print("Type (qcm, examen, devoir, projet, tp): ");
-            String typeStr = scanner.nextLine();
-            if (ValidationUtil.isNotEmpty(typeStr)) {
-                type = EvaluationType.fromDbValue(typeStr);
-                if (type != null) break;
-            }
-            System.out.println("❌ Type invalide");
-        }
-
         // Duree validation
         int duree;
         while (true) {
@@ -299,43 +268,13 @@ public class Main {
             }
         }
 
-        // Nb tentatives validation
-        int nbTentatives;
-        while (true) {
-            System.out.print("Nombre de tentatives: ");
-            String nbTentativesStr = scanner.nextLine();
-            if (ValidationUtil.isValidPositiveInteger(nbTentativesStr)) {
-                nbTentatives = Integer.parseInt(nbTentativesStr);
-                break;
-            }
-            System.out.println("❌ " + ValidationUtil.getErrorMessage("Tentatives", "POSITIVE_INT"));
-        }
-
-        boolean ordreAleatoire = readBoolean(scanner, "Ordre aleatoire (true/false): ");
-        boolean afficherCorrec = readBoolean(scanner, "Afficher correction (true/false): ");
-
         LocalDateTime dateDebut = readDateTime(scanner, "Date debut (yyyy-MM-dd HH:mm:ss): ");
-        LocalDateTime dateFin = dateDebut.plusMinutes(duree);
-        System.out.println("Date fin calculee automatiquement: " + dateFin.format(DATE_TIME_FORMATTER));
-
-        // Statut validation
-        EvaluationStatut statut;
-        while (true) {
-            System.out.print("Statut (brouillon, publie, ferme): ");
-            String statutStr = scanner.nextLine();
-            if (ValidationUtil.isNotEmpty(statutStr)) {
-                statut = EvaluationStatut.fromDbValue(statutStr);
-                if (statut != null) break;
-            }
-            System.out.println("❌ Statut invalide");
-        }
-
+        LocalDateTime dateFin = readDateTime(scanner, "Date fin (yyyy-MM-dd HH:mm:ss): ");
+        // Build Evaluation according to current DB-backed model
         if (includeId) {
-            return new Evaluation(id, titre, description, type, duree, noteMax, notePassage,
-                    nbTentatives, ordreAleatoire, afficherCorrec, dateDebut, dateFin, statut, null);
+            return new Evaluation(id, titre, description, duree, noteMax, notePassage, dateDebut, dateFin, null);
         }
-        return new Evaluation(titre, description, type, duree, noteMax, notePassage,
-                nbTentatives, ordreAleatoire, afficherCorrec, dateDebut, dateFin, statut);
+        return new Evaluation(titre, description, duree, noteMax, notePassage, dateDebut, dateFin);
     }
 
     private static void addQuestion(Scanner scanner, IService<Question> dao) {
@@ -435,23 +374,7 @@ public class Main {
             System.out.println("❌ " + ValidationUtil.getErrorMessage("Points", "POSITIVE_FLOAT"));
         }
 
-        System.out.print("Explication: ");
-        String explication = scanner.nextLine();
-
-        System.out.print("Image URL: ");
-        String imageUrl = scanner.nextLine();
-
-        // Ordre validation
-        int ordre;
-        while (true) {
-            System.out.print("Ordre: ");
-            String ordreStr = scanner.nextLine();
-            if (ValidationUtil.isValidNonNegativeInteger(ordreStr)) {
-                ordre = Integer.parseInt(ordreStr);
-                break;
-            }
-            System.out.println("❌ " + ValidationUtil.getErrorMessage("Ordre", "NON_NEGATIVE_INT"));
-        }
+        // Evaluation ID validation
 
         // Evaluation ID validation
         int evaluationId;
@@ -466,9 +389,9 @@ public class Main {
         }
 
         if (includeId) {
-            return new Question(id, texte, type, points, explication, imageUrl, ordre, evaluationId);
+            return new Question(id, texte, type, points, evaluationId);
         }
-        return new Question(texte, type, points, explication, imageUrl, ordre, evaluationId);
+        return new Question(texte, type, points, evaluationId);
     }
 
     private static void addReponse(Scanner scanner, IService<Reponse> dao) {
@@ -546,20 +469,7 @@ public class Main {
 
         boolean estCorrect = readBoolean(scanner, "Est correcte (true/false): ");
 
-        System.out.print("Explication: ");
-        String explication = scanner.nextLine();
-
-        // Ordre validation
-        int ordre;
-        while (true) {
-            System.out.print("Ordre: ");
-            String ordreStr = scanner.nextLine();
-            if (ValidationUtil.isValidNonNegativeInteger(ordreStr)) {
-                ordre = Integer.parseInt(ordreStr);
-                break;
-            }
-            System.out.println("❌ " + ValidationUtil.getErrorMessage("Ordre", "NON_NEGATIVE_INT"));
-        }
+        // Question ID validation
 
         // Question ID validation
         int questionId;
@@ -574,9 +484,9 @@ public class Main {
         }
 
         if (includeId) {
-            return new Reponse(id, texte, estCorrect, explication, ordre, questionId);
+            return new Reponse(id, texte, estCorrect, questionId);
         }
-        return new Reponse(texte, estCorrect, explication, ordre, questionId);
+        return new Reponse(texte, estCorrect, questionId);
     }
 
     private static void addReponseEtudiant(Scanner scanner, IService<ReponseEtudiant> dao) {
@@ -674,24 +584,10 @@ public class Main {
         System.out.print("Texte libre: ");
         String texteLibre = scanner.nextLine();
 
-        boolean estCorrect = readBoolean(scanner, "Est correcte (true/false): ");
-
-        // Points obtenus validation
-        float pointsObtenus;
-        while (true) {
-            System.out.print("Points obtenus: ");
-            String poStr = scanner.nextLine();
-            if (ValidationUtil.isValidNonNegativeFloat(poStr)) {
-                pointsObtenus = Float.parseFloat(poStr);
-                break;
-            }
-            System.out.println("❌ " + ValidationUtil.getErrorMessage("Points", "NON_NEGATIVE_FLOAT"));
-        }
-
         if (includeId) {
-            return new ReponseEtudiant(id, resultatId, questionId, reponseId, texteLibre, estCorrect, pointsObtenus);
+            return new ReponseEtudiant(id, resultatId, questionId, reponseId, texteLibre);
         }
-        return new ReponseEtudiant(resultatId, questionId, reponseId, texteLibre, estCorrect, pointsObtenus);
+        return new ReponseEtudiant(resultatId, questionId, reponseId, texteLibre);
     }
 
     private static void addResultat(Scanner scanner, IService<Resultat> dao) {
@@ -759,55 +655,19 @@ public class Main {
 
     private static Resultat readResultatData(Scanner scanner, int id, boolean includeId) {
         // Score validation
-        float score;
+        Float score;
         while (true) {
-            System.out.print("Score: ");
-            String scoreStr = scanner.nextLine();
+            System.out.print("Score (leave empty for null): ");
+            String scoreStr = scanner.nextLine().trim();
+            if (scoreStr.isEmpty()) {
+                score = null;
+                break;
+            }
             if (ValidationUtil.isValidNonNegativeFloat(scoreStr)) {
                 score = Float.parseFloat(scoreStr);
                 break;
             }
             System.out.println("❌ " + ValidationUtil.getErrorMessage("Score", "NON_NEGATIVE_FLOAT"));
-        }
-
-        // Score pourcentage validation
-        float scorePourcentage;
-        while (true) {
-            System.out.print("Score pourcentage (0-100): ");
-            String spStr = scanner.nextLine();
-            if (ValidationUtil.isValidNonNegativeFloat(spStr)) {
-                scorePourcentage = Float.parseFloat(spStr);
-                if (scorePourcentage <= 100) break;
-                System.out.println("❌ Score pourcentage doit être entre 0 et 100");
-            } else {
-                System.out.println("❌ " + ValidationUtil.getErrorMessage("Score %", "NON_NEGATIVE_FLOAT"));
-            }
-        }
-
-        boolean estReussi = readBoolean(scanner, "Est reussi (true/false): ");
-
-        // Temps passe validation
-        int tempsPasseMin;
-        while (true) {
-            System.out.print("Temps passe en minutes: ");
-            String tpStr = scanner.nextLine();
-            if (ValidationUtil.isValidNonNegativeInteger(tpStr)) {
-                tempsPasseMin = Integer.parseInt(tpStr);
-                break;
-            }
-            System.out.println("❌ " + ValidationUtil.getErrorMessage("Temps", "NON_NEGATIVE_INT"));
-        }
-
-        // Tentative numero validation
-        int tentativeNum;
-        while (true) {
-            System.out.print("Tentative numero: ");
-            String tnStr = scanner.nextLine();
-            if (ValidationUtil.isValidPositiveInteger(tnStr)) {
-                tentativeNum = Integer.parseInt(tnStr);
-                break;
-            }
-            System.out.println("❌ " + ValidationUtil.getErrorMessage("Tentative", "POSITIVE_INT"));
         }
 
         LocalDateTime datePassage = readDateTime(scanner, "Date passage (yyyy-MM-dd HH:mm:ss): ");
@@ -824,22 +684,22 @@ public class Main {
             System.out.println("❌ " + ValidationUtil.getErrorMessage("Evaluation ID", "POSITIVE_INT"));
         }
 
-        // Etudiant ID validation
-        int etudiantId;
+        // Student ID validation
+        int studentId;
         while (true) {
-            System.out.print("Etudiant ID: ");
+            System.out.print("Student ID: ");
             String studentIdStr = scanner.nextLine();
             if (ValidationUtil.isValidPositiveInteger(studentIdStr)) {
-                etudiantId = Integer.parseInt(studentIdStr);
+                studentId = Integer.parseInt(studentIdStr);
                 break;
             }
-            System.out.println("❌ " + ValidationUtil.getErrorMessage("Etudiant ID", "POSITIVE_INT"));
+            System.out.println("❌ " + ValidationUtil.getErrorMessage("Student ID", "POSITIVE_INT"));
         }
 
         if (includeId) {
-            return new Resultat(id, score, scorePourcentage, estReussi, tempsPasseMin, tentativeNum, datePassage, evaluationId, etudiantId);
+            return new Resultat(id, studentId, evaluationId, score, datePassage);
         }
-        return new Resultat(score, scorePourcentage, estReussi, tempsPasseMin, tentativeNum, datePassage, evaluationId, etudiantId);
+        return new Resultat(studentId, evaluationId, score, datePassage);
     }
 
     private static LocalDateTime readDateTime(Scanner scanner, String prompt) {
@@ -865,68 +725,7 @@ public class Main {
         }
     }
 
-    private static void addBareme(Scanner scanner, IService<Bareme> dao) {
-        Bareme bareme = readBaremeData(scanner, 0, false);
-        dao.add(bareme);
-        System.out.println("✓ Bareme added successfully.");
-    }
-
-    private static void showAllBaremes(IService<Bareme> dao) {
-        List<Bareme> baremes = dao.getAll();
-        if (baremes.isEmpty()) {
-            System.out.println("No baremes found.");
-            return;
-        }
-
-        for (Bareme bareme : baremes) {
-            System.out.println(bareme);
-        }
-    }
-
-    private static void updateBareme(Scanner scanner, IService<Bareme> dao) {
-        int id;
-        while (true) {
-            System.out.print("Enter bareme id to update: ");
-            String idStr = scanner.nextLine();
-            if (ValidationUtil.isValidPositiveInteger(idStr)) {
-                id = Integer.parseInt(idStr);
-                break;
-            }
-            System.out.println("❌ ID must be a positive integer");
-        }
-
-        Bareme current = dao.getById(id);
-        if (current == null) {
-            System.out.println("❌ No bareme found with id " + id);
-            return;
-        }
-
-        Bareme updated = readBaremeData(scanner, id, true);
-        dao.update(updated);
-        System.out.println("✓ Bareme updated successfully.");
-    }
-
-    private static void deleteBareme(Scanner scanner, IService<Bareme> dao) {
-        int id;
-        while (true) {
-            System.out.print("Enter bareme id to delete: ");
-            String idStr = scanner.nextLine();
-            if (ValidationUtil.isValidPositiveInteger(idStr)) {
-                id = Integer.parseInt(idStr);
-                break;
-            }
-            System.out.println("❌ ID must be a positive integer");
-        }
-
-        Bareme current = dao.getById(id);
-        if (current == null) {
-            System.out.println("❌ No bareme found with id " + id);
-            return;
-        }
-
-        dao.delete(id);
-        System.out.println("✓ Bareme deleted successfully.");
-    }
+    // Bareme commands removed
 
     /**
      * Menu helper to trigger auto-correction for a resultat.
@@ -959,60 +758,5 @@ public class Main {
         }
     }
 
-    private static Bareme readBaremeData(Scanner scanner, int id, boolean includeId) {
-        // Evaluation ID validation
-        int evaluationId;
-        while (true) {
-            System.out.print("Evaluation ID: ");
-            String eidStr = scanner.nextLine();
-            if (ValidationUtil.isValidPositiveInteger(eidStr)) {
-                evaluationId = Integer.parseInt(eidStr);
-                break;
-            }
-            System.out.println("❌ " + ValidationUtil.getErrorMessage("Evaluation ID", "POSITIVE_INT"));
-        }
-
-        // Mention validation
-        BaremeMention mention;
-        while (true) {
-            System.out.print("Mention (EXCELLENT, BIEN, PASSABLE, INSUFFISANT): ");
-            String mentionStr = scanner.nextLine();
-            if (ValidationUtil.isNotEmpty(mentionStr)) {
-                mention = BaremeMention.fromDbValue(mentionStr);
-                if (mention != null) break;
-            }
-            System.out.println("❌ Mention invalide");
-        }
-
-        // Note min validation
-        float noteMin;
-        while (true) {
-            System.out.print("Note min: ");
-            String nmStr = scanner.nextLine();
-            if (ValidationUtil.isValidNonNegativeFloat(nmStr)) {
-                noteMin = Float.parseFloat(nmStr);
-                break;
-            }
-            System.out.println("❌ " + ValidationUtil.getErrorMessage("Note min", "NON_NEGATIVE_FLOAT"));
-        }
-
-        // Note max validation
-        float noteMax;
-        while (true) {
-            System.out.print("Note max: ");
-            String nmxStr = scanner.nextLine();
-            if (ValidationUtil.isValidPositiveFloat(nmxStr)) {
-                noteMax = Float.parseFloat(nmxStr);
-                if (ValidationUtil.isValidBaremeRange(noteMin, noteMax)) break;
-                System.out.println("❌ " + ValidationUtil.getErrorMessage("", "BAREME_RANGE"));
-            } else {
-                System.out.println("❌ " + ValidationUtil.getErrorMessage("Note max", "POSITIVE_FLOAT"));
-            }
-        }
-
-        if (includeId) {
-            return new Bareme(id, evaluationId, mention, noteMin, noteMax);
-        }
-        return new Bareme(evaluationId, mention, noteMin, noteMax);
-    }
+    // Bareme helpers removed
 }

@@ -16,7 +16,7 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
 
     @Override
     public void add(ReponseEtudiant reponseEtudiant) {
-        String req = "INSERT INTO reponse_etudiant (resultat_id, question_id, reponse_id, texte_libre, est_correct, points_obtenus) VALUES (?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO reponse_etudiant (resultat_id, question_id, reponse_id, texte_libre) VALUES (?, ?, ?, ?)";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, reponseEtudiant.getResultatId());
@@ -27,8 +27,6 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
                 ps.setInt(3, reponseEtudiant.getReponseId());
             }
             ps.setString(4, reponseEtudiant.getTexteLibre());
-            ps.setBoolean(5, reponseEtudiant.isEstCorrect());
-            ps.setFloat(6, reponseEtudiant.getPointsObtenus());
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -37,7 +35,7 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
 
     @Override
     public void update(ReponseEtudiant reponseEtudiant) {
-        String req = "UPDATE reponse_etudiant SET resultat_id = ?, question_id = ?, reponse_id = ?, texte_libre = ?, est_correct = ?, points_obtenus = ? WHERE id = ?";
+        String req = "UPDATE reponse_etudiant SET resultat_id = ?, question_id = ?, reponse_id = ?, texte_libre = ? WHERE id = ?";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, reponseEtudiant.getResultatId());
@@ -48,9 +46,7 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
                 ps.setInt(3, reponseEtudiant.getReponseId());
             }
             ps.setString(4, reponseEtudiant.getTexteLibre());
-            ps.setBoolean(5, reponseEtudiant.isEstCorrect());
-            ps.setFloat(6, reponseEtudiant.getPointsObtenus());
-            ps.setInt(7, reponseEtudiant.getId());
+            ps.setInt(5, reponseEtudiant.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -85,8 +81,6 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
                 int reponseId = rs.getInt("reponse_id");
                 reponseEtudiant.setReponseId(rs.wasNull() ? null : reponseId);
                 reponseEtudiant.setTexteLibre(rs.getString("texte_libre"));
-                reponseEtudiant.setEstCorrect(rs.getBoolean("est_correct"));
-                reponseEtudiant.setPointsObtenus(rs.getFloat("points_obtenus"));
                 return reponseEtudiant;
             }
         } catch (SQLException e) {
@@ -113,8 +107,6 @@ public class ReponseEtudiantDAOImpl implements IService<ReponseEtudiant> {
                 int reponseId = rs.getInt("reponse_id");
                 reponseEtudiant.setReponseId(rs.wasNull() ? null : reponseId);
                 reponseEtudiant.setTexteLibre(rs.getString("texte_libre"));
-                reponseEtudiant.setEstCorrect(rs.getBoolean("est_correct"));
-                reponseEtudiant.setPointsObtenus(rs.getFloat("points_obtenus"));
                 reponsesEtudiant.add(reponseEtudiant);
             }
         } catch (SQLException e) {

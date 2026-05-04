@@ -15,14 +15,12 @@ public class ReponseDAOImpl implements IService<Reponse> {
 
     @Override
     public void add(Reponse reponse) {
-        String req = "INSERT INTO reponse (texte, est_correct, explication, ordre, question_id) VALUES (?, ?, ?, ?, ?)";
+        String req = "INSERT INTO reponse (texte, est_correct, question_id) VALUES (?, ?, ?)";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setString(1, reponse.getTexte());
             ps.setBoolean(2, reponse.isEstCorrect());
-            ps.setString(3, reponse.getExplication());
-            ps.setInt(4, reponse.getOrdre());
-            ps.setInt(5, reponse.getQuestionId());
+            ps.setInt(3, reponse.getQuestionId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -32,15 +30,13 @@ public class ReponseDAOImpl implements IService<Reponse> {
 
     @Override
     public void update(Reponse reponse) {
-        String req = "UPDATE reponse SET texte = ?, est_correct = ?, explication = ?, ordre = ?, question_id = ? WHERE id = ?";
+        String req = "UPDATE reponse SET texte = ?, est_correct = ?, question_id = ? WHERE id = ?";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setString(1, reponse.getTexte());
             ps.setBoolean(2, reponse.isEstCorrect());
-            ps.setString(3, reponse.getExplication());
-            ps.setInt(4, reponse.getOrdre());
-            ps.setInt(5, reponse.getQuestionId());
-            ps.setInt(6, reponse.getId());
+            ps.setInt(3, reponse.getQuestionId());
+            ps.setInt(4, reponse.getId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -73,8 +69,6 @@ public class ReponseDAOImpl implements IService<Reponse> {
                 reponse.setId(rs.getInt("id"));
                 reponse.setTexte(rs.getString("texte"));
                 reponse.setEstCorrect(rs.getBoolean("est_correct"));
-                reponse.setExplication(rs.getString("explication"));
-                reponse.setOrdre(rs.getInt("ordre"));
                 reponse.setQuestionId(rs.getInt("question_id"));
                 return reponse;
             }
@@ -99,8 +93,6 @@ public class ReponseDAOImpl implements IService<Reponse> {
                 reponse.setId(rs.getInt("id"));
                 reponse.setTexte(rs.getString("texte"));
                 reponse.setEstCorrect(rs.getBoolean("est_correct"));
-                reponse.setExplication(rs.getString("explication"));
-                reponse.setOrdre(rs.getInt("ordre"));
                 reponse.setQuestionId(rs.getInt("question_id"));
                 reponses.add(reponse);
             }

@@ -2,43 +2,32 @@ package models;
 
 import java.time.LocalDateTime;
 
+/**
+ * Simplified model to match `resultat` table:
+ * id, student_id, evaluation_id, score, date_passage
+ */
 public class Resultat {
     private int id;
-    private float score;
-    private float scorePourcentage;
-    private boolean estReussi;
-    private int tempsPasseMin;
-    private int tentativeNum;
-    private LocalDateTime datePassage;
+    private int studentId;
     private int evaluationId;
-    private int etudiantId;
+    private Float score;
+    private LocalDateTime datePassage;
 
-    public Resultat() {
-    }
+    public Resultat() {}
 
-    public Resultat(int id, float score, float scorePourcentage, boolean estReussi, int tempsPasseMin,
-                    int tentativeNum, LocalDateTime datePassage, int evaluationId, int etudiantId) {
+    public Resultat(int id, int studentId, int evaluationId, Float score, LocalDateTime datePassage) {
         this.id = id;
-        this.score = score;
-        this.scorePourcentage = scorePourcentage;
-        this.estReussi = estReussi;
-        this.tempsPasseMin = tempsPasseMin;
-        this.tentativeNum = tentativeNum;
-        this.datePassage = datePassage;
+        this.studentId = studentId;
         this.evaluationId = evaluationId;
-        this.etudiantId = etudiantId;
+        this.score = score;
+        this.datePassage = datePassage;
     }
 
-    public Resultat(float score, float scorePourcentage, boolean estReussi, int tempsPasseMin,
-                    int tentativeNum, LocalDateTime datePassage, int evaluationId, int etudiantId) {
-        this.score = score;
-        this.scorePourcentage = scorePourcentage;
-        this.estReussi = estReussi;
-        this.tempsPasseMin = tempsPasseMin;
-        this.tentativeNum = tentativeNum;
-        this.datePassage = datePassage;
+    public Resultat(int studentId, int evaluationId, Float score, LocalDateTime datePassage) {
+        this.studentId = studentId;
         this.evaluationId = evaluationId;
-        this.etudiantId = etudiantId;
+        this.score = score;
+        this.datePassage = datePassage;
     }
 
     public int getId() {
@@ -49,52 +38,12 @@ public class Resultat {
         this.id = id;
     }
 
-    public float getScore() {
-        return score;
+    public int getStudentId() {
+        return studentId;
     }
 
-    public void setScore(float score) {
-        this.score = score;
-    }
-
-    public float getScorePourcentage() {
-        return scorePourcentage;
-    }
-
-    public void setScorePourcentage(float scorePourcentage) {
-        this.scorePourcentage = scorePourcentage;
-    }
-
-    public boolean isEstReussi() {
-        return estReussi;
-    }
-
-    public void setEstReussi(boolean estReussi) {
-        this.estReussi = estReussi;
-    }
-
-    public int getTempsPasseMin() {
-        return tempsPasseMin;
-    }
-
-    public void setTempsPasseMin(int tempsPasseMin) {
-        this.tempsPasseMin = tempsPasseMin;
-    }
-
-    public int getTentativeNum() {
-        return tentativeNum;
-    }
-
-    public void setTentativeNum(int tentativeNum) {
-        this.tentativeNum = tentativeNum;
-    }
-
-    public LocalDateTime getDatePassage() {
-        return datePassage;
-    }
-
-    public void setDatePassage(LocalDateTime datePassage) {
-        this.datePassage = datePassage;
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
     }
 
     public int getEvaluationId() {
@@ -105,26 +54,30 @@ public class Resultat {
         this.evaluationId = evaluationId;
     }
 
-    public int getEtudiantId() {
-        return etudiantId;
+    public Float getScore() {
+        return score;
     }
 
-    public void setEtudiantId(int etudiantId) {
-        this.etudiantId = etudiantId;
+    public void setScore(Float score) {
+        this.score = score;
+    }
+
+    public LocalDateTime getDatePassage() {
+        return datePassage;
+    }
+
+    public void setDatePassage(LocalDateTime datePassage) {
+        this.datePassage = datePassage;
     }
 
     @Override
     public String toString() {
         return "Resultat{" +
                 "id=" + id +
-                ", score=" + score +
-                ", scorePourcentage=" + scorePourcentage +
-                ", estReussi=" + estReussi +
-                ", tempsPasseMin=" + tempsPasseMin +
-                ", tentativeNum=" + tentativeNum +
-                ", datePassage=" + datePassage +
+                ", studentId=" + studentId +
                 ", evaluationId=" + evaluationId +
-                ", etudiantId=" + etudiantId +
+                ", score=" + score +
+                ", datePassage=" + datePassage +
                 '}';
     }
 }

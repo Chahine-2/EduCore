@@ -5,34 +5,23 @@ public class Question {
     private String texte;
     private QuestionType type;
     private float points;
-    private String explication;
-    private String imageUrl;
-    private int ordre;
     private int evaluationId;
 
     public Question() {
     }
 
-    public Question(int id, String texte, QuestionType type, float points, String explication,
-                    String imageUrl, int ordre, int evaluationId) {
+    public Question(int id, String texte, QuestionType type, float points, int evaluationId) {
         this.id = id;
         this.texte = texte;
         this.type = type;
         this.points = points;
-        this.explication = explication;
-        this.imageUrl = imageUrl;
-        this.ordre = ordre;
         this.evaluationId = evaluationId;
     }
 
-    public Question(String texte, QuestionType type, float points, String explication,
-                    String imageUrl, int ordre, int evaluationId) {
+    public Question(String texte, QuestionType type, float points, int evaluationId) {
         this.texte = texte;
         this.type = type;
         this.points = points;
-        this.explication = explication;
-        this.imageUrl = imageUrl;
-        this.ordre = ordre;
         this.evaluationId = evaluationId;
     }
 
@@ -68,29 +57,6 @@ public class Question {
         this.points = points;
     }
 
-    public String getExplication() {
-        return explication;
-    }
-
-    public void setExplication(String explication) {
-        this.explication = explication;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public int getOrdre() {
-        return ordre;
-    }
-
-    public void setOrdre(int ordre) {
-        this.ordre = ordre;
-    }
 
     public int getEvaluationId() {
         return evaluationId;
@@ -107,9 +73,6 @@ public class Question {
                 ", texte='" + texte + '\'' +
                 ", type=" + type +
                 ", points=" + points +
-                ", explication='" + explication + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", ordre=" + ordre +
                 ", evaluationId=" + evaluationId +
                 '}';
     }

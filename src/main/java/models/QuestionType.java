@@ -3,8 +3,7 @@ package models;
 public enum QuestionType {
     QCM("qcm"),
     VRAI_FAUX("vrai_faux"),
-    TEXTE_LIBRE("texte_libre"),
-    CORRESPONDANCE("correspondance");
+    TEXTE_LIBRE("texte_libre");
 
     private final String dbValue;
 

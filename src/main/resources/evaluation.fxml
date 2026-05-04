@@ -1,159 +1,204 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.EvaluationController"
-            prefWidth="1460"
-            prefHeight="900"
-            stylesheets="@evaluation.css"
-            styleClass="root-pane">
+            styleClass="root-dashboard"
+            stylesheets="/styles/evaluation-management.css"
+            prefWidth="1440" prefHeight="920">
+
+    <left>
+        <Region styleClass="sidebar-accent"/>
+    </left>
+
     <top>
-        <HBox styleClass="app-header" alignment="CENTER_LEFT">
-            <VBox spacing="4" HBox.hgrow="ALWAYS">
-                <Label text="EDUCORE - Gestion des evaluations" styleClass="app-title"/>
-                <Label text="Créez, modifiez et suivez les évaluations depuis un espace unifié." styleClass="app-subtitle"/>
-            </VBox>
-            <Label text="Module Evaluation" styleClass="badge-chip"/>
-        </HBox>
+        <VBox spacing="0">
+            <HBox styleClass="header-shell" alignment="TOP_LEFT" spacing="32">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="0">
+                        <Label text="Administration" styleClass="breadcrumb"/>
+                        <Label text="/" styleClass="breadcrumb-sep"/>
+                        <Label text="Evaluations" styleClass="breadcrumb"/>
+                    </HBox>
+                    <Label text="Evaluation Management" styleClass="page-title"/>
+                    <Label text="Define assessments, availability windows, and grading rules. Questions are managed per evaluation from the list."
+                           styleClass="page-sub" wrapText="true"/>
+                </VBox>
+                <Button text="New evaluation" styleClass="btn-primary" onAction="#handleNewEvaluation"
+                        minWidth="168"/>
+            </HBox>
+
+            <HBox styleClass="toolbar-strip" alignment="CENTER_LEFT" spacing="20">
+                <HBox styleClass="toolbar-group" spacing="8">
+                    <Label text="Filter" styleClass="toolbar-label"/>
+                    <TextField fx:id="searchField" promptText="Search by title"
+                               prefWidth="260" minWidth="100" styleClass="field-inline" HBox.hgrow="SOMETIMES"
+                               onKeyReleased="#handleSearchKey"/>
+                    <Button text="Apply" styleClass="btn-toolbar btn-apply" onAction="#handleSearch"/>
+                    <Button text="Clear filter" styleClass="btn-toolbar btn-muted" onAction="#handleShowAll"/>
+                </HBox>
+                <Separator orientation="VERTICAL"/>
+                <HBox styleClass="toolbar-group" spacing="8">
+                    <Label text="Sort" styleClass="toolbar-label"/>
+                    <ComboBox fx:id="sortCombo" prefWidth="232" styleClass="combo-toolbar"/>
+                </HBox>
+                <Separator orientation="VERTICAL"/>
+                <HBox styleClass="toolbar-group" spacing="8">
+                    <Label text="Page size" styleClass="toolbar-label"/>
+                    <ComboBox fx:id="pageSizeCombo" prefWidth="72" styleClass="combo-toolbar"/>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <HBox styleClass="toolbar-group" spacing="8" alignment="CENTER_RIGHT">
+                    <Label text="Results" styleClass="toolbar-label"/>
+                    <Label fx:id="totalLabel" text="0" styleClass="stat-pill"/>
+                </HBox>
+            </HBox>
+        </VBox>
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.34" styleClass="main-split">
-            <items>
-                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="form-scroll">
-                    <VBox spacing="16" styleClass="card form-card">
-                        <VBox spacing="2">
-                            <Label text="Formulaire" styleClass="section-title"/>
-                            <Label text="Saisissez ou mettez à jour une évaluation." styleClass="section-hint"/>
-                        </VBox>
-
-                        <VBox spacing="6">
-                            <Label text="Titre" styleClass="field-label"/>
-                            <TextField fx:id="titreField" promptText="Ex: Quiz Mathématiques" styleClass="input-field"/>
-                        </VBox>
-
-                        <VBox spacing="6">
-                            <Label text="Description" styleClass="field-label"/>
-                            <TextArea fx:id="descriptionField" prefRowCount="4" promptText="Détails de l'évaluation" wrapText="true" styleClass="input-field textarea-field"/>
-                        </VBox>
-
-                        <GridPane hgap="12" vgap="12">
-                            <columnConstraints>
-                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
-                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
-                            </columnConstraints>
-
-                            <VBox spacing="6" GridPane.columnIndex="0">
-                                <Label text="Type" styleClass="field-label"/>
-                                <ComboBox fx:id="typeCombo" maxWidth="Infinity" styleClass="input-field"/>
-                            </VBox>
-                            <VBox spacing="6" GridPane.columnIndex="1">
-                                <Label text="Statut" styleClass="field-label"/>
-                                <ComboBox fx:id="statutCombo" maxWidth="Infinity" styleClass="input-field"/>
-                            </VBox>
-                        </GridPane>
-
-                        <GridPane hgap="12" vgap="12">
-                            <columnConstraints>
-                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
-                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
-                            </columnConstraints>
-
-                            <VBox spacing="6" GridPane.columnIndex="0">
-                                <Label text="Durée (min)" styleClass="field-label"/>
-                                <TextField fx:id="dureeField" promptText="Ex: 60" styleClass="input-field"/>
-                            </VBox>
-                            <VBox spacing="6" GridPane.columnIndex="1">
-                                <Label text="Note max" styleClass="field-label"/>
-                                <TextField fx:id="noteMaxField" promptText="Ex: 100" styleClass="input-field"/>
-                            </VBox>
-                        </GridPane>
-
-                        <GridPane hgap="12" vgap="12">
-                            <columnConstraints>
-                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
-                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
-                            </columnConstraints>
-
-                            <VBox spacing="6" GridPane.columnIndex="0">
-                                <Label text="Note passage" styleClass="field-label"/>
-                                <TextField fx:id="notePassageField" promptText="Ex: 50" styleClass="input-field"/>
-                            </VBox>
-                            <VBox spacing="6" GridPane.columnIndex="1">
-                                <Label text="Tentatives" styleClass="field-label"/>
-                                <TextField fx:id="nbTentativesField" promptText="Ex: 3" styleClass="input-field"/>
-                            </VBox>
-                        </GridPane>
-
-                        <VBox spacing="6">
-                            <Label text="Date de début (yyyy-MM-dd HH:mm:ss)" styleClass="field-label"/>
-                            <TextField fx:id="dateDebutField" promptText="2026-05-01 08:00:00" styleClass="input-field"/>
-                        </VBox>
-
-                        <HBox spacing="18" styleClass="check-row">
-                            <CheckBox fx:id="ordreAleatoireCheck" text="Ordre aléatoire" styleClass="check-item"/>
-                            <CheckBox fx:id="afficherCorrecCheck" text="Afficher correction" styleClass="check-item"/>
-                        </HBox>
-
-                        <HBox spacing="10" styleClass="form-actions">
-                            <Button text="Ajouter" prefHeight="38" prefWidth="120" styleClass="action-button success-button" onAction="#handleAdd"/>
-                            <Button text="Modifier" prefHeight="38" prefWidth="120" styleClass="action-button primary-button" onAction="#handleUpdate"/>
-                            <Button text="Effacer" prefHeight="38" prefWidth="120" styleClass="action-button neutral-button" onAction="#handleClear"/>
-                        </HBox>
-                    </VBox>
-                </ScrollPane>
-
-                <VBox spacing="14" styleClass="card table-card">
-                    <VBox spacing="2">
-                        <Label text="Liste des évaluations" styleClass="section-title"/>
-                        <Label text="Recherchez par titre puis sélectionnez une ligne pour charger les détails." styleClass="section-hint"/>
+        <SplitPane dividerPositions="0.36" styleClass="main-split">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="scroll-pane"
+                        style="-fx-padding: 0 16 0 0;">
+                <VBox spacing="0" styleClass="card-panel" maxWidth="Infinity">
+                    <VBox styleClass="card-title-row" spacing="4">
+                        <Label text="Evaluation record" styleClass="card-title"/>
+                        <Label text="Required fields for creation. Select a table row to update or delete."
+                               styleClass="card-sub" wrapText="true"/>
                     </VBox>
 
-                    <HBox spacing="10" styleClass="search-row">
-                        <TextField fx:id="searchField" promptText="Rechercher par titre..." HBox.hgrow="ALWAYS" styleClass="input-field search-field"/>
-                        <Button text="Rechercher" prefHeight="38" prefWidth="128" styleClass="action-button primary-button" onAction="#handleSearch"/>
-                        <Button text="Afficher tout" prefHeight="38" prefWidth="128" styleClass="action-button neutral-button" onAction="#handleShowAll"/>
-                    </HBox>
+                    <Label text="Content" styleClass="form-section-label"/>
 
-                    <TableView fx:id="evaluationTable" VBox.vgrow="ALWAYS" styleClass="evaluation-table">
-                        <placeholder>
-                            <Label text="Aucune évaluation à afficher" styleClass="table-placeholder"/>
-                        </placeholder>
+                    <VBox spacing="6">
+                        <Label text="Title" styleClass="form-label"/>
+                        <TextField fx:id="titreField" promptText="Assessment title" styleClass="field-inline"/>
+                    </VBox>
+
+                    <VBox spacing="6">
+                        <Label text="Description" styleClass="form-label"/>
+                        <TextArea fx:id="descriptionField" prefRowCount="4" promptText="Instructions shown to students"
+                                  wrapText="true" styleClass="field-inline field-textarea"/>
+                    </VBox>
+
+                    <Label text="Scoring" styleClass="form-section-label"/>
+
+                    <GridPane hgap="14" vgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS"/>
+                        </columnConstraints>
+                        <VBox spacing="6" GridPane.columnIndex="0">
+                            <Label text="Duration (minutes)" styleClass="form-label"/>
+                            <TextField fx:id="dureeField" promptText="60" styleClass="field-inline"/>
+                        </VBox>
+                        <VBox spacing="6" GridPane.columnIndex="1">
+                            <Label text="Maximum score" styleClass="form-label"/>
+                            <TextField fx:id="noteMaxField" promptText="100" styleClass="field-inline"/>
+                        </VBox>
+                        <VBox spacing="6" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                            <Label text="Passing grade" styleClass="form-label"/>
+                            <TextField fx:id="notePassageField" promptText="50" styleClass="field-inline"/>
+                        </VBox>
+                        <VBox spacing="6" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                            <Label text="Created" styleClass="form-label"/>
+                            <HBox styleClass="readonly-box" alignment="CENTER_LEFT">
+                                <Label fx:id="dateCreationLabel" text="—" styleClass="readonly-meta" wrapText="true"/>
+                            </HBox>
+                        </VBox>
+                    </GridPane>
+
+                    <Label text="Availability" styleClass="form-section-label"/>
+
+                    <VBox spacing="10">
+                        <Label text="Start" styleClass="form-label"/>
+                        <DatePicker fx:id="dateDebutPicker" styleClass="picker-field" maxWidth="Infinity"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT" styleClass="time-toolbar">
+                            <Label text="Time (24h)" styleClass="time-toolbar-label"/>
+                            <Spinner fx:id="debutHourSpinner" editable="true" styleClass="time-spinner"/>
+                            <Label text=":" styleClass="time-sep"/>
+                            <Spinner fx:id="debutMinuteSpinner" editable="true" styleClass="time-spinner"/>
+                            <Label text=":" styleClass="time-sep"/>
+                            <Spinner fx:id="debutSecondSpinner" editable="true" styleClass="time-spinner"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="10">
+                        <Label text="End" styleClass="form-label"/>
+                        <DatePicker fx:id="dateFinPicker" styleClass="picker-field" maxWidth="Infinity"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT" styleClass="time-toolbar">
+                            <Label text="Time (24h)" styleClass="time-toolbar-label"/>
+                            <Spinner fx:id="finHourSpinner" editable="true" styleClass="time-spinner"/>
+                            <Label text=":" styleClass="time-sep"/>
+                            <Spinner fx:id="finMinuteSpinner" editable="true" styleClass="time-spinner"/>
+                            <Label text=":" styleClass="time-sep"/>
+                            <Spinner fx:id="finSecondSpinner" editable="true" styleClass="time-spinner"/>
+                        </HBox>
+                    </VBox>
+
+                    <GridPane hgap="10" vgap="10" styleClass="form-action-grid">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
+                            <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
+                        </columnConstraints>
+                        <Button text="Create" onAction="#handleAdd" maxWidth="Infinity" styleClass="btn-action-create"
+                                GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Button text="Save changes" onAction="#handleUpdate" maxWidth="Infinity" styleClass="btn-action-save"
+                                GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Button text="Reset form" onAction="#handleClear" maxWidth="Infinity" styleClass="btn-action-reset"
+                                GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <Button text="Delete" onAction="#handleDelete" maxWidth="Infinity" styleClass="btn-action-delete"
+                                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    </GridPane>
+                </VBox>
+            </ScrollPane>
+
+            <VBox spacing="0" style="-fx-padding: 0 0 0 16;">
+                <VBox styleClass="panel-heading" spacing="2">
+                    <Label text="Published evaluations" styleClass="panel-title"/>
+                    <Label text="Sort and paginate below. Select a row to load it into the form."
+                           styleClass="panel-caption"/>
+                </VBox>
+
+                <HBox styleClass="pagination-bar" alignment="CENTER_LEFT" spacing="12">
+                    <Button fx:id="prevPageBtn" text="Previous" styleClass="page-nav-btn" onAction="#handlePrevPage"/>
+                    <Label fx:id="pageInfoLabel" text="Page 1 / 1" styleClass="page-info"/>
+                    <Button fx:id="nextPageBtn" text="Next" styleClass="page-nav-btn" onAction="#handleNextPage"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Select a row to edit fields on the left." styleClass="help-hint"/>
+                </HBox>
+
+                <StackPane VBox.vgrow="ALWAYS" styleClass="table-shell">
+                    <TableView fx:id="evaluationTable" styleClass="eval-table">
                         <columns>
-                            <TableColumn text="ID" prefWidth="55"/>
-                            <TableColumn text="Titre" prefWidth="160"/>
-                            <TableColumn text="Description" prefWidth="260"/>
-                            <TableColumn text="Type" prefWidth="105"/>
-                            <TableColumn text="Date début" prefWidth="160"/>
-                            <TableColumn text="Durée" prefWidth="85"/>
-                            <TableColumn text="Note max" prefWidth="95"/>
-                            <TableColumn text="Note passage" prefWidth="110"/>
-                            <TableColumn text="Tentatives" prefWidth="95"/>
-                            <TableColumn text="Statut" prefWidth="95"/>
-                            <TableColumn text="Date création" prefWidth="160"/>
+                            <TableColumn text="Title" prefWidth="148" minWidth="100"/>
+                            <TableColumn text="Description" prefWidth="168" minWidth="80"/>
+                            <TableColumn text="Duration" prefWidth="72" minWidth="56"/>
+                            <TableColumn text="Pass" prefWidth="52" minWidth="44"/>
+                            <TableColumn text="Max" prefWidth="48" minWidth="40"/>
+                            <TableColumn text="Start" prefWidth="128" minWidth="100"/>
+                            <TableColumn text="End" prefWidth="128" minWidth="100"/>
+                            <TableColumn text="Created" prefWidth="118" minWidth="90"/>
+                            <TableColumn text="Status" prefWidth="92" minWidth="72"/>
+                            <TableColumn text="Actions" prefWidth="268" minWidth="240"/>
                         </columns>
                     </TableView>
 
-                    <HBox spacing="10" styleClass="table-actions">
-                        <Button text="Charger les détails" prefHeight="38" prefWidth="176" styleClass="action-button primary-button" onAction="#handleLoadDetails"/>
-                        <Button text="Supprimer" prefHeight="38" prefWidth="132" styleClass="action-button danger-button" onAction="#handleDelete"/>
-                    </HBox>
-                </VBox>
-            </items>
+                    <Label fx:id="emptyLabel"
+                           text="No evaluations match the current filter. Clear the filter or create a new evaluation."
+                           styleClass="empty-state" visible="false" alignment="CENTER"
+                           StackPane.alignment="CENTER"/>
+                </StackPane>
+            </VBox>
         </SplitPane>
     </center>
 
     <bottom>
-        <HBox alignment="CENTER_LEFT" styleClass="status-bar">
-            <Label fx:id="statusLabel" text="Prêt" styleClass="status-label"/>
+        <HBox styleClass="footer-bar" alignment="CENTER_LEFT" spacing="20">
+            <Label fx:id="statusLabel" text="Ready" styleClass="footer-status footer-status-ok" HBox.hgrow="ALWAYS"/>
+            <Label text="EDUCORE Learning Platform" styleClass="footer-meta"/>
         </HBox>
     </bottom>
 </BorderPane>
-
-
-
-
-

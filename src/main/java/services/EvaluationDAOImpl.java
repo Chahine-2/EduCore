@@ -2,8 +2,6 @@ package services;
 
 import interfaces.IService;
 import models.Evaluation;
-import models.EvaluationStatut;
-import models.EvaluationType;
 import utils.MyDataBase;
 
 import java.sql.PreparedStatement;
@@ -19,28 +17,19 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
 
     @Override
     public void add(Evaluation evaluation) {
-        String req = "INSERT INTO evaluation (titre, description, type, duree_minutes, note_max, note_passage, nb_tentatives, ordre_aleatoire, afficher_correc, date_debut, date_fin, statut) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO evaluation (titre, description, duree_minutes, note_max, note_passage, date_debut, date_fin) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
-            LocalDateTime dateFin = resolveDateFin(evaluation);
             PreparedStatement ps = MyDataBase.getInstance().getConnection()
                     .prepareStatement(req);
             ps.setString(1, evaluation.getTitre());
             ps.setString(2, evaluation.getDescription());
-            ps.setString(3, evaluation.getType().getDbValue());
-            ps.setInt(4, evaluation.getDureeMinutes());
-            ps.setFloat(5, evaluation.getNoteMax());
-            ps.setFloat(6, evaluation.getNotePassage());
-            ps.setInt(7, evaluation.getNbTentatives());
-            ps.setBoolean(8, evaluation.isOrdreAleatoire());
-            ps.setBoolean(9, evaluation.isAfficherCorrec());
-            ps.setTimestamp(10, Timestamp.valueOf(evaluation.getDateDebut()));
-            ps.setTimestamp(11, Timestamp.valueOf(dateFin));
-            ps.setString(12, evaluation.getStatut().getDbValue());
+            ps.setInt(3, evaluation.getDureeMinutes());
+            ps.setFloat(4, evaluation.getNoteMax());
+            ps.setFloat(5, evaluation.getNotePassage());
+            ps.setTimestamp(6, evaluation.getDateDebut() == null ? null : Timestamp.valueOf(evaluation.getDateDebut()));
+            ps.setTimestamp(7, evaluation.getDateFin() == null ? null : Timestamp.valueOf(evaluation.getDateFin()));
 
             ps.executeUpdate();
-
-            ps.getGeneratedKeys();
-
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -49,23 +38,17 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
 
     @Override
     public void update(Evaluation evaluation) {
-        String req = "UPDATE evaluation SET titre = ?, description = ?, type = ?, duree_minutes = ?, note_max = ?, note_passage = ?, nb_tentatives = ?, ordre_aleatoire = ?, afficher_correc = ?, date_debut = ?, date_fin = ?, statut = ? WHERE id = ?";
+        String req = "UPDATE evaluation SET titre = ?, description = ?, duree_minutes = ?, note_max = ?, note_passage = ?, date_debut = ?, date_fin = ? WHERE id = ?";
         try {
-            LocalDateTime dateFin = resolveDateFin(evaluation);
             PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setString(1, evaluation.getTitre());
             ps.setString(2, evaluation.getDescription());
-            ps.setString(3, evaluation.getType().getDbValue());
-            ps.setInt(4, evaluation.getDureeMinutes());
-            ps.setFloat(5, evaluation.getNoteMax());
-            ps.setFloat(6, evaluation.getNotePassage());
-            ps.setInt(7, evaluation.getNbTentatives());
-            ps.setBoolean(8, evaluation.isOrdreAleatoire());
-            ps.setBoolean(9, evaluation.isAfficherCorrec());
-            ps.setTimestamp(10, Timestamp.valueOf(evaluation.getDateDebut()));
-            ps.setTimestamp(11, Timestamp.valueOf(dateFin));
-            ps.setString(12, evaluation.getStatut().getDbValue());
-            ps.setInt(13, evaluation.getId());
+            ps.setInt(3, evaluation.getDureeMinutes());
+            ps.setFloat(4, evaluation.getNoteMax());
+            ps.setFloat(5, evaluation.getNotePassage());
+            ps.setTimestamp(6, evaluation.getDateDebut() == null ? null : Timestamp.valueOf(evaluation.getDateDebut()));
+            ps.setTimestamp(7, evaluation.getDateFin() == null ? null : Timestamp.valueOf(evaluation.getDateFin()));
+            ps.setInt(8, evaluation.getId());
 
             ps.executeUpdate();
 
@@ -80,9 +63,7 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
         try {
             PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req);
             ps.setInt(1, id);
-
             ps.executeUpdate();
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -101,16 +82,11 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
                 evaluation.setId(rs.getInt("id"));
                 evaluation.setTitre(rs.getString("titre"));
                 evaluation.setDescription(rs.getString("description"));
-                evaluation.setType(EvaluationType.fromDbValue(rs.getString("type")));
                 evaluation.setDureeMinutes(rs.getInt("duree_minutes"));
                 evaluation.setNoteMax(rs.getFloat("note_max"));
                 evaluation.setNotePassage(rs.getFloat("note_passage"));
-                evaluation.setNbTentatives(rs.getInt("nb_tentatives"));
-                evaluation.setOrdreAleatoire(rs.getBoolean("ordre_aleatoire"));
-                evaluation.setAfficherCorrec(rs.getBoolean("afficher_correc"));
                 evaluation.setDateDebut(toLocalDateTime(rs.getTimestamp("date_debut")));
                 evaluation.setDateFin(toLocalDateTime(rs.getTimestamp("date_fin")));
-                evaluation.setStatut(EvaluationStatut.fromDbValue(rs.getString("statut")));
                 evaluation.setDateCreation(toLocalDateTime(rs.getTimestamp("date_creation")));
                 return evaluation;
             }
@@ -135,16 +111,11 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
                 evaluation.setId(rs.getInt("id"));
                 evaluation.setTitre(rs.getString("titre"));
                 evaluation.setDescription(rs.getString("description"));
-                evaluation.setType(EvaluationType.fromDbValue(rs.getString("type")));
                 evaluation.setDureeMinutes(rs.getInt("duree_minutes"));
                 evaluation.setNoteMax(rs.getFloat("note_max"));
                 evaluation.setNotePassage(rs.getFloat("note_passage"));
-                evaluation.setNbTentatives(rs.getInt("nb_tentatives"));
-                evaluation.setOrdreAleatoire(rs.getBoolean("ordre_aleatoire"));
-                evaluation.setAfficherCorrec(rs.getBoolean("afficher_correc"));
                 evaluation.setDateDebut(toLocalDateTime(rs.getTimestamp("date_debut")));
                 evaluation.setDateFin(toLocalDateTime(rs.getTimestamp("date_fin")));
-                evaluation.setStatut(EvaluationStatut.fromDbValue(rs.getString("statut")));
                 evaluation.setDateCreation(toLocalDateTime(rs.getTimestamp("date_creation")));
 
                 evaluations.add(evaluation);
@@ -158,15 +129,5 @@ public class EvaluationDAOImpl implements IService<Evaluation> {
 
     private LocalDateTime toLocalDateTime(Timestamp timestamp) {
         return timestamp == null ? null : timestamp.toLocalDateTime();
-    }
-
-    private LocalDateTime resolveDateFin(Evaluation evaluation) {
-        LocalDateTime dateDebut = evaluation.getDateDebut();
-        if (dateDebut == null) {
-            throw new IllegalArgumentException("date_debut is required to compute date_fin");
-        }
-        LocalDateTime dateFin = dateDebut.plusMinutes(evaluation.getDureeMinutes());
-        evaluation.setDateFin(dateFin);
-        return dateFin;
     }
 }
