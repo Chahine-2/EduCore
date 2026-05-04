@@ -4,19 +4,24 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-
+import javafx.stage.Stage;
 import models.Chapitre;
 import models.Cours;
-
+import utils.NavigationManager;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-
+@SuppressWarnings({
+    "FieldCanBeLocal",  // Les champs @FXML sont assignés par le framework
+    "unused",           // Les méthodes sont appelées par FXML
+    "UnusedAssignment"  // Certaines variables assignées par FXML
+})
 public class LectureChapitreController {
 
     // ── Données partagées depuis EtudiantController ──────────────
@@ -46,7 +51,6 @@ public class LectureChapitreController {
     @FXML private Label   lblUrl;
 
 
-
     // Boutons bas de page
     @FXML private Button btnPrevBottom;
     @FXML private Button btnNextBottom;
@@ -56,55 +60,67 @@ public class LectureChapitreController {
     // ─────────────────────────────────────────────────────────────
     @FXML
     void initialize() {
-        if (tousChapitres == null || tousChapitres.isEmpty()) return;
+        try {
+            System.out.println("🔧 Initialisation LectureChapitreController...");
 
-        // Trouver l'index du chapitre actuel
-        if (chapitreActuel != null) {
-            for (int i = 0; i < tousChapitres.size(); i++) {
-                if (tousChapitres.get(i).getId() == chapitreActuel.getId()) {
-                    indexActuel = i;
-                    break;
+            if (tousChapitres == null || tousChapitres.isEmpty()) {
+                System.out.println("⚠️ Aucun chapitre disponible");
+                return;
+            }
+
+            // Trouver l'index du chapitre actuel
+            if (chapitreActuel != null) {
+                for (int i = 0; i < tousChapitres.size(); i++) {
+                    if (tousChapitres.get(i).getId() == chapitreActuel.getId()) {
+                        indexActuel = i;
+                        break;
+                    }
                 }
             }
-        }
 
-         // Configurer le sommaire (affichage personnalisé)
-         listViewSommaire.setCellFactory(lv -> new ListCell<Chapitre>() {
-             @Override
-             protected void updateItem(Chapitre ch, boolean empty) {
-                 super.updateItem(ch, empty);
-                 if (empty || ch == null) {
-                     setText(null);
-                     setGraphic(null);
-                     setStyle("-fx-background-color: transparent;");
-                 } else {
-                     String icone = getIconeType(ch.getTypeContenu());
-                     // Ajouter un badge "Masqué" si le chapitre n'est pas visible
-                     String masque = !ch.isVisible() ? " 👁‍🗨" : "";
-                     setText(icone + "  " + ch.getOrdre() + ". " + ch.getTitre() + masque);
-                     setStyle(
-                         "-fx-text-fill: #475569;" +
-                         "-fx-font-size: 13;" +
-                         "-fx-padding: 10 15;" +
-                         "-fx-background-color: transparent;" +
-                         "-fx-border-color: transparent;" +
-                         "-fx-cursor: hand;"
-                     );
+             // Configurer le sommaire (affichage personnalisé)
+             listViewSommaire.setCellFactory(lv -> new ListCell<Chapitre>() {
+                 @Override
+                 protected void updateItem(Chapitre ch, boolean empty) {
+                     super.updateItem(ch, empty);
+                     if (empty || ch == null) {
+                         setText(null);
+                         setGraphic(null);
+                         setStyle("-fx-background-color: transparent;");
+                     } else {
+                         String icone = getIconeType(ch.getTypeContenu());
+                         // Ajouter un badge "Masqué" si le chapitre n'est pas visible
+                         String masque = !ch.isVisible() ? " 👁‍🗨" : "";
+                         setText(icone + "  " + ch.getOrdre() + ". " + ch.getTitre() + masque);
+                         setStyle(
+                             "-fx-text-fill: #475569;" +
+                             "-fx-font-size: 13;" +
+                             "-fx-padding: 10 15;" +
+                             "-fx-background-color: transparent;" +
+                             "-fx-border-color: transparent;" +
+                             "-fx-cursor: hand;"
+                         );
 
-                     // Style conditionnel pour l'élément sélectionné
-                     if (isSelected()) {
-                         setStyle(getStyle() + "-fx-background-color: #e0e7ff; -fx-text-fill: #4338ca; -fx-font-weight: bold; -fx-background-radius: 6;");
+                         // Style conditionnel pour l'élément sélectionné
+                         if (isSelected()) {
+                             setStyle(getStyle() + "-fx-background-color: #e0e7ff; -fx-text-fill: #4338ca; -fx-font-weight: bold; -fx-background-radius: 6;");
+                         }
                      }
                  }
-             }
-         });
+             });
 
-        // Remplir le sommaire
-        listViewSommaire.getItems().setAll(tousChapitres);
-        lblSommaireTotal.setText(tousChapitres.size() + " chapitre(s)");
+            // Remplir le sommaire
+            listViewSommaire.getItems().setAll(tousChapitres);
+            lblSommaireTotal.setText(tousChapitres.size() + " chapitre(s)");
 
-        // Afficher le chapitre courant
-        afficherChapitre(indexActuel);
+            // Afficher le chapitre courant
+            afficherChapitre(indexActuel);
+            System.out.println("✅ LectureChapitreController initialisé avec succès");
+        } catch (Exception e) {
+            System.out.println("❌ ERREUR lors de l'initialisation de LectureChapitreController :");
+            System.out.println("    Message : " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     // ── Afficher un chapitre par index ───────────────────────────
@@ -192,17 +208,19 @@ public class LectureChapitreController {
         }
     }
 
-    // ── Retour à la liste des cours ──────────────────────────────
+    // ── Retour à la liste des cours ──────────────────────────
     @FXML
     public void retour(ActionEvent event) {
-
-        
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Etudiant.fxml"));
-            Parent root = loader.load();
-            lblTitreChapitre.getScene().setRoot(root);
-        } catch (IOException e) {
-            System.out.println("Erreur retour : " + e.getMessage());
+            Scene scene = lblTitreChapitre.getScene();
+            if (scene != null) {
+                NavigationManager.navigateTo(scene, "/Etudiant.fxml");
+            } else {
+                System.out.println("⚠️ Erreur : Scène non trouvée");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur retour : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -227,7 +245,20 @@ public class LectureChapitreController {
             }
         }
     }
+    @FXML
+    public void ouvrirChatBot(ActionEvent event) {
+        try {
+            // Passer les données au ChatBot
+            ChatBotController.coursActuel    = coursActuel;
+            ChatBotController.chapitreActuel = chapitreActuel;
 
+            NavigationManager.openNewWindow("/ChatBot.fxml", "🤖 Assistant IA — " + chapitreActuel.getTitre());
+        } catch (Exception e) {
+            System.out.println("❌ Erreur ChatBot : " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir l'assistant", e.getMessage());
+        }
+    }
     @FXML
     public void telechargerSupport(ActionEvent event) {
         // Le téléchargement peut être une simple ouverture ou copie.

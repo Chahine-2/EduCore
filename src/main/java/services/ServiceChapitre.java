@@ -23,15 +23,13 @@ public class ServiceChapitre implements IService<Chapitre> {
             ps.setInt(4, c.getDureeMinutes());
             ps.setString(5, c.getTypeContenu());
             ps.setString(6, c.getUrlContenu());
-            // Protection contre dateCreation null
-            java.time.LocalDate dateCreation = c.getDateCreation() != null ? c.getDateCreation() : java.time.LocalDate.now();
-            ps.setDate(7, Date.valueOf(dateCreation));
+            ps.setDate(7, Date.valueOf(c.getDateCreation()));
             ps.setInt(8, c.getCoursId());
             ps.setBoolean(9, c.isVisible());
             ps.executeUpdate();
             System.out.println("Chapitre ajouté ✅");
         } catch (SQLException e) {
-            System.out.println("Erreur add chapitre : " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -46,16 +44,14 @@ public class ServiceChapitre implements IService<Chapitre> {
             ps.setInt(4, c.getDureeMinutes());
             ps.setString(5, c.getTypeContenu());
             ps.setString(6, c.getUrlContenu());
-            // Protection contre dateCreation null
-            java.time.LocalDate dateCreation = c.getDateCreation() != null ? c.getDateCreation() : java.time.LocalDate.now();
-            ps.setDate(7, Date.valueOf(dateCreation));
+            ps.setDate(7, Date.valueOf(c.getDateCreation()));
             ps.setInt(8, c.getCoursId());
             ps.setBoolean(9, c.isVisible());
             ps.setInt(10, c.getId());
             ps.executeUpdate();
             System.out.println("Chapitre modifié ✅");
         } catch (SQLException e) {
-            System.out.println("Erreur update chapitre : " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -123,14 +119,10 @@ public class ServiceChapitre implements IService<Chapitre> {
         c.setDureeMinutes(rs.getInt("duree_minutes"));
         c.setTypeContenu(rs.getString("type_contenu"));
         c.setUrlContenu(rs.getString("url_contenu"));
+        c.setVisible(rs.getBoolean("visible"));           // ← ajouté
         if (rs.getDate("date_creation") != null)
             c.setDateCreation(rs.getDate("date_creation").toLocalDate());
         c.setCoursId(rs.getInt("cours_id"));
-        try {
-            c.setVisible(rs.getBoolean("visible"));  // ✅ Lire la visibilité depuis la BDD
-        } catch (SQLException ignored) {
-            c.setVisible(true); // Par défaut visible si la colonne n'existe pas
-        }
         return c;
     }
 }

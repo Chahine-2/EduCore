@@ -6,23 +6,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import models.Chapitre;
 import models.Cours;
 import services.ServiceChapitre;
 import services.ServiceCours;
+import utils.NavigationManager;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({
+    "FieldCanBeLocal",  // Les champs @FXML sont assignés par le framework
+    "unused"            // Les méthodes sont appelées par FXML
+})
 public class EtudiantController {
 
     // ── Filtres reçus de l'Accueil ─────────────
@@ -36,39 +37,78 @@ public class EtudiantController {
     @FXML private FlowPane          flowPaneCours;
     @FXML private Label             lblCompteur;
 
-    private ServiceCours    serviceCours    = new ServiceCours();
+    private ServiceCours serviceCours    = new ServiceCours();
     private ServiceChapitre serviceChapitre = new ServiceChapitre();
     private List<Cours>     tousLesCours;   // cache de tous les cours
 
     // ───────────────────────────────────────────
     @FXML
     void initialize() {
+        try {
+            System.out.println("🔧 Initialisation EtudiantController...");
 
-        // Remplir les ComboBox de filtre
-        cbFiltreNiveau.getItems().addAll("Tous", "debutant", "intermediaire", "avance");
-        cbFiltreCategorie.getItems().addAll("Tous", "informatique", "mecanique", "electrique");
+            // Remplir les ComboBox de filtre
+            cbFiltreNiveau.getItems().addAll("Tous", "debutant", "intermediaire", "avance");
+            cbFiltreCategorie.getItems().addAll("Tous", "informatique", "mecanique", "electrique");
 
-        // Appliquer les filtres reçus de l'Accueil si disponibles
-        if (categorieFiltre != null) {
-            cbFiltreCategorie.setValue(categorieFiltre);
-        } else {
-            cbFiltreCategorie.setValue("Tous");
+            // Appliquer les filtres reçus de l'Accueil si disponibles
+            if (categorieFiltre != null) {
+                cbFiltreCategorie.setValue(categorieFiltre);
+            } else {
+                cbFiltreCategorie.setValue("Tous");
+            }
+
+            if (niveauFiltre != null) {
+                cbFiltreNiveau.setValue(niveauFiltre);
+            } else {
+                cbFiltreNiveau.setValue("Tous");
+            }
+
+            // Charger tous les cours
+            chargerTousLesCours();
+            System.out.println("✅ EtudiantController initialisé avec succès");
+        } catch (Exception e) {
+            System.out.println("❌ ERREUR lors de l'initialisation d'EtudiantController :");
+            System.out.println("    Message : " + e.getMessage());
+            e.printStackTrace();
+
+            // Afficher un dialogue d'erreur
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur d'initialisation");
+            alert.setHeaderText("Impossible de charger l'interface");
+            alert.setContentText("Erreur : " + e.getMessage() + "\n\nVérifiez la console pour plus de détails.");
+            alert.showAndWait();
         }
-
-        if (niveauFiltre != null) {
-            cbFiltreNiveau.setValue(niveauFiltre);
-        } else {
-            cbFiltreNiveau.setValue("Tous");
-        }
-
-        // Charger tous les cours
-        chargerTousLesCours();
     }
 
     // ── Charger tous les cours ──────────────────
     private void chargerTousLesCours() {
-        tousLesCours = serviceCours.getAll();
-        appliquerFiltres();
+        try {
+            System.out.println("📚 Chargement des cours...");
+            tousLesCours = serviceCours.getAll();
+            
+            if (tousLesCours == null) {
+                System.out.println("⚠️ Aucun cours disponible (tousLesCours est null)");
+                tousLesCours = new java.util.ArrayList<>();
+            } else {
+                System.out.println("✅ " + tousLesCours.size() + " cours(s) chargé(s)");
+            }
+            
+            appliquerFiltres();
+        } catch (Exception e) {
+            System.out.println("❌ ERREUR lors du chargement des cours :");
+            System.out.println("    Message : " + e.getMessage());
+            e.printStackTrace();
+            
+            // Créer une liste vide en fallback
+            tousLesCours = new java.util.ArrayList<>();
+            
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Erreur de chargement");
+            alert.setHeaderText("Impossible de charger les cours");
+            alert.setContentText("Erreur : " + e.getMessage() + "\n\nAucun cours n'est disponible pour le moment.");
+            alert.showAndWait();
+        }
     }
 
     // ── Créer une carte de cours (Design type Dashboard) ─
@@ -145,25 +185,25 @@ public class EtudiantController {
 
      // ── Ouvrir le premier chapitre du cours sélectionné ─────────
      private void ouvrirCours(Cours cours) {
-         List<Chapitre> chapitres = serviceChapitre.getByCours(cours.getId());
-
-         // Filtrer seulement les chapitres visibles pour les étudiants
-         if (chapitres != null) {
-             chapitres = chapitres.stream()
-                     .filter(Chapitre::isVisible)
-                     .collect(Collectors.toList());
-         }
-
-         if (chapitres == null || chapitres.isEmpty()) {
-             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-             alert.setTitle("Cours vide");
-             alert.setHeaderText(null);
-             alert.setContentText("Ce cours ne contient aucun chapitre pour le moment.");
-             alert.showAndWait();
-             return;
-         }
-
          try {
+             List<Chapitre> chapitres = serviceChapitre.getByCours(cours.getId());
+
+             // Filtrer seulement les chapitres visibles pour les étudiants
+             if (chapitres != null) {
+                 chapitres = chapitres.stream()
+                         .filter(Chapitre::isVisible)
+                         .collect(Collectors.toList());
+             }
+
+             if (chapitres == null || chapitres.isEmpty()) {
+                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                 alert.setTitle("Cours vide");
+                 alert.setHeaderText(null);
+                 alert.setContentText("Ce cours ne contient aucun chapitre pour le moment.");
+                 alert.showAndWait();
+                 return;
+             }
+
              // On charge le premier chapitre
              Chapitre premierChapitre = chapitres.get(0);
 
@@ -172,15 +212,19 @@ public class EtudiantController {
              LectureChapitreController.chapitreActuel = premierChapitre;
              LectureChapitreController.tousChapitres  = chapitres;
 
-             FXMLLoader loader = new FXMLLoader(getClass().getResource("/LectureChapitre.fxml"));
-             Parent root = loader.load();
-             flowPaneCours.getScene().setRoot(root);
+             // Utiliser NavigationManager pour une navigation sûre
+             Scene scene = flowPaneCours.getScene();
+             if (scene != null) {
+                 NavigationManager.navigateTo(scene, "/LectureChapitre.fxml");
+             } else {
+                 throw new RuntimeException("La scène n'a pas pu être obtenue");
+             }
          } catch (Exception e) {
              System.out.println("==================================================");
-             System.out.println("ERREUR CRITIQUE lors de l'ouverture du chapitre :");
+             System.out.println("❌ ERREUR CRITIQUE lors de l'ouverture du chapitre :");
              e.printStackTrace();
              System.out.println("==================================================");
-             
+
              Alert alert = new Alert(Alert.AlertType.ERROR);
              alert.setTitle("Erreur de chargement");
              alert.setHeaderText("Impossible d'ouvrir le lecteur de cours");
@@ -233,16 +277,20 @@ public class EtudiantController {
 
         lblCompteur.setText(resultats.size() + " résultats");
     }
-    @FXML
-    public void retour(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
-            Parent root = loader.load();
-            flowPaneCours.getScene().setRoot(root);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+     @FXML
+     public void retour(ActionEvent event) {
+         try {
+             Scene scene = flowPaneCours.getScene();
+             if (scene != null) {
+                 NavigationManager.navigateTo(scene, "/Accueil.fxml");
+             } else {
+                 System.out.println("⚠️ Erreur : Scène non trouvée");
+             }
+         } catch (Exception e) {
+             System.out.println("❌ Erreur retour : " + e.getMessage());
+             e.printStackTrace();
+         }
+     }
 
     // ── Reset tous les filtres ──────────────────
     @FXML

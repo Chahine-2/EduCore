@@ -4,12 +4,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import utils.NavigationManager;
 
 import java.io.IOException;
 
+@SuppressWarnings({
+    "FieldCanBeLocal",  // Les champs @FXML sont assignés par le framework
+    "unused"            // Les méthodes sont appelées par FXML
+})
 public class AccueilController {
 
     // ── Catégorie ──────────────────────────────
@@ -99,11 +105,15 @@ public class AccueilController {
             EtudiantController.categorieFiltre = categorieChoisie;
             EtudiantController.niveauFiltre    = niveauChoisi;
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Etudiant.fxml"));
-            Parent root = loader.load();
-            btnContinuer.getScene().setRoot(root);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+            Scene scene = btnContinuer.getScene();
+            if (scene != null) {
+                NavigationManager.navigateTo(scene, "/Etudiant.fxml");
+            } else {
+                System.out.println("⚠️ Erreur : Scène non trouvée");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

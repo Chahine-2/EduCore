@@ -15,27 +15,27 @@
     <top>
         <HBox alignment="CENTER_LEFT" spacing="0"
               style="-fx-background-color: #ffffff;
-                     -fx-border-color: #e2e8f0;
-                     -fx-border-width: 0 0 1 0;
-                     -fx-padding: 0 20 0 0;
-                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+                 -fx-border-color: #e2e8f0;
+                 -fx-border-width: 0 0 1 0;
+                 -fx-padding: 0 20 0 0;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
 
             <!-- Bouton retour -->
             <Button text="← Retour aux cours"
                     onAction="#retour"
                     style="-fx-background-color: transparent;
-                           -fx-text-fill: #64748b;
-                           -fx-font-size: 13;
-                           -fx-font-weight: bold;
-                           -fx-padding: 18 20;
-                           -fx-cursor: hand;
-                           -fx-border-color: transparent;"/>
+                       -fx-text-fill: #64748b;
+                       -fx-font-size: 13;
+                       -fx-font-weight: bold;
+                       -fx-padding: 18 20;
+                       -fx-cursor: hand;
+                       -fx-border-color: transparent;"/>
 
             <!-- Séparateur vertical -->
             <Separator orientation="VERTICAL"
                        style="-fx-background-color: #e2e8f0; -fx-pref-height: 30;"/>
 
-            <!-- Fil d'ariane : Cours > Chapitre -->
+            <!-- Fil d'ariane -->
             <HBox alignment="CENTER_LEFT" spacing="6" style="-fx-padding: 0 0 0 20;">
                 <Label fx:id="lblNomCours"
                        style="-fx-text-fill: #64748b; -fx-font-size: 14;"/>
@@ -47,44 +47,51 @@
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <!-- Compteur progression -->
+            <!-- Progression -->
             <HBox alignment="CENTER" spacing="12">
                 <Label fx:id="lblProgression"
                        style="-fx-text-fill: #64748b; -fx-font-size: 13; -fx-font-weight: bold;"/>
-                <!-- Barre de progression -->
                 <ProgressBar fx:id="progressBar"
                              prefWidth="150" prefHeight="8"
-                             style="-fx-accent: #3b82f6; -fx-control-inner-background: #e2e8f0; -fx-background-radius: 4;"/>
+                             style="-fx-accent: #3b82f6;
+                                -fx-control-inner-background: #e2e8f0;
+                                -fx-background-radius: 4;"/>
             </HBox>
 
             <Separator orientation="VERTICAL"
                        style="-fx-background-color: #e2e8f0; -fx-pref-height: 30; -fx-padding: 0 15 0 15;"/>
 
-            <!-- Navigation chapitre -->
-            <HBox alignment="CENTER" spacing="8" style="-fx-padding: 0 0 0 10;">
-                <Button fx:id="btnPrecedent" text="‹ Précédent"
-                        onAction="#chapitrePrec"
-                        style="-fx-background-color: #f1f5f9;
-                               -fx-text-fill: #475569;
-                               -fx-border-color: #cbd5e1;
-                               -fx-border-radius: 6;
-                               -fx-background-radius: 6;
-                               -fx-font-size: 13;
-                               -fx-font-weight: bold;
-                               -fx-padding: 8 16;
-                               -fx-cursor: hand;"/>
-                <Button fx:id="btnSuivant" text="Suivant ›"
-                        onAction="#chapitreNext"
-                        style="-fx-background-color: #3b82f6;
-                               -fx-text-fill: white;
-                               -fx-border-radius: 6;
-                               -fx-background-radius: 6;
-                               -fx-font-size: 13;
-                               -fx-font-weight: bold;
-                               -fx-padding: 8 16;
-                               -fx-cursor: hand;
-                               -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.3), 8, 0, 0, 2);"/>
-            </HBox>
+            <!-- ✅ Bouton Assistant IA ajouté ici -->
+            <Button text="🤖 Assistant IA"
+                    onAction="#ouvrirChatBot"
+                    style="-fx-background-color: #8e44ad;
+                       -fx-text-fill: white;
+                       -fx-font-weight: bold;
+                       -fx-padding: 10 18;
+                       -fx-background-radius: 8;
+                       -fx-cursor: hand;
+                       -fx-margin: 0 10 0 10;"/>
+
+            <Separator orientation="VERTICAL"
+                       style="-fx-background-color: #e2e8f0; -fx-pref-height: 30;"/>
+
+            <!-- Navigation Précédent / Suivant -->
+            <Button fx:id="btnPrecedent" text="◀ Précédent"
+                    onAction="#chapitrePrec"
+                    style="-fx-background-color: transparent;
+                       -fx-text-fill: #64748b;
+                       -fx-font-size: 13;
+                       -fx-padding: 10 15;
+                       -fx-cursor: hand;"/>
+
+            <Button fx:id="btnSuivant" text="Suivant ▶"
+                    onAction="#chapitreNext"
+                    style="-fx-background-color: transparent;
+                       -fx-text-fill: #64748b;
+                       -fx-font-size: 13;
+                       -fx-padding: 10 15;
+                       -fx-cursor: hand;"/>
+
         </HBox>
     </top>
 

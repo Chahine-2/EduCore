@@ -8,11 +8,11 @@ public class Chapitre {
     private String description;
     private int ordre;
     private int dureeMinutes;
-    private String typeContenu;   // video / texte / pdf / quiz
+    private String typeContenu;
     private String urlContenu;
     private LocalDate dateCreation;
     private int coursId;
-    private boolean visible = true;  // Visible par défaut
+    private boolean visible = true;   // ← ajouté
 
     public Chapitre() {}
 
@@ -27,6 +27,7 @@ public class Chapitre {
         this.urlContenu    = urlContenu;
         this.dateCreation  = dateCreation;
         this.coursId       = coursId;
+        this.visible       = true;
     }
 
     public int getId() { return id; }
@@ -56,8 +57,8 @@ public class Chapitre {
     public int getCoursId() { return coursId; }
     public void setCoursId(int coursId) { this.coursId = coursId; }
 
-    public boolean isVisible() { return visible; }
-    public void setVisible(boolean visible) { this.visible = visible; }
+    public boolean isVisible() { return visible; }        // ← ajouté
+    public void setVisible(boolean visible) { this.visible = visible; }  // ← ajouté
 
     @Override
     public String toString() {
@@ -67,8 +68,7 @@ public class Chapitre {
                 ", ordre=" + ordre +
                 ", type='" + typeContenu + "'" +
                 ", duree=" + dureeMinutes + "min" +
-                ", url='" + urlContenu + "'" +
-                ", dateCreation=" + dateCreation +
+                ", visible=" + visible +
                 ", coursId=" + coursId +
                 "}\n";
     }

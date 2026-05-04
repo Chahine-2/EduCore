@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ChatBotController"
+            prefWidth="700" prefHeight="600">
+
+    <!-- HAUT -->
+    <top>
+        <VBox style="-fx-background-color: #1a5276; -fx-padding: 15;">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="🤖 Assistant IA — EduCore"
+                       style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="✕ Fermer"
+                        onAction="#fermer"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 5 10;"/>
+            </HBox>
+            <Label fx:id="lblContexte"
+                   style="-fx-text-fill: #aed6f1; -fx-font-size: 12;"/>
+        </VBox>
+    </top>
+
+    <!-- CENTER — Boutons rapides + Chat -->
+    <center>
+        <VBox spacing="10" style="-fx-padding: 10;">
+
+            <!-- Boutons actions rapides -->
+            <HBox spacing="8">
+                <Button text="📝 Résumer le chapitre"
+                        onAction="#resumerChapitre"
+                        style="-fx-background-color: #2980b9; -fx-text-fill: white;
+                               -fx-padding: 8 12; -fx-background-radius: 20;"/>
+                <Button text="❓ Générer un Quiz"
+                        onAction="#genererQuiz"
+                        style="-fx-background-color: #8e44ad; -fx-text-fill: white;
+                               -fx-padding: 8 12; -fx-background-radius: 20;"/>
+                <Button text="💡 Points clés"
+                        onAction="#pointsCles"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white;
+                               -fx-padding: 8 12; -fx-background-radius: 20;"/>
+                <Button text="🔄 Effacer"
+                        onAction="#effacerChat"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white;
+                               -fx-padding: 8 12; -fx-background-radius: 20;"/>
+            </HBox>
+
+            <!-- Zone de chat -->
+            <ScrollPane fx:id="scrollPane" VBox.vgrow="ALWAYS"
+                        fitToWidth="true"
+                        style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6;">
+                <VBox fx:id="chatBox" spacing="10" style="-fx-padding: 15;"/>
+            </ScrollPane>
+
+        </VBox>
+    </center>
+
+    <!-- BAS — Zone de saisie -->
+    <bottom>
+        <HBox spacing="10"
+              style="-fx-padding: 10; -fx-background-color: #ffffff;
+                     -fx-border-top: 1 solid #dee2e6;">
+            <TextField fx:id="tfMessage"
+                       promptText="Posez votre question..."
+                       HBox.hgrow="ALWAYS"
+                       onAction="#envoyerMessage"
+                       style="-fx-padding: 10; -fx-background-radius: 20;
+                              -fx-border-radius: 20; -fx-border-color: #dee2e6;"/>
+            <Button text="📤 Envoyer"
+                    onAction="#envoyerMessage"
+                    style="-fx-background-color: #1a5276; -fx-text-fill: white;
+                           -fx-padding: 10 20; -fx-background-radius: 20;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

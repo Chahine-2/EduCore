@@ -8,12 +8,12 @@ public class Cours {
     private String description;
     private String objectifs;
     private int dureeHeures;
-    private String niveau;       // debutant / intermediaire / avance
-    private String categorie;    // informatique / mecanique / electrique
+    private String niveau;
+    private String categorie;
     private boolean estCertifiant;
     private LocalDate dateDebut;
     private LocalDate dateFin;
-    private boolean visible = true;  // Visible par défaut
+    private boolean visible = true;   // ← ajouté
 
     public Cours() {}
 
@@ -30,6 +30,7 @@ public class Cours {
         this.estCertifiant = estCertifiant;
         this.dateDebut     = dateDebut;
         this.dateFin       = dateFin;
+        this.visible       = true;
     }
 
     public int getId() { return id; }
@@ -62,8 +63,8 @@ public class Cours {
     public LocalDate getDateFin() { return dateFin; }
     public void setDateFin(LocalDate dateFin) { this.dateFin = dateFin; }
 
-    public boolean isVisible() { return visible; }
-    public void setVisible(boolean visible) { this.visible = visible; }
+    public boolean isVisible() { return visible; }        // ← ajouté
+    public void setVisible(boolean visible) { this.visible = visible; }  // ← ajouté
 
     @Override
     public String toString() {
@@ -74,6 +75,7 @@ public class Cours {
                 ", categorie='" + categorie + "'" +
                 ", duree=" + dureeHeures + "h" +
                 ", certifiant=" + estCertifiant +
+                ", visible=" + visible +
                 ", debut=" + dateDebut +
                 ", fin=" + dateFin +
                 "}\n";

@@ -4,14 +4,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import models.Cours;
 import services.ServiceCours;
-
+import utils.NavigationManager;
 import java.io.IOException;
 import java.time.LocalDate;
 
+@SuppressWarnings({
+    "FieldCanBeLocal",  // Les champs @FXML sont assignés par le framework
+    "unused"            // Les méthodes sont appelées par FXML
+})
 public class GestionCoursController {
 
     // fx:id du FXML → doivent correspondre exactement
@@ -38,33 +43,49 @@ public class GestionCoursController {
 
     @FXML
     void initialize() {
-        cbNiveau.getItems().addAll("debutant", "intermediaire", "avance");
-        cbCategorie.getItems().addAll("informatique", "mecanique", "electrique");
+        try {
+            System.out.println("🔧 Initialisation GestionCoursController...");
 
-        // Configurer le Spinner pour les heures (1 à 200)
-        spinDuree.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200, 1)
-        );
+            cbNiveau.getItems().addAll("debutant", "intermediaire", "avance");
+            cbCategorie.getItems().addAll("informatique", "mecanique", "electrique");
 
-        // Configurer les colonnes de la TableView
-        colId.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("id"));
-        colTitre.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("titre"));
-        colNiveau.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("niveau"));
-        colCategorie.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("categorie"));
-        colDuree.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("dureeHeures"));
-        colCertifiant.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("estCertifiant"));
+            // Configurer le Spinner pour les heures (1 à 200)
+            spinDuree.setValueFactory(
+                    new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200, 1)
+            );
 
-        // Ajouter listener pour sélectionner une ligne dans la table
-        tableViewCours.setOnMouseClicked(this::selectCoursInTable);
+            // Configurer les colonnes de la TableView
+            colId.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("id"));
+            colTitre.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("titre"));
+            colNiveau.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("niveau"));
+            colCategorie.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("categorie"));
+            colDuree.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("dureeHeures"));
+            colCertifiant.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("estCertifiant"));
 
-        // Charger les cours dans la table
-        refreshTable();
+            // Ajouter listener pour sélectionner une ligne dans la table
+            tableViewCours.setOnMouseClicked(this::selectCoursInTable);
+
+            // Charger les cours dans la table
+            refreshTable();
+
+            System.out.println("✅ GestionCoursController initialisé avec succès");
+        } catch (Exception e) {
+            System.out.println("❌ ERREUR lors de l'initialisation de GestionCoursController :");
+            System.out.println("    Message : " + e.getMessage());
+            e.printStackTrace();
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur d'initialisation");
+            alert.setHeaderText("Impossible de charger l'interface");
+            alert.setContentText("Erreur : " + e.getMessage() + "\n\nVérifiez la console pour plus de détails.");
+            alert.showAndWait();
+        }
     }
 
     private void refreshTable() {
@@ -148,11 +169,15 @@ public class GestionCoursController {
         // Passer à la scène des détails
         try {
             DetailsCoursController.cours = c;
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DetailsCours.fxml"));
-            Parent root = loader.load();
-            tfTitre.getScene().setRoot(root);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+            Scene scene = tfTitre.getScene();
+            if (scene != null) {
+                NavigationManager.navigateTo(scene, "/DetailsCours.fxml");
+            } else {
+                System.out.println("⚠️ Erreur : Scène non trouvée");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -223,13 +248,17 @@ public class GestionCoursController {
 
         // Passer le cours sélectionné au contrôleur des détails
         DetailsCoursController.cours = selected;
-        
+
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DetailsCours.fxml"));
-            Parent root = loader.load();
-            tableViewCours.getScene().setRoot(root);
-        } catch (IOException e) {
-            System.out.println("Erreur lors du chargement: " + e.getMessage());
+            Scene scene = tableViewCours.getScene();
+            if (scene != null) {
+                NavigationManager.navigateTo(scene, "/DetailsCours.fxml");
+            } else {
+                System.out.println("⚠️ Erreur : Scène non trouvée");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -14,6 +15,7 @@ import javafx.stage.FileChooser;
 import models.Chapitre;
 import models.Cours;
 import services.ServiceChapitre;
+import utils.NavigationManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +29,10 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.Optional;
 
+@SuppressWarnings({
+    "FieldCanBeLocal",  // Les champs @FXML sont assignés par le framework
+    "unused"            // Les méthodes sont appelées par FXML
+})
 public class DetailsCoursController {
 
     public static Cours cours = new Cours();
@@ -54,37 +60,53 @@ public class DetailsCoursController {
 
     @FXML
     void initialize() {
-        // Configurer les colonnes de la TableView
-        colOrdre.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("ordre"));
-        colTitreChap.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("titre"));
-        colType.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("typeContenu"));
-        colDureeMin.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("dureeMinutes"));
-        colVisible.setCellValueFactory(
-                new javafx.scene.control.cell.PropertyValueFactory<>("visible"));
+        try {
+            System.out.println("🔧 Initialisation DetailsCoursController...");
 
-        // Afficher les booléens comme "Visible" / "Masqué"
-        colVisible.setCellFactory(col -> new javafx.scene.control.TableCell<Chapitre, Boolean>() {
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item ? "👁 Visible" : "👁‍🗨 Masqué");
-                    setStyle(item ? "-fx-text-fill: #10b981; -fx-font-weight: bold;" : "-fx-text-fill: #ef4444; -fx-font-weight: bold;");
+            // Configurer les colonnes de la TableView
+            colOrdre.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("ordre"));
+            colTitreChap.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("titre"));
+            colType.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("typeContenu"));
+            colDureeMin.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("dureeMinutes"));
+            colVisible.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("visible"));
+
+            // Afficher les booléens comme "Visible" / "Masqué"
+            colVisible.setCellFactory(col -> new javafx.scene.control.TableCell<Chapitre, Boolean>() {
+                @Override
+                protected void updateItem(Boolean item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item ? "👁 Visible" : "👁‍🗨 Masqué");
+                        setStyle(item ? "-fx-text-fill: #10b981; -fx-font-weight: bold;" : "-fx-text-fill: #ef4444; -fx-font-weight: bold;");
+                    }
                 }
-            }
-        });
+            });
 
-        // Ajouter listener pour sélectionner une ligne
-        tableViewChapitres.setOnMouseClicked(this::selectChapitreInTable);
+            // Ajouter listener pour sélectionner une ligne
+            tableViewChapitres.setOnMouseClicked(this::selectChapitreInTable);
 
-        afficherDetails();
-        chargerChapitres();
+            afficherDetails();
+            chargerChapitres();
+
+            System.out.println("✅ DetailsCoursController initialisé avec succès");
+        } catch (Exception e) {
+            System.out.println("❌ ERREUR lors de l'initialisation de DetailsCoursController :");
+            System.out.println("    Message : " + e.getMessage());
+            e.printStackTrace();
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur d'initialisation");
+            alert.setHeaderText("Impossible de charger l'interface");
+            alert.setContentText("Erreur : " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     public void afficherDetails() {
@@ -344,11 +366,15 @@ public class DetailsCoursController {
     @FXML
     public void retour(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionCours.fxml"));
-            Parent root = loader.load();
-            lblTitre.getScene().setRoot(root);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+            Scene scene = lblTitre.getScene();
+            if (scene != null) {
+                NavigationManager.navigateTo(scene, "/GestionCours.fxml");
+            } else {
+                System.out.println("⚠️ Erreur : Scène non trouvée");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

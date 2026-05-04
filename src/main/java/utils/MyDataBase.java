@@ -13,14 +13,20 @@ public class MyDataBase {
     private Connection cnx ;
 
     private MyDataBase() {
-
         try {
+            // Chargement explicite du driver (utile si Maven est désynchronisé)
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            
             this.cnx = DriverManager.getConnection(URL,USERNAME,PASSWORD);
-            System.out.println("Conncted ......");
+            System.out.println("✅ Base de données connectée avec succès!");
+        } catch (ClassNotFoundException e) {
+            System.out.println("❌ Driver MySQL introuvable. Vérifiez votre pom.xml et rechargez Maven.");
+            e.printStackTrace();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("❌ ERREUR DE CONNEXION À LA BASE DE DONNÉES :");
+            System.out.println("Vérifiez que WAMP/XAMPP est allumé et que la base 'gestion_educative' existe.");
+            System.out.println("Message: " + e.getMessage());
         }
-
     }
 
     public static MyDataBase getInstance() {

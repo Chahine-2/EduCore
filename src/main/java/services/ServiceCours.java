@@ -16,7 +16,7 @@ public class ServiceCours implements IService<Cours> {
     public void add(Cours c) {
         String req = "INSERT INTO cours (titre, description, objectifs, duree_heures, niveau, categorie, est_certifiant, date_debut, date_fin, visible) VALUES (?,?,?,?,?,?,?,?,?,?)";
         try {
-            PreparedStatement ps = cnx.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = cnx.prepareStatement(req);
             ps.setString(1, c.getTitre());
             ps.setString(2, c.getDescription());
             ps.setString(3, c.getObjectifs());
@@ -24,20 +24,13 @@ public class ServiceCours implements IService<Cours> {
             ps.setString(5, c.getNiveau());
             ps.setString(6, c.getCategorie());
             ps.setBoolean(7, c.isEstCertifiant());
-            ps.setDate(8, Date.valueOf(c.getDateDebut() != null ? c.getDateDebut() : java.time.LocalDate.now()));
-            ps.setDate(9, Date.valueOf(c.getDateFin() != null ? c.getDateFin() : java.time.LocalDate.now().plusMonths(6)));
+            ps.setDate(8, Date.valueOf(c.getDateDebut()));
+            ps.setDate(9, Date.valueOf(c.getDateFin()));
             ps.setBoolean(10, c.isVisible());
             ps.executeUpdate();
-
-            // Récupérer l'ID généré et l'affecter à l'objet Cours
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                c.setId(rs.getInt(1));
-            }
-
             System.out.println("Cours ajouté ✅");
         } catch (SQLException e) {
-            System.out.println("Erreur add cours : " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -53,14 +46,14 @@ public class ServiceCours implements IService<Cours> {
             ps.setString(5, c.getNiveau());
             ps.setString(6, c.getCategorie());
             ps.setBoolean(7, c.isEstCertifiant());
-            ps.setDate(8, Date.valueOf(c.getDateDebut() != null ? c.getDateDebut() : java.time.LocalDate.now()));
-            ps.setDate(9, Date.valueOf(c.getDateFin() != null ? c.getDateFin() : java.time.LocalDate.now().plusMonths(6)));
+            ps.setDate(8, Date.valueOf(c.getDateDebut()));
+            ps.setDate(9, Date.valueOf(c.getDateFin()));
             ps.setBoolean(10, c.isVisible());
             ps.setInt(11, c.getId());
             ps.executeUpdate();
             System.out.println("Cours modifié ✅");
         } catch (SQLException e) {
-            System.out.println("Erreur update cours : " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -168,12 +161,11 @@ public class ServiceCours implements IService<Cours> {
         c.setNiveau(rs.getString("niveau"));
         c.setCategorie(rs.getString("categorie"));
         c.setEstCertifiant(rs.getBoolean("est_certifiant"));
+        c.setVisible(rs.getBoolean("visible"));           // ← ajouté
         if (rs.getDate("date_debut") != null)
             c.setDateDebut(rs.getDate("date_debut").toLocalDate());
         if (rs.getDate("date_fin") != null)
             c.setDateFin(rs.getDate("date_fin").toLocalDate());
-        // Lire la visibilité depuis la BDD (colonne optionnelle : défaut true si absente)
-        try { c.setVisible(rs.getBoolean("visible")); } catch (SQLException ignored) { c.setVisible(true); }
         return c;
     }
 }
