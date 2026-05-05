@@ -386,6 +386,8 @@ public class DetailsCoursController {
         alert.showAndWait();
     }
 
+
+
     // ── FileChooser : ouvrir la boîte de sélection de fichier ───
     private File ouvrirFileChooser() {
         FileChooser fc = new FileChooser();
