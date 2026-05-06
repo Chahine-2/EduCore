@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="15"
+      xmlns="http://javafx.com/javafx/22"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.StatistiquesController"
+      style="-fx-padding: 20; -fx-background-color: #f4f6f9;">
+
+    <Label text="Statistiques"
+           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+    <HBox spacing="10">
+        <Button text="Reservations par materiel" onAction="#afficherReservationsParMateriel"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Button text="Materiel le plus demande"  onAction="#afficherMaterielPlusDemande"
+                style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Button text="Materiels par etat"        onAction="#afficherMaterielsParEtat"
+                style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Button text="Reservations ce mois"      onAction="#afficherReservationsMois"
+                style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <TextArea fx:id="taResultat" prefHeight="400" prefWidth="760"
+              editable="false"
+              style="-fx-font-size: 14px; -fx-font-family: monospace;"/>
+
+</VBox>
