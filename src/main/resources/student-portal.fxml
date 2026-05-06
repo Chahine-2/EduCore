@@ -6,49 +6,54 @@
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:id="root"
             fx:controller="controllers.StudentPortalController"
-            styleClass="root-portal portal-root"
-            stylesheets="/styles/student-portal.css"
+            style="-fx-font-family: 'Segoe UI'; -fx-background-color: linear-gradient(to bottom right, #eef2ff, #f8fafc);"
             prefWidth="1100" prefHeight="820">
 
     <top>
         <VBox spacing="0">
-            <HBox styleClass="portal-hero" alignment="TOP_LEFT" spacing="24">
+            <HBox alignment="TOP_LEFT" spacing="24" style="-fx-padding: 22 28; -fx-background-color: rgba(255,255,255,0.88); -fx-border-color: #dbeafe; -fx-border-width: 0 0 1 0;">
                 <VBox spacing="4" HBox.hgrow="ALWAYS">
-                    <Label text="EDUCORE" styleClass="portal-brand"/>
-                    <Label text="Your assessments" styleClass="portal-title"/>
+                    <Label text="EDUCORE" style="-fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #4f46e5;"/>
+                    <Label text="Your assessments" style="-fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
                     <Label text="Quizzes that are open right now appear below. Enter your student ID once, then start an assessment."
-                           styleClass="portal-sub" wrapText="true"/>
+                           style="-fx-font-size: 13px; -fx-text-fill: #64748b;" wrapText="true"/>
                 </VBox>
                 <VBox spacing="6" alignment="CENTER_RIGHT">
-                    <Label text="Student ID" styleClass="portal-id-label"/>
-                    <TextField fx:id="studentIdField" promptText="e.g. 1" prefWidth="120" styleClass="portal-id-field"/>
+                    <Label text="Student ID" style="-fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #334155;"/>
+                    <TextField fx:id="studentIdField" promptText="e.g. 1" prefWidth="120"
+                               style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;"/>
                 </VBox>
             </HBox>
-            <HBox styleClass="portal-toolbar">
-                <Label fx:id="countLabel" text="0 assessments available" styleClass="portal-count"/>
+            <HBox style="-fx-padding: 10 28; -fx-background-color: rgba(255,255,255,0.72);" spacing="10" alignment="CENTER_LEFT">
+                <Label fx:id="countLabel" text="0 assessments available" style="-fx-font-size: 13px; -fx-font-weight: 700; -fx-text-fill: #334155;"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button text="Refresh list" onAction="#handleRefresh" styleClass="portal-ghost"/>
+                <Button text="Retour Home" onAction="#handleBackHome"
+                        style="-fx-background-color: white; -fx-border-color: #93c5fd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-weight: 700;"/>
+                <Button text="Refresh list" onAction="#handleRefresh"
+                        style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;"/>
             </HBox>
         </VBox>
     </top>
 
     <center>
-        <StackPane styleClass="portal-main" VBox.vgrow="ALWAYS">
-            <ScrollPane fitToWidth="true" styleClass="portal-scroll" hbarPolicy="NEVER">
-                <FlowPane fx:id="cardsFlow" styleClass="portal-flow" hgap="20" vgap="20" alignment="TOP_CENTER"/>
+        <StackPane VBox.vgrow="ALWAYS" style="-fx-padding: 20 24;">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                        style="-fx-background-color: transparent; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-background-radius: 12;">
+                <FlowPane fx:id="cardsFlow" hgap="16" vgap="16" alignment="TOP_LEFT"
+                          style="-fx-padding: 16; -fx-background-color: rgba(255,255,255,0.72); -fx-background-radius: 12;"/>
             </ScrollPane>
             <Label fx:id="emptyLabel"
                    text="There are no active assessments at the moment. Check back when your instructor opens a quiz window."
-                   styleClass="portal-empty"
+                   style="-fx-font-size: 14px; -fx-text-fill: #64748b; -fx-background-color: rgba(255,255,255,0.9); -fx-padding: 14 18; -fx-background-radius: 10;"
                    visible="false"
                    StackPane.alignment="CENTER"/>
         </StackPane>
     </center>
 
     <bottom>
-        <HBox styleClass="portal-footer" alignment="CENTER_LEFT" spacing="20">
-            <Label text="Need to manage courses or evaluations?" styleClass="portal-footer-text"/>
-            <Hyperlink text="Open administration" onAction="#handleOpenAdmin" styleClass="portal-link"/>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: rgba(255,255,255,0.82); -fx-padding: 12 28;">
+            <Label text="Need to manage courses or evaluations?" style="-fx-text-fill: #64748b;"/>
+            <Hyperlink text="Open administration" onAction="#handleOpenAdmin" style="-fx-text-fill: #1d4ed8; -fx-font-weight: 700;"/>
         </HBox>
     </bottom>
 </BorderPane>

@@ -6,44 +6,48 @@
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:id="root"
             fx:controller="controllers.StudentQuizController"
-            styleClass="root-quiz quiz-root quiz-live"
-            stylesheets="/styles/student-quiz.css"
+            style="-fx-font-family: 'Segoe UI'; -fx-background-color: #f8fafc;"
             prefWidth="900" prefHeight="780">
 
     <top>
         <VBox spacing="0">
-            <HBox styleClass="quiz-top-bar" alignment="CENTER_LEFT" spacing="24">
+            <HBox alignment="CENTER_LEFT" spacing="24" style="-fx-padding: 14 16; -fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0;">
                 <VBox spacing="4" HBox.hgrow="ALWAYS">
-                    <Label fx:id="titleLabel" text="Evaluation" styleClass="quiz-title"/>
-                    <Label fx:id="subtitleLabel" text="Read each question carefully." styleClass="quiz-sub" wrapText="true"/>
+                    <Label fx:id="titleLabel" text="Evaluation" style="-fx-font-size: 22px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
+                    <Label fx:id="subtitleLabel" text="Read each question carefully." style="-fx-font-size: 13px; -fx-text-fill: #64748b;" wrapText="true"/>
                 </VBox>
-                <VBox styleClass="quiz-timer-wrap">
-                    <Label fx:id="timerCaptionLabel" text="TIME LEFT" styleClass="quiz-timer-label"/>
-                    <Label fx:id="timerLabel" text="60:00" styleClass="quiz-timer"/>
+                <VBox style="-fx-padding: 8 10; -fx-background-color: #eff6ff; -fx-background-radius: 8;">
+                    <Label fx:id="timerCaptionLabel" text="TIME LEFT" style="-fx-font-size: 11px; -fx-text-fill: #1e40af; -fx-font-weight: 700;"/>
+                    <Label fx:id="timerLabel" text="60:00" style="-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #1e3a8a;"/>
                 </VBox>
             </HBox>
-            <HBox styleClass="quiz-progress-strip" alignment="CENTER_LEFT">
-                <ProgressBar fx:id="progressBar" progress="0" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="quiz-progress-bar"/>
-                <Label fx:id="progressLabel" text="Question 1 / 1" styleClass="quiz-progress-text"/>
+            <HBox alignment="CENTER_LEFT" style="-fx-padding: 10 16; -fx-background-color: white;">
+                <ProgressBar fx:id="progressBar" progress="0" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                <Label fx:id="progressLabel" text="Question 1 / 1" style="-fx-text-fill: #475569; -fx-padding: 0 0 0 10;"/>
             </HBox>
         </VBox>
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true" styleClass="quiz-scroll" fx:id="quizScroll" hbarPolicy="NEVER">
+        <ScrollPane fitToWidth="true" fx:id="quizScroll" hbarPolicy="NEVER" style="-fx-background-color: transparent;">
             <VBox fx:id="questionHost" alignment="TOP_CENTER" spacing="0"/>
         </ScrollPane>
     </center>
 
     <bottom>
-        <HBox styleClass="quiz-footer" alignment="CENTER">
-            <Button fx:id="prevBtn" text="Previous" onAction="#handlePrevious" styleClass="quiz-nav quiz-nav-secondary"/>
+        <HBox alignment="CENTER" style="-fx-padding: 12 16; -fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1 0 0 0;">
+            <Button text="Retour Home" onAction="#handleBackHome"
+                    style="-fx-background-color: white; -fx-border-color: #93c5fd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-weight: 700;"/>
+            <Button fx:id="prevBtn" text="Previous" onAction="#handlePrevious"
+                    style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="navHintLabel" text="" styleClass="quiz-hint"/>
+            <Label fx:id="navHintLabel" text="" style="-fx-text-fill: #64748b;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Button fx:id="nextBtn" text="Next" onAction="#handleNext" styleClass="quiz-nav quiz-nav-secondary"/>
-                <Button fx:id="submitBtn" text="Submit quiz" onAction="#handleSubmitClick" styleClass="quiz-nav quiz-submit"/>
+                <Button fx:id="nextBtn" text="Next" onAction="#handleNext"
+                        style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                <Button fx:id="submitBtn" text="Submit quiz" onAction="#handleSubmitClick"
+                        style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;"/>
             </HBox>
         </HBox>
     </bottom>

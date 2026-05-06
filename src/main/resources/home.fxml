@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.HomeController"
+            style="-fx-font-family: 'Segoe UI'; -fx-background-color: linear-gradient(to bottom right, #eef2ff, #f8fafc);"
+            prefWidth="900" prefHeight="620">
+    <top>
+        <VBox spacing="8" BorderPane.alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="28" right="32" bottom="16" left="32"/>
+            </padding>
+            <Label text="EDUCORE" style="-fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #4f46e5;"/>
+            <Label text="Choose interface" style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
+            <Label text="Select where you want to enter." wrapText="true"
+                   style="-fx-font-size: 14px; -fx-text-fill: #475569;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="14" alignment="CENTER" BorderPane.alignment="CENTER">
+            <Button text="Student Interface" onAction="#handleOpenStudent" prefWidth="320"
+                    style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 10; -fx-padding: 12 18;"/>
+            <Button text="Administration Interface" onAction="#handleOpenAdmin" prefWidth="320"
+                    style="-fx-background-color: white; -fx-text-fill: #1e3a8a; -fx-font-weight: 700; -fx-border-color: #93c5fd; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 12 18;"/>
+            <Button text="Exit" onAction="#handleExit" prefWidth="320"
+                    style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 10; -fx-padding: 12 18;"/>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="8" BorderPane.alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="12" right="32" bottom="24" left="32"/>
+            </padding>
+            <Label fx:id="statusLabel" text="Ready" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </bottom>
+</BorderPane>

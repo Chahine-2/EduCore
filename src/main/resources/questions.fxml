@@ -7,27 +7,32 @@
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:id="root"
             fx:controller="controllers.QuestionsController"
-            styleClass="root-questions"
-            stylesheets="/styles/evaluation-management.css,/styles/questions-management.css"
+            style="-fx-font-family: 'Segoe UI'; -fx-background-color: #f8fafc;"
             prefWidth="960" prefHeight="760">
 
     <left>
-        <Region styleClass="q-sidebar"/>
+        <Region style="-fx-background-color: #4f46e5;" prefWidth="6"/>
     </left>
 
     <top>
-        <VBox spacing="0">
-            <HBox styleClass="q-header" alignment="CENTER_LEFT" spacing="20">
+        <VBox spacing="0" style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0;">
+            <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 14 16;">
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Questions Management" styleClass="q-title"/>
-                    <Label fx:id="evaluationTitleLabel" text="Evaluation" styleClass="q-eval-name"/>
-                    <Label text="Build your questionnaire: MCQ options, true/false, or open text."
+                    <Label text="Questions Management" style="-fx-font-size: 22px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
+                    <Label fx:id="evaluationTitleLabel" text="Evaluation" style="-fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #334155;"/>
+                    <Label text="Build your questionnaire: QCM options and vrai/faux only."
                            wrapText="true" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
                 </VBox>
-                <Button text="Evaluations" styleClass="btn-q-ghost" onAction="#handleClose"/>
+                <HBox spacing="8">
+                    <Button text="Retour Home" onAction="#handleBackHome"
+                            style="-fx-background-color: white; -fx-border-color: #93c5fd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-weight: 700;"/>
+                    <Button text="Evaluations" onAction="#handleClose"
+                            style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-background-radius: 8; -fx-font-weight: 700;"/>
+                </HBox>
             </HBox>
-            <HBox styleClass="q-toolbar" alignment="CENTER_LEFT" spacing="14">
-                <Button fx:id="addQuestionBtn" text="+ Add question" styleClass="btn-q-primary" onAction="#handleAddQuestion"/>
+            <HBox alignment="CENTER_LEFT" spacing="14" style="-fx-padding: 10 16;">
+                <Button fx:id="addQuestionBtn" text="+ Add question" onAction="#handleAddQuestion"
+                        style="-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="questionCountLabel" text="0 questions" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
             </HBox>
@@ -35,21 +40,23 @@
     </top>
 
     <center>
-        <StackPane style="-fx-background-color: transparent;">
-            <ScrollPane fitToWidth="true" styleClass="q-scroll" hbarPolicy="NEVER">
-                <VBox fx:id="questionsContainer" styleClass="questions-list"/>
+        <StackPane style="-fx-background-color: transparent; -fx-padding: 12;">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                        style="-fx-background-color: transparent; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-background-radius: 12;">
+                <VBox fx:id="questionsContainer"
+                      style="-fx-spacing: 12; -fx-padding: 12; -fx-background-color: rgba(255,255,255,0.70); -fx-background-radius: 12;"/>
             </ScrollPane>
             <Label fx:id="emptyLabel"
                    text="No questions yet. Use Add question to create your first item."
-                   styleClass="empty-questions"
+                   style="-fx-text-fill: #64748b; -fx-font-size: 13px;"
                    visible="true"
                    StackPane.alignment="CENTER"/>
         </StackPane>
     </center>
 
     <bottom>
-        <HBox styleClass="q-footer" alignment="CENTER_LEFT">
-            <Label fx:id="statusLabel" text="Ready" styleClass="footer-status footer-status-ok"/>
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 10 16; -fx-border-color: #e2e8f0; -fx-border-width: 1 0 0 0;">
+            <Label fx:id="statusLabel" text="Ready" style="-fx-text-fill: #0f766e; -fx-font-weight: 600;"/>
         </HBox>
     </bottom>
 </BorderPane>

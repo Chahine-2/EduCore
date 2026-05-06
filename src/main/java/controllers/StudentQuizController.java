@@ -4,13 +4,17 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.Evaluation;
 import models.Question;
@@ -138,13 +142,14 @@ public class StudentQuizController {
     }
 
     private void applyLiveChrome() {
-        root.getStyleClass().removeAll("quiz-live", "quiz-view-mode");
-        root.getStyleClass().add("quiz-live");
+        root.setStyle("-fx-font-family: 'Segoe UI'; -fx-background-color: #f8fafc;");
     }
 
     private void initQuestionsAndUi() {
         titleLabel.setText(evaluation.getTitre());
-        questions = questionDAO.findByEvaluationId(evaluation.getId());
+        questions = questionDAO.findByEvaluationId(evaluation.getId()).stream()
+                .filter(q -> q.getType() == QuestionType.QCM || q.getType() == QuestionType.VRAI_FAUX)
+                .toList();
         currentIndex = 0;
         if (!viewMode) {
             selectedReponseByQuestion.clear();
@@ -154,7 +159,7 @@ public class StudentQuizController {
         if (questions.isEmpty()) {
             questionHost.getChildren().clear();
             Label empty = new Label("This evaluation has no questions yet.");
-            empty.getStyleClass().add("quiz-empty");
+            empty.setStyle("-fx-text-fill: #64748b; -fx-font-size: 14px; -fx-padding: 24;");
             questionHost.getChildren().add(empty);
             prevBtn.setDisable(true);
             nextBtn.setDisable(true);
@@ -219,11 +224,11 @@ public class StudentQuizController {
         int m = Math.max(0, remainingSeconds) / 60;
         int s = Math.max(0, remainingSeconds) % 60;
         timerLabel.setText(String.format("%02d:%02d", m, s));
-        timerLabel.getStyleClass().removeAll("quiz-timer-warn", "quiz-timer-critical");
+        timerLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #1e3a8a;");
         if (remainingSeconds <= 60) {
-            timerLabel.getStyleClass().add("quiz-timer-critical");
+            timerLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #dc2626;");
         } else if (remainingSeconds <= 300) {
-            timerLabel.getStyleClass().add("quiz-timer-warn");
+            timerLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #d97706;");
         }
     }
 
@@ -280,6 +285,22 @@ public class StudentQuizController {
         }
     }
 
+    @FXML
+    private void handleBackHome() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
+            Parent homeRoot = loader.load();
+            Stage stage = root.getScene() != null && root.getScene().getWindow() instanceof Stage s ? s : null;
+            if (stage != null) {
+                stage.setScene(new Scene(homeRoot));
+                stage.setTitle("EDUCORE");
+                stage.centerOnScreen();
+            }
+        } catch (Exception e) {
+            alertError("Could not open home page: " + e.getMessage());
+        }
+    }
+
     private void closeQuizWindow() {
         var w = root.getScene() != null ? root.getScene().getWindow() : null;
         if (w instanceof javafx.stage.Stage st) {
@@ -321,25 +342,24 @@ public class StudentQuizController {
         Question q = questions.get(currentIndex);
         List<Reponse> reps = reponseDAO.findByQuestionId(q.getId());
 
-        VBox card = new VBox();
-        card.getStyleClass().add("quiz-card");
+        VBox card = new VBox(12);
+        card.setStyle("-fx-background-color: rgba(255,255,255,0.97); -fx-background-radius: 12; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-padding: 16;");
         card.setMaxWidth(720);
+        card.setMinWidth(640);
 
         HBox meta = new HBox(10);
         meta.setAlignment(Pos.CENTER_LEFT);
-        meta.getStyleClass().add("quiz-q-meta");
         Label badge = new Label(typeLabel(q.getType()));
-        badge.getStyleClass().addAll("quiz-badge", badgeStyle(q.getType()));
+        badge.setStyle(badgeStyle(q.getType()));
         Label pts = new Label(pointsLabel(q.getPoints()));
-        pts.getStyleClass().add("quiz-points");
+        pts.setStyle("-fx-text-fill: #334155; -fx-font-weight: 700;");
         meta.getChildren().addAll(badge, pts);
 
         Label qText = new Label(q.getTexte());
-        qText.getStyleClass().add("quiz-q-text");
+        qText.setStyle("-fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: #0f172a;");
         qText.setWrapText(true);
 
-        VBox answers = new VBox();
-        answers.getStyleClass().add("quiz-answers");
+        VBox answers = new VBox(8);
 
         switch (q.getType()) {
             case TEXTE_LIBRE -> {
@@ -392,7 +412,9 @@ public class StudentQuizController {
         for (Reponse r : reps) {
             HBox row = new HBox(14);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.getStyleClass().add("quiz-option");
+            row.setStyle("-fx-background-color: #f8fafc; -fx-border-color: #dbeafe; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
+            row.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(row, Priority.ALWAYS);
 
             RadioButton rb = new RadioButton(r.getTexte());
             rb.setToggleGroup(group);
@@ -400,18 +422,25 @@ public class StudentQuizController {
             rb.setMaxWidth(Double.MAX_VALUE);
             HBox.setHgrow(rb, Priority.ALWAYS);
             rb.setUserData(r.getId());
-            rb.getStyleClass().add("quiz-radio");
             rb.setDisable(viewMode);
 
             if (saved != null && saved.equals(r.getId())) {
                 rb.setSelected(true);
-                row.getStyleClass().add("quiz-option-selected");
+                row.setStyle("-fx-background-color: #eef2ff; -fx-border-color: #a5b4fc; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
             }
 
             rb.selectedProperty().addListener((obs, o, n) -> {
-                row.getStyleClass().remove("quiz-option-selected");
                 if (n) {
-                    row.getStyleClass().add("quiz-option-selected");
+                    row.setStyle("-fx-background-color: #eef2ff; -fx-border-color: #a5b4fc; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
+                } else {
+                    row.setStyle("-fx-background-color: #f8fafc; -fx-border-color: #dbeafe; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
+                }
+            });
+
+            row.setOnMouseClicked(e -> {
+                if (!viewMode && !rb.isDisabled()) {
+                    rb.setSelected(true);
+                    e.consume();
                 }
             });
 
@@ -556,9 +585,9 @@ public class StudentQuizController {
 
     private static String badgeStyle(QuestionType t) {
         return switch (t) {
-            case QCM -> "quiz-badge-qcm";
-            case VRAI_FAUX -> "quiz-badge-vf";
-            case TEXTE_LIBRE -> "quiz-badge-texte";
+            case QCM -> "-fx-padding: 4 10; -fx-background-color: #dbeafe; -fx-text-fill: #1e3a8a; -fx-background-radius: 999; -fx-font-weight: 700;";
+            case VRAI_FAUX -> "-fx-padding: 4 10; -fx-background-color: #dcfce7; -fx-text-fill: #166534; -fx-background-radius: 999; -fx-font-weight: 700;";
+            case TEXTE_LIBRE -> "-fx-padding: 4 10; -fx-background-color: #f3f4f6; -fx-text-fill: #334155; -fx-background-radius: 999; -fx-font-weight: 700;";
         };
     }
 

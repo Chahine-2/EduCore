@@ -3,10 +3,14 @@ package controllers;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import models.Evaluation;
@@ -59,6 +63,22 @@ public class QuestionsController {
     }
 
     @FXML
+    private void handleBackHome() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
+            Parent homeRoot = loader.load();
+            Stage stage = root.getScene() != null && root.getScene().getWindow() instanceof Stage s ? s : null;
+            if (stage != null) {
+                stage.setScene(new Scene(homeRoot));
+                stage.setTitle("EDUCORE");
+                stage.centerOnScreen();
+            }
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Could not open home page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleAddQuestion() {
         showQuestionEditor(null);
     }
@@ -70,7 +90,10 @@ public class QuestionsController {
         questionsContainer.setOpacity(0);
         questionsContainer.getChildren().clear();
 
-        List<Question> questions = questionDAO.findByEvaluationId(evaluation.getId());
+        List<Question> allQuestions = questionDAO.findByEvaluationId(evaluation.getId());
+        List<Question> questions = allQuestions.stream()
+                .filter(q -> q.getType() == QuestionType.QCM || q.getType() == QuestionType.VRAI_FAUX)
+                .toList();
         questionCountLabel.setText(questions.size() + (questions.size() == 1 ? " question" : " questions"));
         emptyLabel.setVisible(questions.isEmpty());
         emptyLabel.setManaged(questions.isEmpty());
@@ -90,22 +113,26 @@ public class QuestionsController {
         setFooterStatus("Ready", false);
     }
 
-    private TitledPane buildQuestionCard(Question q, List<Reponse> reponses) {
+    private VBox buildQuestionCard(Question q, List<Reponse> reponses) {
         String titlePreview = q.getTexte() == null ? "(empty)" : q.getTexte();
         if (titlePreview.length() > 72) {
             titlePreview = titlePreview.substring(0, 69) + "…";
         }
-        TitledPane pane = new TitledPane();
-        pane.setText(titlePreview + "  ·  " + formatPoints(q.getPoints()) + " pts");
-        pane.getStyleClass().add("question-titled-pane");
-        pane.setExpanded(true);
+        VBox card = new VBox(12);
+        card.setStyle("-fx-background-color: rgba(255,255,255,0.97); -fx-background-radius: 12; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-padding: 12 12 10 12;");
+
+        HBox heading = new HBox();
+        heading.setAlignment(Pos.CENTER_LEFT);
+        heading.setStyle("-fx-padding: 0 0 8 0; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0;");
+        Label headingText = new Label(titlePreview + "  ·  " + formatPoints(q.getPoints()) + " pts");
+        headingText.setStyle("-fx-font-size: 14px; -fx-font-weight: 800; -fx-text-fill: #0f172a;");
+        heading.getChildren().add(headingText);
 
         VBox body = new VBox(12);
         body.setPadding(new Insets(0));
 
         HBox meta = new HBox(10);
         meta.setAlignment(Pos.CENTER_LEFT);
-        meta.getStyleClass().add("q-meta-row");
         meta.getChildren().addAll(
                 typeBadge(q.getType()),
                 pointsBadge(q.getPoints())
@@ -116,21 +143,20 @@ public class QuestionsController {
 
         HBox actions = new HBox(8);
         actions.setAlignment(Pos.CENTER_RIGHT);
-        actions.getStyleClass().add("q-actions");
 
         Button editBtn = new Button("Edit");
-        editBtn.getStyleClass().addAll("btn-row", "btn-row-edit");
+        editBtn.setStyle("-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;");
         editBtn.setOnAction(e -> showQuestionEditor(q));
 
         Button delBtn = new Button("Delete");
-        delBtn.getStyleClass().addAll("btn-row", "btn-row-delete");
+        delBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;");
         delBtn.setOnAction(e -> deleteQuestion(q));
 
         actions.getChildren().addAll(editBtn, delBtn);
 
         if (q.getType() == QuestionType.QCM) {
             Button addAnsBtn = new Button("+ Answer");
-            addAnsBtn.getStyleClass().addAll("btn-row", "btn-row-view");
+            addAnsBtn.setStyle("-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;");
             addAnsBtn.setOnAction(e -> showQuickAddAnswer(q));
             actions.getChildren().add(addAnsBtn);
         }
@@ -138,7 +164,7 @@ public class QuestionsController {
         meta.getChildren().add(actions);
 
         Label fullText = new Label(q.getTexte());
-        fullText.getStyleClass().add("q-body-text");
+        fullText.setStyle("-fx-font-size: 14px; -fx-text-fill: #0f172a;");
         fullText.setWrapText(true);
         fullText.setMaxWidth(Double.MAX_VALUE);
 
@@ -146,7 +172,7 @@ public class QuestionsController {
 
         if (q.getType() == QuestionType.QCM) {
             Label sec = new Label("Answer choices");
-            sec.getStyleClass().add("q-section-label");
+            sec.setStyle("-fx-font-weight: 700; -fx-text-fill: #334155;");
             VBox list = new VBox(8);
             if (reponses.isEmpty()) {
                 Label emptyAns = new Label("No answers yet. Use Edit or + Answer to add options.");
@@ -156,18 +182,18 @@ public class QuestionsController {
             for (Reponse r : reponses) {
                 HBox row = new HBox(10);
                 row.setAlignment(Pos.CENTER_LEFT);
-                row.getStyleClass().add("answer-row");
+                row.setStyle("-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
                 if (r.isEstCorrect()) {
-                    row.getStyleClass().add("answer-row-correct");
+                    row.setStyle("-fx-background-color: #ecfdf5; -fx-border-color: #86efac; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
                 }
                 Label txt = new Label(r.getTexte());
-                txt.getStyleClass().add("answer-text");
+                txt.setStyle("-fx-text-fill: #1f2937;");
                 txt.setWrapText(true);
                 HBox.setHgrow(txt, Priority.ALWAYS);
                 row.getChildren().add(txt);
                 if (r.isEstCorrect()) {
                     Label ok = new Label("Correct");
-                    ok.getStyleClass().add("badge-correct");
+                    ok.setStyle("-fx-background-color: #bbf7d0; -fx-text-fill: #166534; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
                     row.getChildren().add(ok);
                 }
                 list.getChildren().add(row);
@@ -175,7 +201,7 @@ public class QuestionsController {
             body.getChildren().addAll(sec, list);
         } else if (q.getType() == QuestionType.VRAI_FAUX) {
             Label sec = new Label("Vrai / Faux");
-            sec.getStyleClass().add("q-section-label");
+            sec.setStyle("-fx-font-weight: 700; -fx-text-fill: #334155;");
             VBox list = new VBox(8);
             if (reponses.isEmpty() || reponses.size() < 2) {
                 Label emptyAns = new Label("Open Edit and save to create the “Vrai” and “Faux” options and mark the correct one.");
@@ -186,18 +212,18 @@ public class QuestionsController {
             for (Reponse r : orderVraiFaux(reponses)) {
                 HBox row = new HBox(10);
                 row.setAlignment(Pos.CENTER_LEFT);
-                row.getStyleClass().add("answer-row");
+                row.setStyle("-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
                 if (r.isEstCorrect()) {
-                    row.getStyleClass().add("answer-row-correct");
+                    row.setStyle("-fx-background-color: #ecfdf5; -fx-border-color: #86efac; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
                 }
                 Label txt = new Label(r.getTexte());
-                txt.getStyleClass().add("answer-text");
+                txt.setStyle("-fx-text-fill: #1f2937;");
                 txt.setWrapText(true);
                 HBox.setHgrow(txt, Priority.ALWAYS);
                 row.getChildren().add(txt);
                 if (r.isEstCorrect()) {
                     Label ok = new Label("Correct");
-                    ok.getStyleClass().add("badge-correct");
+                    ok.setStyle("-fx-background-color: #bbf7d0; -fx-text-fill: #166534; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
                     row.getChildren().add(ok);
                 }
                 list.getChildren().add(row);
@@ -205,24 +231,23 @@ public class QuestionsController {
             body.getChildren().addAll(sec, list);
         }
 
-        pane.setContent(body);
-        return pane;
+        card.getChildren().addAll(heading, body);
+        return card;
     }
 
     private static Label typeBadge(QuestionType t) {
         Label l = new Label(typeDisplay(t));
-        l.getStyleClass().add("badge-type");
         switch (t) {
-            case QCM -> l.getStyleClass().add("badge-qcm");
-            case VRAI_FAUX -> l.getStyleClass().add("badge-vf");
-            case TEXTE_LIBRE -> l.getStyleClass().add("badge-texte");
+            case QCM -> l.setStyle("-fx-background-color: #dbeafe; -fx-text-fill: #1e3a8a; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
+            case VRAI_FAUX -> l.setStyle("-fx-background-color: #dcfce7; -fx-text-fill: #166534; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
+            case TEXTE_LIBRE -> l.setStyle("-fx-background-color: #f3f4f6; -fx-text-fill: #334155; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
         }
         return l;
     }
 
     private static Label pointsBadge(float p) {
         Label l = new Label(formatPoints(p) + " pts");
-        l.getStyleClass().add("badge-points");
+        l.setStyle("-fx-background-color: #eef2ff; -fx-text-fill: #3730a3; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
         return l;
     }
 
@@ -237,7 +262,7 @@ public class QuestionsController {
         return switch (t) {
             case QCM -> "QCM";
             case VRAI_FAUX -> "Vrai / Faux";
-            case TEXTE_LIBRE -> "Texte libre";
+            case TEXTE_LIBRE -> "Type non pris en charge";
         };
     }
 
@@ -293,7 +318,7 @@ public class QuestionsController {
 
         TextField textField = new TextField();
         textField.setPromptText("Answer text");
-        textField.getStyleClass().add("field-inline");
+        textField.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;");
 
         CheckBox correct = new CheckBox("Mark as correct");
 
@@ -326,10 +351,11 @@ public class QuestionsController {
         TextArea textArea = new TextArea(existing != null ? existing.getTexte() : "");
         textArea.setWrapText(true);
         textArea.setPromptText("Enter the question wording…");
-        textArea.getStyleClass().add("field-inline");
+        textArea.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;");
         textArea.setPrefRowCount(5);
 
-        ComboBox<QuestionType> typeCombo = new ComboBox<>(FXCollections.observableArrayList(QuestionType.values()));
+        ComboBox<QuestionType> typeCombo = new ComboBox<>(
+                FXCollections.observableArrayList(QuestionType.QCM, QuestionType.VRAI_FAUX));
         typeCombo.setConverter(new StringConverter<>() {
             @Override
             public String toString(QuestionType object) {
@@ -346,14 +372,18 @@ public class QuestionsController {
                 return QuestionType.QCM;
             }
         });
-        typeCombo.setValue(existing != null ? existing.getType() : QuestionType.QCM);
+        QuestionType initialType = existing != null ? existing.getType() : QuestionType.QCM;
+        if (initialType == QuestionType.TEXTE_LIBRE) {
+            initialType = QuestionType.QCM;
+        }
+        typeCombo.setValue(initialType);
 
         TextField pointsField = new TextField(existing != null ? formatPoints(existing.getPoints()) : "1");
-        pointsField.getStyleClass().add("field-inline");
+        pointsField.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;");
 
         VBox answerSection = new VBox(10);
         Label ansTitle = new Label("Answer options (QCM only)");
-        ansTitle.getStyleClass().add("q-section-label");
+        ansTitle.setStyle("-fx-font-weight: 700; -fx-text-fill: #334155;");
         VBox answerList = new VBox(6);
         List<AnswerRow> answerRows = new ArrayList<>();
 
@@ -366,7 +396,7 @@ public class QuestionsController {
         vfRow.setAlignment(Pos.CENTER_LEFT);
         VBox vfSection = new VBox(8);
         Label vfTitle = new Label("Correct answer (Vrai / Faux)");
-        vfTitle.getStyleClass().add("q-section-label");
+        vfTitle.setStyle("-fx-font-weight: 700; -fx-text-fill: #334155;");
         Label vfHint = new Label("Same pattern as QCM: two fixed choices (Vrai and Faux) are stored; choose which one is correct.");
         vfHint.setWrapText(true);
         vfHint.setStyle("-fx-text-fill: #64748b; -fx-font-size: 12px;");
@@ -410,7 +440,7 @@ public class QuestionsController {
         };
 
         Button addOptionBtn = new Button("+ Add option");
-        addOptionBtn.getStyleClass().add("btn-q-ghost");
+        addOptionBtn.setStyle("-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;");
         addOptionBtn.setOnAction(e -> addAnswerRow(answerList, answerRows, "", false));
 
         answerSection.getChildren().addAll(ansTitle, answerList, addOptionBtn);
@@ -489,12 +519,12 @@ public class QuestionsController {
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
         TextField tf = new TextField(initialText);
-        tf.getStyleClass().add("field-inline");
+        tf.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;");
         HBox.setHgrow(tf, Priority.ALWAYS);
         CheckBox cb = new CheckBox("Correct");
         cb.setSelected(correct);
         Button remove = new Button("Remove");
-        remove.getStyleClass().add("btn-q-ghost");
+        remove.setStyle("-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;");
         AnswerRow model = new AnswerRow(tf, cb);
         models.add(model);
         remove.setOnAction(e -> {
@@ -577,8 +607,6 @@ public class QuestionsController {
                     return;
                 }
                 addVraiFauxReponses(id, vfGroup, rbVrai);
-            } else {
-                questionDAO.add(q);
             }
         } else {
             Question updated = new Question(existing.getId(), texte.trim(), type, points, evaluation.getId());
@@ -629,9 +657,9 @@ public class QuestionsController {
 
     private void setFooterStatus(String msg, boolean ok) {
         statusLabel.setText(msg);
-        statusLabel.getStyleClass().removeAll("footer-status", "footer-status-ok", "footer-status-neutral", "footer-status-error");
-        statusLabel.getStyleClass().add("footer-status");
-        statusLabel.getStyleClass().add(ok ? "footer-status-ok" : "footer-status-neutral");
+        statusLabel.setStyle(ok
+                ? "-fx-text-fill: #0f766e; -fx-font-weight: 600;"
+                : "-fx-text-fill: #475569; -fx-font-weight: 600;");
     }
 
     private static final class AnswerRow {

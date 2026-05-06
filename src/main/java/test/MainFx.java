@@ -14,14 +14,14 @@ public class MainFx extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/student-portal.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
             var scene = new Scene(loader.load());
 
-            stage.setTitle("EDUCORE · Student");
-            stage.setMinWidth(880);
-            stage.setMinHeight(600);
-            stage.setWidth(1480);
-            stage.setHeight(940);
+            stage.setTitle("EDUCORE");
+            stage.setMinWidth(760);
+            stage.setMinHeight(520);
+            stage.setWidth(980);
+            stage.setHeight(680);
             stage.centerOnScreen();
             stage.setScene(scene);
             stage.show();

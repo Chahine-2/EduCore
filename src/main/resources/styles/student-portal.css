@@ -90,25 +90,27 @@
 }
 
 .portal-card {
-    -fx-background-color: rgba(255, 255, 255, 0.88);
-    -fx-background-radius: 12;
-    -fx-border-color: rgba(148, 163, 184, 0.45);
-    -fx-border-radius: 12;
+    -fx-background-color: rgba(255, 255, 255, 0.96);
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(148, 163, 184, 0.28);
+    -fx-border-radius: 14;
     -fx-border-width: 1;
-    -fx-padding: 22 24;
-    -fx-pref-width: 340;
+    -fx-padding: 18 20 16 20;
+    -fx-spacing: 10;
+    -fx-pref-width: 320;
     -fx-max-width: 380;
-    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.08), 18, 0, 0, 2);
+    -fx-min-height: 260;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.10), 20, 0.2, 0, 4);
 }
 
 .portal-card-done {
-    -fx-background-color: rgba(254, 252, 232, 0.92);
-    -fx-border-color: rgba(234, 179, 8, 0.35);
+    -fx-background-color: linear-gradient(to bottom, #fffef7, #fffdf2);
+    -fx-border-color: rgba(245, 158, 11, 0.35);
 }
 
 .portal-card:hover {
-    -fx-border-color: #a5b4fc;
-    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.22), 22, 0, 0, 3);
+    -fx-border-color: #93c5fd;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.22), 24, 0.2, 0, 6);
 }
 
 .portal-card-title {
@@ -122,64 +124,85 @@
     -fx-font-size: 13px;
     -fx-text-fill: #64748b;
     -fx-wrap-text: true;
-    -fx-padding: 8 0 0 0;
+    -fx-padding: 2 0 0 0;
 }
 
 .portal-meta {
     -fx-font-size: 12px;
-    -fx-text-fill: #94a3b8;
-    -fx-padding: 12 0 0 0;
+    -fx-text-fill: #7c8aa0;
+    -fx-padding: 2 0 0 0;
+}
+
+.portal-score {
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1d4ed8;
+    -fx-padding: 4 0 2 0;
+}
+
+.portal-title-score {
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1e3a8a;
+    -fx-background-color: #dbeafe;
+    -fx-background-radius: 999;
+    -fx-padding: 4 10;
+    -fx-border-color: #93c5fd;
+    -fx-border-radius: 999;
 }
 
 .portal-badge-live {
-    -fx-padding: 4 10;
-    -fx-background-color: linear-gradient(to right, #bbf7d0, #a7f3d0);
-    -fx-text-fill: #14532d;
+    -fx-padding: 5 12;
+    -fx-background-color: linear-gradient(to right, #d1fae5, #a7f3d0);
+    -fx-text-fill: #065f46;
     -fx-font-size: 11px;
-    -fx-font-weight: 700;
+    -fx-font-weight: 800;
     -fx-background-radius: 999;
 }
 
 .portal-badge-done {
-    -fx-padding: 4 10;
-    -fx-background-color: linear-gradient(to right, #fde68a, #fcd34d);
-    -fx-text-fill: #78350f;
+    -fx-padding: 5 12;
+    -fx-background-color: linear-gradient(to right, #fef3c7, #fde68a);
+    -fx-text-fill: #92400e;
     -fx-font-size: 11px;
-    -fx-font-weight: 700;
+    -fx-font-weight: 800;
     -fx-background-radius: 999;
 }
 
-.root-portal .button.portal-start {
+.portal-start {
     -fx-padding: 12 20;
     -fx-font-size: 13px;
-    -fx-font-weight: 700;
-    -fx-background-color: #4f46e5;
+    -fx-font-weight: 800;
+    -fx-background-color: linear-gradient(to bottom, #4f46e5, #4338ca);
     -fx-text-fill: #ffffff;
-    -fx-background-radius: 8;
+    -fx-background-radius: 10;
     -fx-cursor: hand;
     -fx-background-insets: 0;
+    -fx-border-width: 0;
 }
 
-.root-portal .button.portal-start:hover {
-    -fx-background-color: #4338ca;
+.portal-start:hover {
+    -fx-background-color: linear-gradient(to bottom, #4338ca, #3730a3);
+    -fx-effect: dropshadow(gaussian, rgba(67, 56, 202, 0.28), 12, 0.2, 0, 2);
 }
 
-.root-portal .button.portal-view {
+.portal-view {
     -fx-padding: 12 20;
     -fx-font-size: 13px;
-    -fx-font-weight: 700;
-    -fx-background-color: rgba(255, 255, 255, 0.9);
-    -fx-text-fill: #4338ca;
-    -fx-border-color: #6366f1;
-    -fx-border-radius: 8;
-    -fx-border-width: 2;
-    -fx-background-radius: 8;
+    -fx-font-weight: 800;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1e40af;
+    -fx-border-color: #93c5fd;
+    -fx-border-radius: 10;
+    -fx-border-width: 1.4;
+    -fx-background-radius: 10;
     -fx-cursor: hand;
     -fx-background-insets: 0;
 }
 
-.root-portal .button.portal-view:hover {
-    -fx-background-color: #eef2ff;
+.portal-view:hover {
+    -fx-background-color: #eff6ff;
+    -fx-border-color: #60a5fa;
 }
 
 .root-portal .button.portal-ghost {

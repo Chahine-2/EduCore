@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import models.Evaluation;
 import models.Resultat;
 import services.EvaluationDAOImpl;
+import services.QuestionDAOImpl;
 import services.ResultatDAOImpl;
 
 import java.time.LocalDateTime;
@@ -45,6 +46,7 @@ public class StudentPortalController {
     @FXML private Label emptyLabel;
 
     private final EvaluationDAOImpl evaluationDAO = new EvaluationDAOImpl();
+    private final QuestionDAOImpl questionDAO = new QuestionDAOImpl();
     private final ResultatDAOImpl resultatDAO = new ResultatDAOImpl();
 
     @FXML
@@ -56,6 +58,21 @@ public class StudentPortalController {
     @FXML
     private void handleRefresh() {
         refreshCards();
+    }
+
+    @FXML
+    private void handleBackHome() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
+            Parent homeRoot = loader.load();
+            if (root.getScene() != null && root.getScene().getWindow() instanceof Stage stage) {
+                stage.setScene(new Scene(homeRoot));
+                stage.setTitle("EDUCORE");
+                stage.centerOnScreen();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -144,45 +161,64 @@ public class StudentPortalController {
 
     private VBox buildCard(Evaluation ev, Resultat submitted) {
         VBox card = new VBox(12);
-        card.getStyleClass().add("portal-card");
-        if (submitted != null) {
-            card.getStyleClass().add("portal-card-done");
-        }
+        card.setStyle(submitted == null
+                ? "-fx-background-color: rgba(255,255,255,0.96); -fx-background-radius: 12; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-padding: 14 16; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 12, 0.2, 0, 2);"
+                : "-fx-background-color: linear-gradient(to bottom, #fffef7, #fffdf2); -fx-background-radius: 12; -fx-border-color: #fcd34d; -fx-border-radius: 12; -fx-padding: 14 16; -fx-effect: dropshadow(gaussian, rgba(120,53,15,0.10), 12, 0.2, 0, 2);");
+        card.setPrefWidth(300);
+        card.setMinWidth(280);
+        card.setMaxWidth(340);
         card.setAlignment(Pos.TOP_LEFT);
 
         HBox top = new HBox(10);
         top.setAlignment(Pos.CENTER_LEFT);
         Label badge = new Label(submitted == null ? "Live now" : "Submitted");
-        badge.getStyleClass().add(submitted == null ? "portal-badge-live" : "portal-badge-done");
+        badge.setStyle(submitted == null
+                ? "-fx-padding: 4 10; -fx-background-color: #d1fae5; -fx-background-radius: 999; -fx-text-fill: #065f46; -fx-font-size: 11px; -fx-font-weight: 800;"
+                : "-fx-padding: 4 10; -fx-background-color: #fef3c7; -fx-background-radius: 999; -fx-text-fill: #92400e; -fx-font-size: 11px; -fx-font-weight: 800;");
         Region sp = new Region();
         HBox.setHgrow(sp, Priority.ALWAYS);
         top.getChildren().addAll(badge, sp);
 
         Label title = new Label(ev.getTitre());
-        title.getStyleClass().add("portal-card-title");
+        title.setStyle("-fx-font-size: 17px; -fx-font-weight: 800; -fx-text-fill: #0f172a;");
         title.setWrapText(true);
+
+        HBox titleRow = new HBox(10);
+        titleRow.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(title, Priority.ALWAYS);
+        titleRow.getChildren().add(title);
+
+        if (submitted != null && submitted.getScore() != null) {
+            float totalPoints = questionDAO.findByEvaluationId(ev.getId()).stream()
+                    .map(q -> q.getPoints())
+                    .reduce(0f, Float::sum);
+            Label titleScore = new Label(formatScore(submitted.getScore()) + "/" + formatScore(totalPoints));
+            titleScore.setStyle("-fx-font-size: 12px; -fx-font-weight: 800; -fx-text-fill: #1e3a8a; -fx-background-color: #dbeafe; -fx-background-radius: 999; -fx-padding: 3 9;");
+            titleRow.getChildren().add(titleScore);
+        }
 
         String desc = ev.getDescription();
         if (desc != null && desc.length() > 140) {
             desc = desc.substring(0, 137) + "…";
         }
         Label descLbl = new Label(desc == null || desc.isBlank() ? "No description provided." : desc);
-        descLbl.getStyleClass().add("portal-card-desc");
+        descLbl.setStyle("-fx-font-size: 13px; -fx-text-fill: #475569;");
         descLbl.setWrapText(true);
 
         String meta = ev.getDureeMinutes() + " min · Ends " + formatDt(ev.getDateFin());
         if (submitted != null) {
-            String score = submitted.getScore() == null ? "Score pending" : "Score: " + formatScore(submitted.getScore());
-            meta = meta + " · " + score;
             if (submitted.getDatePassage() != null) {
-                meta = meta + " · " + submitted.getDatePassage().format(META_FMT);
+                meta = meta + " · Submitted " + submitted.getDatePassage().format(META_FMT);
             }
         }
         Label metaLbl = new Label(meta);
-        metaLbl.getStyleClass().add("portal-meta");
+        metaLbl.setStyle("-fx-font-size: 12px; -fx-text-fill: #64748b;");
+        metaLbl.setWrapText(true);
 
         Button action = new Button(submitted == null ? "Start quiz" : "View attempt");
-        action.getStyleClass().addAll(submitted == null ? "portal-start" : "portal-view");
+        action.setStyle(submitted == null
+                ? "-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8; -fx-padding: 9 12;"
+                : "-fx-background-color: white; -fx-text-fill: #1e40af; -fx-font-weight: 700; -fx-border-color: #93c5fd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 9 12;");
         action.setMaxWidth(Double.MAX_VALUE);
         if (submitted == null) {
             action.setOnAction(e -> openQuiz(ev, null));
@@ -191,7 +227,7 @@ public class StudentPortalController {
             action.setOnAction(e -> openQuiz(ev, r));
         }
 
-        card.getChildren().addAll(top, title, descLbl, metaLbl, action);
+        card.getChildren().addAll(top, titleRow, descLbl, metaLbl, action);
         return card;
     }
 

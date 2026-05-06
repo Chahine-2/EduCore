@@ -342,6 +342,21 @@ public class EvaluationController {
     }
 
     @FXML
+    private void handleBackHome() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
+            Parent homeRoot = loader.load();
+            if (evaluationTable.getScene() != null && evaluationTable.getScene().getWindow() instanceof Stage stage) {
+                stage.setScene(new Scene(homeRoot));
+                stage.setTitle("EDUCORE");
+                stage.centerOnScreen();
+            }
+        } catch (Exception e) {
+            showError("Could not open home page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleAdd() {
         try {
             if (!validateForm()) {
