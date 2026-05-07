@@ -11,6 +11,7 @@ import models.Cours;
 import services.ServiceCours;
 import utils.NavigationManager;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 @SuppressWarnings({
@@ -161,14 +162,32 @@ public class GestionCoursController {
         c.setDateDebut(dpDebut.getValue() != null ? dpDebut.getValue() : LocalDate.now());
         c.setDateFin(dpFin.getValue() != null ? dpFin.getValue() : LocalDate.now().plusMonths(6));
 
-        sc.add(c);
+        try {
+            int generatedId = sc.addAndReturnId(c);
+            c.setId(generatedId);
+            System.out.println("✅ Cours ajouté avec ID: " + c.getId());
+        } catch (SQLException e) {
+            showAlert("Erreur SQL", "❌ Impossible d'ajouter le cours.\nDétail: " + e.getMessage(), Alert.AlertType.ERROR);
+            return;
+        }
+
+        if (c.getId() <= 0) {
+            showAlert("Erreur", "❌ Le cours a été saisi mais son identifiant n'a pas été récupéré.\n" +
+                    "Vérifiez que la colonne 'id' de la table cours est AUTO_INCREMENT.", Alert.AlertType.ERROR);
+            refreshTable();
+            return;
+        }
+
         refreshTable();
         clearForm();
         showAlert("Succès", "✅ Cours ajouté avec succès!", Alert.AlertType.INFORMATION);
 
         // Passer à la scène des détails
         try {
+            System.out.println("📌 Navigation vers DetailsCoursController avec ID=" + c.getId());
             DetailsCoursController.cours = c;
+            System.out.println("   - DetailsCoursController.cours.getId() = " + DetailsCoursController.cours.getId());
+
             Scene scene = tfTitre.getScene();
             if (scene != null) {
                 NavigationManager.navigateTo(scene, "/DetailsCours.fxml");
@@ -246,8 +265,19 @@ public class GestionCoursController {
             return;
         }
 
+        // ✅ Logging détaillé pour debugguer
+        System.out.println("📌 Affichage détails du cours:");
+        System.out.println("   - ID: " + selected.getId());
+        System.out.println("   - Titre: " + selected.getTitre());
+        System.out.println("   - Niveau: " + selected.getNiveau());
+        System.out.println("   - Catégorie: " + selected.getCategorie());
+
         // Passer le cours sélectionné au contrôleur des détails
         DetailsCoursController.cours = selected;
+
+        System.out.println("✅ DetailsCoursController.cours assigné");
+        System.out.println("   - DetailsCoursController.cours.getId() = " + DetailsCoursController.cours.getId());
+        System.out.println("   - DetailsCoursController.cours.getTitre() = " + DetailsCoursController.cours.getTitre());
 
         try {
             Scene scene = tableViewCours.getScene();

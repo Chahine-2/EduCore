@@ -31,24 +31,37 @@
         </VBox>
     </top>
 
-    <!-- CENTER - TABLEAU DES CHAPITRES -->
+    <!-- CENTER - TABLEAU DES CHAPITRES + FEEDBACKS -->
     <center>
-        <VBox spacing="10" style="-fx-padding: 15;">
-            <HBox spacing="10">
-                <Label fx:id="lblTotalChapitres" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
-                <Region HBox.hgrow="ALWAYS"/>
-            </HBox>
+        <SplitPane dividerPositions="0.62" style="-fx-padding: 15;">
+            <VBox spacing="10">
+                <HBox spacing="10">
+                    <Label fx:id="lblTotalChapitres" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                </HBox>
 
-            <TableView fx:id="tableViewChapitres" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colOrdre" prefWidth="60" text="Ordre"/>
-                    <TableColumn fx:id="colTitreChap" prefWidth="250" text="Titre"/>
-                    <TableColumn fx:id="colType" prefWidth="100" text="Type"/>
-                    <TableColumn fx:id="colDureeMin" prefWidth="100" text="Durée (min)"/>
-                    <TableColumn fx:id="colVisible" prefWidth="80" text="Visible"/>
-                </columns>
-            </TableView>
-        </VBox>
+                <TableView fx:id="tableViewChapitres" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colOrdre" prefWidth="60" text="Ordre"/>
+                        <TableColumn fx:id="colTitreChap" prefWidth="250" text="Titre"/>
+                        <TableColumn fx:id="colType" prefWidth="100" text="Type"/>
+                        <TableColumn fx:id="colDureeMin" prefWidth="100" text="Durée (min)"/>
+                        <TableColumn fx:id="colVisible" prefWidth="80" text="Visible"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <VBox spacing="10" style="-fx-padding: 0 0 0 12;">
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="Feedbacks anonymes" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblTotalFeedbacks" text="0" style="-fx-text-fill: #64748b;"/>
+                    <Button text="Actualiser" onAction="#actualiserFeedbacks"
+                            style="-fx-font-size: 11; -fx-background-color: #ecf0f1; -fx-padding: 6 10;"/>
+                </HBox>
+                <ListView fx:id="listFeedbacks" VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </SplitPane>
     </center>
 
     <!-- BAS - BOUTONS D'ACTION -->

@@ -9,14 +9,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceCours implements IService<Cours> {
-
-    private Connection cnx = MyDataBase.getInstance().getCnx();
+    private Connection getConnectionOrThrow() throws SQLException {
+        Connection cnx = MyDataBase.getInstance().getCnx();
+        if (cnx == null) {
+            throw new SQLException("Connexion à la base indisponible. Vérifiez que MySQL/WAMP/XAMPP est démarré.");
+        }
+        return cnx;
+    }
 
     @Override
     public void add(Cours c) {
-        String req = "INSERT INTO cours (titre, description, objectifs, duree_heures, niveau, categorie, est_certifiant, date_debut, date_fin, visible) VALUES (?,?,?,?,?,?,?,?,?,?)";
         try {
-            PreparedStatement ps = cnx.prepareStatement(req);
+            addAndReturnId(c);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int addAndReturnId(Cours c) throws SQLException {
+        String req = "INSERT INTO cours (titre, description, objectifs, duree_heures, niveau, categorie, est_certifiant, date_debut, date_fin, visible) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        Connection cnx = getConnectionOrThrow();
+        try (PreparedStatement ps = cnx.prepareStatement(req, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, c.getTitre());
             ps.setString(2, c.getDescription());
             ps.setString(3, c.getObjectifs());
@@ -27,10 +41,43 @@ public class ServiceCours implements IService<Cours> {
             ps.setDate(8, Date.valueOf(c.getDateDebut()));
             ps.setDate(9, Date.valueOf(c.getDateFin()));
             ps.setBoolean(10, c.isVisible());
-            ps.executeUpdate();
-            System.out.println("Cours ajouté ✅");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Insertion échouée: aucun cours n'a été créé.");
+            }
+            // Récupérer l'ID généré
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int generatedId = rs.getInt(1);
+                    c.setId(generatedId);
+                    System.out.println("Cours ajouté ✅ ID généré : " + generatedId);
+                    return generatedId;
+                }
+            }
+
+            {
+                try (PreparedStatement psFind = cnx.prepareStatement(
+                        "SELECT id FROM cours " +
+                        "WHERE titre = ? AND niveau = ? AND categorie = ? AND date_debut = ? AND date_fin = ? " +
+                        "ORDER BY id DESC LIMIT 1")) {
+                    psFind.setString(1, c.getTitre());
+                    psFind.setString(2, c.getNiveau());
+                    psFind.setString(3, c.getCategorie());
+                    psFind.setDate(4, Date.valueOf(c.getDateDebut()));
+                    psFind.setDate(5, Date.valueOf(c.getDateFin()));
+
+                    try (ResultSet rsFind = psFind.executeQuery()) {
+                        if (rsFind.next()) {
+                            int foundId = rsFind.getInt("id");
+                            c.setId(foundId);
+                            System.out.println("Cours ajouté ✅ ID récupéré via recherche: " + foundId);
+                            return foundId;
+                        } else {
+                            throw new SQLException("Insertion effectuée, mais impossible de récupérer l'identifiant du cours.");
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -38,6 +85,7 @@ public class ServiceCours implements IService<Cours> {
     public void update(Cours c) {
         String req = "UPDATE cours SET titre=?, description=?, objectifs=?, duree_heures=?, niveau=?, categorie=?, est_certifiant=?, date_debut=?, date_fin=?, visible=? WHERE id=?";
         try {
+            Connection cnx = getConnectionOrThrow();
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setString(1, c.getTitre());
             ps.setString(2, c.getDescription());
@@ -61,6 +109,7 @@ public class ServiceCours implements IService<Cours> {
     public void delete(Cours c) {
         String req = "DELETE FROM cours WHERE id=?";
         try {
+            Connection cnx = getConnectionOrThrow();
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, c.getId());
             ps.executeUpdate();
@@ -75,6 +124,7 @@ public class ServiceCours implements IService<Cours> {
         List<Cours> liste = new ArrayList<>();
         String req = "SELECT * FROM cours";
         try {
+            Connection cnx = getConnectionOrThrow();
             Statement stm = cnx.createStatement();
             ResultSet rs = stm.executeQuery(req);
             while (rs.next()) liste.add(mapResultSet(rs));
@@ -88,6 +138,7 @@ public class ServiceCours implements IService<Cours> {
         List<Cours> liste = new ArrayList<>();
         String req = "SELECT * FROM cours WHERE niveau = ?";
         try {
+            Connection cnx = getConnectionOrThrow();
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setString(1, niveau);
             ResultSet rs = ps.executeQuery();
@@ -102,6 +153,7 @@ public class ServiceCours implements IService<Cours> {
         List<Cours> liste = new ArrayList<>();
         String req = "SELECT * FROM cours WHERE categorie = ?";
         try {
+            Connection cnx = getConnectionOrThrow();
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setString(1, categorie);
             ResultSet rs = ps.executeQuery();
@@ -116,6 +168,7 @@ public class ServiceCours implements IService<Cours> {
         List<Cours> liste = new ArrayList<>();
         String req = "SELECT * FROM cours WHERE est_certifiant = TRUE";
         try {
+            Connection cnx = getConnectionOrThrow();
             Statement stm = cnx.createStatement();
             ResultSet rs = stm.executeQuery(req);
             while (rs.next()) liste.add(mapResultSet(rs));
@@ -132,6 +185,7 @@ public class ServiceCours implements IService<Cours> {
                 "JOIN chapitre ch ON co.id = ch.cours_id " +
                 "ORDER BY co.id, ch.ordre";
         try {
+            Connection cnx = getConnectionOrThrow();
             Statement stm = cnx.createStatement();
             ResultSet rs = stm.executeQuery(req);
             System.out.println("=== Cours avec Chapitres ===");
