@@ -31,7 +31,7 @@ public class MainFx extends Application {
             var result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == btnEtudiant) {
-                fxml = "/Etudiant.fxml";  // Étudiant
+                fxml = "/Accueil.fxml";  // Étudiant - Ouvre d'abord l'Accueil
             }
 
             System.out.println("📂 Tentative de chargement : " + fxml);

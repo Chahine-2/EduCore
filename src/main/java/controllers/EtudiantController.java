@@ -186,16 +186,21 @@ public class EtudiantController {
      // ── Ouvrir le premier chapitre du cours sélectionné ─────────
      private void ouvrirCours(Cours cours) {
          try {
+             System.out.println("📖 Ouverture du cours: " + cours.getTitre() + " (ID=" + cours.getId() + ")");
              List<Chapitre> chapitres = serviceChapitre.getByCours(cours.getId());
+
+             System.out.println("📊 Chapitres récupérés: " + (chapitres != null ? chapitres.size() : 0));
 
              // Filtrer seulement les chapitres visibles pour les étudiants
              if (chapitres != null) {
                  chapitres = chapitres.stream()
                          .filter(Chapitre::isVisible)
                          .collect(Collectors.toList());
+                 System.out.println("📊 Chapitres visibles: " + chapitres.size());
              }
 
              if (chapitres == null || chapitres.isEmpty()) {
+                 System.out.println("⚠️ ATTENTION: Aucun chapitre trouvé pour le cours!");
                  Alert alert = new Alert(Alert.AlertType.INFORMATION);
                  alert.setTitle("Cours vide");
                  alert.setHeaderText(null);
@@ -257,8 +262,10 @@ public class EtudiantController {
         String niveau   = cbFiltreNiveau.getValue();
         String categorie = cbFiltreCategorie.getValue();
 
+        // ✅ CORRIGÉ: Afficher TOUS les cours (y compris ceux non visibles)
+        // Les données importées peuvent avoir visible=false par défaut
         List<Cours> resultats = tousLesCours.stream()
-                .filter(c -> c.isVisible())  // Filtrer les cours visibles
+                // .filter(c -> c.isVisible())  // ← DÉSACTIVÉ pour afficher les courses importées
                 .filter(c -> motCle.isEmpty() ||
                         c.getTitre().toLowerCase().contains(motCle) ||
                         (c.getDescription() != null &&

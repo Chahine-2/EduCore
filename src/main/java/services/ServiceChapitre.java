@@ -89,9 +89,18 @@ public class ServiceChapitre implements IService<Chapitre> {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, coursId);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) liste.add(mapResultSet(rs));
+            System.out.println("🔍 Recherche de chapitres pour cours_id = " + coursId);
+            while (rs.next()) {
+                Chapitre chap = mapResultSet(rs);
+                System.out.println("   ✅ Chapitre trouvé: " + chap.getTitre() + " (id=" + chap.getId() + ")");
+                liste.add(chap);
+            }
+            if (liste.isEmpty()) {
+                System.out.println("   ⚠️ Aucun chapitre trouvé pour cours_id = " + coursId);
+            }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("❌ ERREUR SQL: " + e.getMessage());
+            e.printStackTrace();
         }
         return liste;
     }
