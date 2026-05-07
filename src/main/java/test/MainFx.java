@@ -2,11 +2,10 @@ package test;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class MainFx extends Application {
+public class MainFX extends Application {
     public static void main(String[] args) {
         launch(args);
     }
@@ -14,7 +13,7 @@ public class MainFx extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/startup.fxml"));
             var scene = new Scene(loader.load());
 
             stage.setTitle("EDUCORE");
@@ -30,7 +29,4 @@ public class MainFx extends Application {
             throw e;
         }
     }
-
 }
-
-

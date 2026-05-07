@@ -4,11 +4,10 @@ import java.util.List;
 
 
 
-public interface IService<T> {
+public interface IServiceCours<T> {
     void add(T p);
     List<T> getAll();
-    T getById(int id);
-    void delete(int id);
+    void delete(T c);
     void update(T p);
 }
 

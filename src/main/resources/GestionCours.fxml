@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.GestionCoursController">
+
+    <!-- HAUT - TITRE -->
+    <top>
+        <VBox style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="📘 Gestion des Cours EDUCORE"
+                       style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="← Retour"
+                        onAction="#retourAccueil"
+                        style="-fx-background-color: #ecf0f1; -fx-text-fill: #2c3e50; -fx-font-weight: bold; -fx-background-radius: 8;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- CENTER - CONTENU PRINCIPAL -->
+    <center>
+        <SplitPane dividerPositions="0.6">
+            <!-- GAUCHE - TABLEAU DES COURS -->
+            <VBox spacing="10" style="-fx-padding: 15;">
+                <Label text="Liste des Cours" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                <TableView fx:id="tableViewCours" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" prefWidth="50" text="ID"/>
+                        <TableColumn fx:id="colTitre" prefWidth="200" text="Titre"/>
+                        <TableColumn fx:id="colNiveau" prefWidth="100" text="Niveau"/>
+                        <TableColumn fx:id="colCategorie" prefWidth="120" text="Catégorie"/>
+                        <TableColumn fx:id="colDuree" prefWidth="80" text="Durée (h)"/>
+                        <TableColumn fx:id="colCertifiant" prefWidth="80" text="Certifiant"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- DROITE - FORMULAIRE -->
+            <VBox spacing="15" style="-fx-padding: 15; -fx-border-left: 1 solid #bdc3c7;">
+                <Label text="Détails du Cours" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+
+                <!-- Titre -->
+                <VBox spacing="5">
+                    <Label text="Titre du cours:"/>
+                    <TextField fx:id="tfTitre" promptText="Saisir le titre"/>
+                </VBox>
+
+                <!-- Description -->
+                <VBox spacing="5">
+                    <Label text="Description:"/>
+                    <TextArea fx:id="taDescription" promptText="Saisir la description" wrapText="true" prefRowCount="3"/>
+                </VBox>
+
+                <!-- Objectifs -->
+                <VBox spacing="5">
+                    <Label text="Objectifs:"/>
+                    <TextArea fx:id="taObjectifs" promptText="Saisir les objectifs" wrapText="true" prefRowCount="3"/>
+                </VBox>
+
+                <!-- Propriétés -->
+                <HBox spacing="15">
+                    <VBox spacing="5">
+                        <Label text="Durée (heures):"/>
+                        <Spinner fx:id="spinDuree" prefWidth="100"/>
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="Niveau:"/>
+                        <ComboBox fx:id="cbNiveau" prefWidth="150"/>
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="Catégorie:"/>
+                        <ComboBox fx:id="cbCategorie" prefWidth="150"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Dates -->
+                <HBox spacing="15">
+                    <VBox spacing="5">
+                        <Label text="Date de début:"/>
+                        <DatePicker fx:id="dpDebut"/>
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="Date de fin:"/>
+                        <DatePicker fx:id="dpFin"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Certifiant -->
+                <HBox spacing="15">
+                    <CheckBox fx:id="cbCertifiant" text="Cours certifiant"/>
+                    <CheckBox fx:id="cbVisible" text="Visible pour les étudiants"/>
+                </HBox>
+
+                <!-- Boutons -->
+                <HBox spacing="10">
+                    <Button fx:id="btnAjouter" text="Ajouter"
+                            onAction="#ajouterCours"
+                            style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 8 15;"/>
+                    <Button fx:id="btnModifier" text="Modifier"
+                            onAction="#modifierCours"
+                            style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 8 15;"/>
+                    <Button fx:id="btnSupprimer" text="Supprimer"
+                            onAction="#supprimerCours"
+                            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 8 15;"/>
+                    <Button fx:id="btnDetails" text="Details"
+                            onAction="#afficherDetails"
+                            style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 8 15;"/>
+                </HBox>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <!-- BAS - BARRE DE STATUT -->
+    <bottom>
+        <HBox spacing="15" style="-fx-background-color: #ecf0f1; -fx-padding: 10; -fx-border-top: 1 solid #bdc3c7;">
+            <Label text="✅ Prêt" HBox.hgrow="ALWAYS"/>
+            <Separator orientation="VERTICAL"/>
+            <Label text="👆 Sélectionnez un cours dans le tableau pour le modifier ou voir les détails"/>
+        </HBox>
+    </bottom>
+</BorderPane>
+

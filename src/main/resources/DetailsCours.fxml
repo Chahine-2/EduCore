@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.DetailsCoursController">
+
+    <!-- HAUT - INFORMATIONS DU COURS -->
+    <top>
+        <VBox spacing="15" style="-fx-padding: 15; -fx-background-color: #2c3e50; -fx-border-bottom: 2 solid #bdc3c7;">
+            <HBox spacing="15">
+                <Label fx:id="lblTitre" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="← Retour" onAction="#retour"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 8 15;"/>
+            </HBox>
+            <HBox spacing="20" style="-fx-text-fill: white;">
+                <Label fx:id="lblNiveau" style="-fx-text-fill: white;"/>
+                <Label fx:id="lblCategorie" style="-fx-text-fill: white;"/>
+                <Label fx:id="lblDuree" style="-fx-text-fill: white;"/>
+                <Label fx:id="lblCertifiant" style="-fx-text-fill: white;"/>
+            </HBox>
+            <Separator/>
+            <Label text="Description:" style="-fx-font-weight: bold; -fx-text-fill: white;"/>
+            <TextArea fx:id="taDescription" wrapText="true" prefRowCount="2" editable="false"/>
+            <Label text="Objectifs:" style="-fx-font-weight: bold; -fx-text-fill: white;"/>
+            <TextArea fx:id="taObjectifs" wrapText="true" prefRowCount="2" editable="false"/>
+        </VBox>
+    </top>
+
+    <!-- CENTER - TABLEAU DES CHAPITRES -->
+    <center>
+        <VBox spacing="10" style="-fx-padding: 15;">
+            <HBox spacing="10">
+                <Label fx:id="lblTotalChapitres" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <TableView fx:id="tableViewChapitres" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colOrdre" prefWidth="60" text="Ordre"/>
+                    <TableColumn fx:id="colTitreChap" prefWidth="250" text="Titre"/>
+                    <TableColumn fx:id="colType" prefWidth="100" text="Type"/>
+                    <TableColumn fx:id="colDureeMin" prefWidth="100" text="Durée (min)"/>
+                    <TableColumn fx:id="colVisible" prefWidth="80" text="Visible"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <!-- BAS - BOUTONS D'ACTION -->
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 15; -fx-background-color: #ecf0f1; -fx-border-top: 2 solid #bdc3c7;">
+            <Button fx:id="btnAjouterChapitre" text="✚ Ajouter Chapitre"
+                    style="-fx-font-size: 12; -fx-padding: 8 15; -fx-background-color: #27ae60; -fx-text-fill: white;"
+                    onAction="#ajouterChapitre"/>
+            <Button fx:id="btnModifierChapitre" text="✎ Modifier Chapitre"
+                    style="-fx-font-size: 12; -fx-padding: 8 15; -fx-background-color: #2980b9; -fx-text-fill: white;"
+                    onAction="#modifierChapitre"/>
+            <Button fx:id="btnSupprimerChapitre" text="✕ Supprimer Chapitre"
+                    style="-fx-font-size: 12; -fx-padding: 8 15; -fx-background-color: #e74c3c; -fx-text-fill: white;"
+                    onAction="#supprimerChapitre"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </bottom>
+</BorderPane>
+
