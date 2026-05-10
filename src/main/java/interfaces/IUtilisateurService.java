@@ -16,14 +16,21 @@ public interface IUtilisateurService {
 
     // Opération Métier Avancée
     boolean changerStatutCompte(int id, boolean rendreActif);
-    void consulterHistoriqueConnexions();
+
 
     // --- Fonctionnalités Enseignant (Présences) ---
     List<String> listerClassesExistantes();
-    List<Utilisateur> listerEtudiantsParClasse(String classe);
+    List<models.Etudiant> listerEtudiantsParClasse(String classe);
     boolean marquerPresence(int enseignantId, String classe, List<Integer> etudiantsPresents, List<Integer> etudiantsAbsents);
 
     // --- Gestion des Classes (Administrateur) ---
     boolean ajouterClasse(String nomClasse);
     List<String> listerToutesLesClasses();
+    List<models.HistoriqueConnexion> recupererHistoriqueConnexions();
+
+    Utilisateur getUtilisateurComplet(int id, String roleNom);
+    boolean modifierUtilisateur(Utilisateur user);
+
+
+    boolean enregistrerPresence(int etudiantId, String statut);
 }

@@ -60,14 +60,13 @@ public class UtilisateurService implements IUtilisateurService {
 
     @Override
     public boolean ajouterEtudiant(Etudiant etudiant) {
-        // Hachage du mot de passe
         String motDePasseSecurise = BCrypt.hashpw(etudiant.getMotDePasse(), BCrypt.gensalt());
 
         String queryUtilisateur = "INSERT INTO utilisateurs (nom, prenom, age, email, tel, mot_de_passe, role_id, statut_actif) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String queryEtudiant = "INSERT INTO etudiants (utilisateur_id, numero_etudiant, classe) VALUES (?, ?, ?)";
 
         try {
-            connection.setAutoCommit(false); // Début de la transaction
+            connection.setAutoCommit(false);
 
             try (PreparedStatement psUser = connection.prepareStatement(queryUtilisateur, Statement.RETURN_GENERATED_KEYS)) {
                 psUser.setString(1, etudiant.getNom());
@@ -76,8 +75,8 @@ public class UtilisateurService implements IUtilisateurService {
                 psUser.setString(4, etudiant.getEmail());
                 psUser.setInt(5, etudiant.getTel());
                 psUser.setString(6, motDePasseSecurise);
-                psUser.setInt(7, 3); // Role Étudiant
-                psUser.setBoolean(8, true); // Actif par défaut
+                psUser.setInt(7, 3);
+                psUser.setBoolean(8, true);
 
                 psUser.executeUpdate();
 
@@ -93,7 +92,7 @@ public class UtilisateurService implements IUtilisateurService {
                     }
                 }
             }
-            connection.commit(); // Validation
+            connection.commit();
             return true;
         } catch (SQLException e) {
             try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
@@ -162,7 +161,7 @@ public class UtilisateurService implements IUtilisateurService {
             return false;
         }
     }
-    // --- NOUVELLE FONCTIONNALITÉ : JOURNAL D'AUDIT ---
+
     private void enregistrerTentativeConnexion(String email, boolean succes) {
         String query = "INSERT INTO historique_connexions (email_tente, statut_reussite) VALUES (?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -173,35 +172,37 @@ public class UtilisateurService implements IUtilisateurService {
             System.err.println("Erreur lors de l'enregistrement de l'audit : " + e.getMessage());
         }
     }
+
     @Override
-    public void consulterHistoriqueConnexions() {
-        // On récupère les 10 dernières tentatives
-        String query = "SELECT email_tente, date_tentative, statut_reussite FROM historique_connexions ORDER BY date_tentative DESC LIMIT 10";
+    public List<HistoriqueConnexion> recupererHistoriqueConnexions() {
+        List<HistoriqueConnexion> liste = new ArrayList<>();
+        String query = "SELECT email_tente, date_tentative, statut_reussite FROM historique_connexions ORDER BY date_tentative DESC LIMIT 30";
+
         try (PreparedStatement ps = connection.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
 
-            System.out.println("\n--- 10 DERNIÈRES TENTATIVES DE CONNEXION ---");
             while (rs.next()) {
                 String date = rs.getString("date_tentative");
                 String email = rs.getString("email_tente");
-                String statut = rs.getBoolean("statut_reussite") ? "✅ SUCCÈS" : "❌ ÉCHEC ";
+                String statut = rs.getBoolean("statut_reussite") ? "✅ SUCCÈS" : "❌ ÉCHEC";
 
-                System.out.println("[" + date + "] " + statut + " | Email : " + email);
+                liste.add(new HistoriqueConnexion(date, email, statut));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return liste;
     }
+
     @Override
     public boolean ajouterEnseignant(Enseignant enseignant) {
-        // Hachage du mot de passe
         String motDePasseSecurise = BCrypt.hashpw(enseignant.getMotDePasse(), BCrypt.gensalt());
 
         String queryUtilisateur = "INSERT INTO utilisateurs (nom, prenom, age, email, tel, mot_de_passe, role_id, statut_actif) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String queryEnseignant = "INSERT INTO enseignants (utilisateur_id, specialite, matricule) VALUES (?, ?, ?)";
 
         try {
-            connection.setAutoCommit(false); // Début transaction
+            connection.setAutoCommit(false);
 
             try (PreparedStatement psUser = connection.prepareStatement(queryUtilisateur, Statement.RETURN_GENERATED_KEYS)) {
                 psUser.setString(1, enseignant.getNom());
@@ -210,7 +211,7 @@ public class UtilisateurService implements IUtilisateurService {
                 psUser.setString(4, enseignant.getEmail());
                 psUser.setInt(5, enseignant.getTel());
                 psUser.setString(6, motDePasseSecurise);
-                psUser.setInt(7, 2); // 2 = ID du rôle Enseignant dans la BDD
+                psUser.setInt(7, 2);
                 psUser.setBoolean(8, true);
 
                 psUser.executeUpdate();
@@ -219,11 +220,10 @@ public class UtilisateurService implements IUtilisateurService {
                 if (rs.next()) {
                     int newUserId = rs.getInt(1);
 
-                    // Insertion dans la table spécifique des enseignants
                     try (PreparedStatement psEns = connection.prepareStatement(queryEnseignant)) {
                         psEns.setInt(1, newUserId);
-                        psEns.setString(2, enseignant.getSpecialite()); // ex: Mathématiques
-                        psEns.setString(3, enseignant.getMatricule());  // ex: PROF-2024
+                        psEns.setString(2, enseignant.getSpecialite());
+                        psEns.setString(3, enseignant.getMatricule());
                         psEns.executeUpdate();
                     }
                 }
@@ -238,10 +238,10 @@ public class UtilisateurService implements IUtilisateurService {
             try { connection.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
+
     @Override
     public List<String> listerClassesExistantes() {
         List<String> classes = new ArrayList<>();
-        // On cherche toutes les classes uniques dans la table etudiants
         String query = "SELECT DISTINCT classe FROM etudiants WHERE classe IS NOT NULL";
         try (PreparedStatement ps = connection.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
@@ -255,36 +255,13 @@ public class UtilisateurService implements IUtilisateurService {
     }
 
     @Override
-    public List<Utilisateur> listerEtudiantsParClasse(String classe) {
-        List<Utilisateur> etudiants = new ArrayList<>();
-        // On fait une jointure pour récupérer les infos de l'utilisateur ET de l'étudiant
-        String query = "SELECT u.id, u.nom, u.prenom, u.email FROM utilisateurs u " +
-                "JOIN etudiants e ON u.id = e.utilisateur_id " +
-                "WHERE e.classe = ? AND u.statut_actif = true";
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, classe);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                // On utilise la classe parente juste pour transporter les données
-                Role roleEtud = new Role(3, "Etudiant");
-                Utilisateur u = new Utilisateur(rs.getInt("id"), rs.getString("nom"), rs.getString("prenom"), 0, rs.getString("email"), 0, "", roleEtud, true) {};
-                etudiants.add(u);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return etudiants;
-    }
-
-    @Override
     public boolean marquerPresence(int enseignantId, String classe, List<Integer> etudiantsPresents, List<Integer> etudiantsAbsents) {
         String querySession = "INSERT INTO sessions (classe, enseignant_id) VALUES (?, ?)";
         String queryPresence = "INSERT INTO presences (session_id, etudiant_id, statut) VALUES (?, ?, ?)";
 
         try {
-            connection.setAutoCommit(false); // Début de la transaction
+            connection.setAutoCommit(false);
 
-            // 1. Créer la session
             try (PreparedStatement psSession = connection.prepareStatement(querySession, Statement.RETURN_GENERATED_KEYS)) {
                 psSession.setString(1, classe);
                 psSession.setInt(2, enseignantId);
@@ -294,7 +271,6 @@ public class UtilisateurService implements IUtilisateurService {
                 if (rs.next()) {
                     int sessionId = rs.getInt(1);
 
-                    // 2. Insérer les présences
                     try (PreparedStatement psPres = connection.prepareStatement(queryPresence)) {
                         for (int id : etudiantsPresents) {
                             psPres.setInt(1, sessionId);
@@ -308,7 +284,7 @@ public class UtilisateurService implements IUtilisateurService {
                             psPres.setString(3, "Absent");
                             psPres.addBatch();
                         }
-                        psPres.executeBatch(); // Exécuter toutes les insertions d'un coup
+                        psPres.executeBatch();
                     }
                 }
             }
@@ -322,6 +298,7 @@ public class UtilisateurService implements IUtilisateurService {
             try { connection.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
+
     @Override
     public boolean ajouterClasse(String nomClasse) {
         String query = "INSERT INTO classes (nom_classe) VALUES (?)";
@@ -347,5 +324,125 @@ public class UtilisateurService implements IUtilisateurService {
             e.printStackTrace();
         }
         return classes;
+    }
+
+    @Override
+    public Utilisateur getUtilisateurComplet(int id, String roleNom) {
+        String query = "SELECT * FROM utilisateurs WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String nom = rs.getString("nom");
+                String prenom = rs.getString("prenom");
+                int age = rs.getInt("age");
+                String email = rs.getString("email");
+                int tel = rs.getInt("tel");
+                boolean actif = rs.getBoolean("statut_actif");
+                Role role = new Role(rs.getInt("role_id"), roleNom);
+
+                if (roleNom.equals("Etudiant")) {
+                    String q2 = "SELECT * FROM etudiants WHERE utilisateur_id = ?";
+                    try (PreparedStatement ps2 = connection.prepareStatement(q2)) {
+                        ps2.setInt(1, id);
+                        ResultSet rs2 = ps2.executeQuery();
+                        if (rs2.next()) {
+                            return new Etudiant(id, nom, prenom, age, email, tel, "", role, rs2.getString("numero_etudiant"), rs2.getString("classe"), actif);
+                        }
+                    }
+                } else if (roleNom.equals("Enseignant")) {
+                    String q2 = "SELECT * FROM enseignants WHERE utilisateur_id = ?";
+                    try (PreparedStatement ps2 = connection.prepareStatement(q2)) {
+                        ps2.setInt(1, id);
+                        ResultSet rs2 = ps2.executeQuery();
+                        if (rs2.next()) {
+                            return new Enseignant(id, nom, prenom, age, email, tel, "", role, rs2.getString("specialite"), rs2.getString("matricule"), actif);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
+
+    @Override
+    public boolean modifierUtilisateur(Utilisateur user) {
+        String queryUser = "UPDATE utilisateurs SET nom=?, prenom=?, age=?, email=?, tel=? WHERE id=?";
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement ps = connection.prepareStatement(queryUser)) {
+                ps.setString(1, user.getNom());
+                ps.setString(2, user.getPrenom());
+                ps.setInt(3, user.getAge());
+                ps.setString(4, user.getEmail());
+                ps.setInt(5, user.getTel());
+                ps.setInt(6, user.getId());
+                ps.executeUpdate();
+            }
+
+            if (user instanceof Etudiant) {
+                Etudiant etud = (Etudiant) user;
+                String queryEtud = "UPDATE etudiants SET numero_etudiant=?, classe=? WHERE utilisateur_id=?";
+                try (PreparedStatement ps = connection.prepareStatement(queryEtud)) {
+                    ps.setString(1, etud.getNumeroEtudiant());
+                    ps.setString(2, etud.getClasse());
+                    ps.setInt(3, user.getId());
+                    ps.executeUpdate();
+                }
+            } else if (user instanceof Enseignant) {
+                Enseignant prof = (Enseignant) user;
+                String queryProf = "UPDATE enseignants SET specialite=?, matricule=? WHERE utilisateur_id=?";
+                try (PreparedStatement ps = connection.prepareStatement(queryProf)) {
+                    ps.setString(1, prof.getSpecialite());
+                    ps.setString(2, prof.getMatricule());
+                    ps.setInt(3, user.getId());
+                    ps.executeUpdate();
+                }
+            }
+            connection.commit();
+            return true;
+        } catch (SQLException e) {
+            try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { connection.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+        }
+    }
+
+    @Override
+    public List<Etudiant> listerEtudiantsParClasse(String classe) {
+        List<Etudiant> liste = new ArrayList<>();
+        String query = "SELECT u.*, e.numero_etudiant, e.classe FROM utilisateurs u JOIN etudiants e ON u.id = e.utilisateur_id WHERE e.classe = ? AND u.statut_actif = 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, classe);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Role roleEtud = new Role(3, "Etudiant");
+                Etudiant etud = new Etudiant(
+                        rs.getInt("id"), rs.getString("nom"), rs.getString("prenom"),
+                        rs.getInt("age"), rs.getString("email"), rs.getInt("tel"),
+                        rs.getString("mot_de_passe"), roleEtud,
+                        rs.getString("numero_etudiant"), rs.getString("classe"), true
+                );
+                liste.add(etud);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return liste;
+    }
+
+    @Override
+    public boolean enregistrerPresence(int etudiantId, String statut) {
+        String query = "INSERT INTO presences (etudiant_id, date_appel, statut) VALUES (?, CURDATE(), ?)";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, etudiantId);
+            ps.setString(2, statut);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

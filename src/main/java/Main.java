@@ -69,7 +69,7 @@ public class Main {
             System.out.println("3. Modifier l'email d'un utilisateur (UPDATE)");
             System.out.println("4. Supprimer un utilisateur (DELETE)");
             System.out.println("5. Suspendre / Activer un compte (MÉTIER)");
-            System.out.println("6.consulterHistorique");
+            System.out.println("6.consulter Historique de connection");
             System.out.println("7. Ajouter un enseignant (CREATE)");
             System.out.println("8. Ajouter une classe (CREATE)");
             System.out.println("0. Se déconnecter");
@@ -207,7 +207,11 @@ public class Main {
                     break;
                 // Ajoutez ceci juste en dessous du case 5
                 case 6:
-                    service.consulterHistoriqueConnexions();
+                    System.out.println("\n--- HISTORIQUE DE CONNEXION ---");
+                    List<models.HistoriqueConnexion> historique = service.recupererHistoriqueConnexions();
+                    for (models.HistoriqueConnexion h : historique) {
+                        System.out.println("[" + h.getDate() + "] " + h.getStatut() + " | Email : " + h.getEmail());
+                    }
                     break;
                 case 7:
                     System.out.println("\n--- AJOUTER UN ENSEIGNANT ---");
@@ -339,7 +343,8 @@ public class Main {
                     }
 
                     String classeSelectionnee = classes.get(choixClasse);
-                    List<Utilisateur> etudiants = service.listerEtudiantsParClasse(classeSelectionnee);
+                    List<models.Etudiant> etudiants = service.listerEtudiantsParClasse(classeSelectionnee);
+
 
                     if (etudiants.isEmpty()) {
                         System.out.println("Aucun étudiant actif trouvé dans cette classe.");
