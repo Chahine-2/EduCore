@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class MainFX extends Application {
+public class MainFx extends Application {
     public static void main(String[] args) {
         Thread.setDefaultUncaughtExceptionHandler((thread, err) -> {
             System.err.println("Uncaught exception in thread \"" + thread.getName() + "\":");
