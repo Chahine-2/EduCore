@@ -14,7 +14,9 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import models.Chapitre;
 import models.Cours;
+import models.FeedbackEtudiant;
 import services.ServiceChapitre;
+import services.ServiceFeedback;
 import utils.NavigationManager;
 
 import java.io.File;
@@ -54,14 +56,21 @@ public class DetailsCoursController {
     @FXML private Button btnAjouterChapitre;
     @FXML private Button btnModifierChapitre;
     @FXML private Button btnSupprimerChapitre;
+    @FXML private ListView<FeedbackEtudiant> listFeedbacks;
+    @FXML private Label lblTotalFeedbacks;
 
     private Chapitre chapitreEnEdition = null;
     private ServiceChapitre serviceChapitre = new ServiceChapitre();
+    private final ServiceFeedback serviceFeedback = new ServiceFeedback();
 
     @FXML
     void initialize() {
         try {
             System.out.println("🔧 Initialisation DetailsCoursController...");
+            System.out.println("📊 État du cours statique au démarrage:");
+            System.out.println("   - cours = " + cours);
+            System.out.println("   - cours.getId() = " + (cours != null ? cours.getId() : "NULL"));
+            System.out.println("   - cours.getTitre() = " + (cours != null ? cours.getTitre() : "NULL"));
 
             // Configurer les colonnes de la TableView
             colOrdre.setCellValueFactory(
@@ -94,6 +103,7 @@ public class DetailsCoursController {
 
             afficherDetails();
             chargerChapitres();
+            chargerFeedbacks();
 
             System.out.println("✅ DetailsCoursController initialisé avec succès");
         } catch (Exception e) {
@@ -110,9 +120,24 @@ public class DetailsCoursController {
     }
 
     public void afficherDetails() {
-        lblTitre.setText("📘 " + cours.getTitre());
-        lblNiveau.setText("Niveau : " + cours.getNiveau());
-        lblCategorie.setText("Catégorie : " + cours.getCategorie());
+        System.out.println("🎯 afficherDetails() appelé");
+        System.out.println("   - cours = " + cours);
+        System.out.println("   - cours.getId() = " + (cours != null ? cours.getId() : "NULL"));
+        System.out.println("   - cours.getTitre() = " + (cours != null ? cours.getTitre() : "NULL"));
+        
+        if (cours == null) {
+            System.out.println("⚠️ AVERTISSEMENT: cours est NULL!");
+            lblTitre.setText("❌ Cours non chargé");
+            return;
+        }
+        
+        if (cours.getId() <= 0) {
+            System.out.println("⚠️ AVERTISSEMENT: cours.id=" + cours.getId() + " (invalide!)");
+        }
+        
+        lblTitre.setText("📘 " + (cours.getTitre() != null ? cours.getTitre() : "N/A"));
+        lblNiveau.setText("Niveau : " + (cours.getNiveau() != null ? cours.getNiveau() : "N/A"));
+        lblCategorie.setText("Catégorie : " + (cours.getCategorie() != null ? cours.getCategorie() : "N/A"));
         lblDuree.setText("Durée : " + cours.getDureeHeures() + " heures");
         lblCertifiant.setText("Certifiant : " + (cours.isEstCertifiant() ? "Oui ✅" : "Non ❌"));
         taDescription.setText(cours.getDescription() != null ? cours.getDescription() : "N/A");
@@ -120,16 +145,27 @@ public class DetailsCoursController {
     }
 
     private void chargerChapitres() {
-        if (cours.getId() > 0) {
-            java.util.List<Chapitre> chapitres = serviceChapitre.getByCours(cours.getId());
-            tableViewChapitres.getItems().setAll(chapitres);
-            mettreAJourCompteur();
+        System.out.println("📖 chargerChapitres() appelé");
+        System.out.println("   - cours.getId() = " + (cours != null ? cours.getId() : "NULL"));
+        
+        if (cours == null || cours.getId() <= 0) {
+            System.out.println("⚠️ IMPOSSIBLE de charger les chapitres: cours.id invalide!");
+            tableViewChapitres.getItems().clear();
+            lblTotalChapitres.setText("Total chapitres : 0 (❌ Cours non sélectionné)");
+            return;
         }
+        
+        java.util.List<Chapitre> chapitres = serviceChapitre.getByCours(cours.getId());
+        System.out.println("   - Chapitres trouvés: " + (chapitres != null ? chapitres.size() : 0));
+        tableViewChapitres.getItems().setAll(chapitres);
+        mettreAJourCompteur();
+        chargerFeedbacks();
     }
 
     private void mettreAJourCompteur() {
-        int total = tableViewChapitres.getItems().size();
-        lblTotalChapitres.setText("Total chapitres : " + total);
+        int total = tableViewChapitres.getItems() != null ? tableViewChapitres.getItems().size() : 0;
+        String status = (cours != null && cours.getId() > 0) ? "" : " (❌ Cours non valide)";
+        lblTotalChapitres.setText("Total chapitres : " + total + status);
     }
 
     private void selectChapitreInTable(MouseEvent event) {
@@ -139,8 +175,51 @@ public class DetailsCoursController {
         }
     }
 
+    private void chargerFeedbacks() {
+        if (listFeedbacks == null || lblTotalFeedbacks == null) return;
+        if (cours == null || cours.getId() <= 0) {
+            listFeedbacks.getItems().clear();
+            lblTotalFeedbacks.setText("0");
+            return;
+        }
+
+        java.util.List<FeedbackEtudiant> feedbacks = serviceFeedback.getFeedbacksByCours(cours.getId());
+        listFeedbacks.getItems().setAll(feedbacks);
+        lblTotalFeedbacks.setText(String.valueOf(feedbacks.size()));
+        listFeedbacks.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(FeedbackEtudiant item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item.getCoursTitre() + " : " + item.getChapitreTitre() + " : \"" + item.getMessage() + "\"");
+                    setStyle("-fx-wrap-text: true; -fx-padding: 10 8;");
+                }
+            }
+        });
+    }
+
+    @FXML
+    public void actualiserFeedbacks(ActionEvent event) {
+        chargerFeedbacks();
+    }
+
     @FXML
     public void ajouterChapitre(ActionEvent event) {
+        // ✅ VÉRIFICATION CRITIQUE: Le cours doit avoir un ID valide
+        System.out.println("🔍 DEBUG: cours = " + cours);
+        System.out.println("🔍 DEBUG: cours.getId() = " + (cours != null ? cours.getId() : "NULL"));
+        System.out.println("🔍 DEBUG: cours.getTitre() = " + (cours != null ? cours.getTitre() : "NULL"));
+
+        if (cours == null || cours.getId() <= 0) {
+            System.out.println("❌ ERREUR CRITIQUE: Le cours n'a pas un ID valide!");
+            showAlert("Erreur", "❌ ERREUR: Le cours n'a pas pu être correctement chargé.\n" +
+                    "Assurez-vous de sélectionner un cours valide dans la liste.", Alert.AlertType.ERROR);
+            return;
+        }
+
         Dialog<Chapitre> dialog = new Dialog<>();
         dialog.setTitle("Ajouter un Chapitre");
         dialog.setHeaderText("Créer un nouveau chapitre");
@@ -232,10 +311,19 @@ public class DetailsCoursController {
 
         Optional<Chapitre> result = dialog.showAndWait();
         if (result.isPresent()) {
-            serviceChapitre.add(result.get());
-            chargerChapitres();
-            tableViewChapitres.refresh();  // Force le rafraîchissement de l'affichage
-            showAlert("Succès", "✅ Chapitre ajouté avec succès!", Alert.AlertType.INFORMATION);
+            Chapitre chapitre = result.get();
+            System.out.println("📝 Tentative d'ajout du chapitre: " + chapitre.getTitre() +
+                             " pour cours_id=" + chapitre.getCoursId());
+
+            boolean success = serviceChapitre.addChapitre(chapitre);
+
+            if (success) {
+                chargerChapitres();
+                tableViewChapitres.refresh();
+                showAlert("Succès", "✅ Chapitre ajouté avec succès!", Alert.AlertType.INFORMATION);
+            } else {
+                showAlert("Erreur", "❌ Impossible d'ajouter le chapitre. Consultez la console pour les détails.", Alert.AlertType.ERROR);
+            }
         }
     }
 
@@ -331,12 +419,16 @@ public class DetailsCoursController {
 
         Optional<Chapitre> result = dialog.showAndWait();
         if (result.isPresent()) {
-            serviceChapitre.update(result.get());
-            // Mettre à jour l'item dans la table directement sans recharger
-            tableViewChapitres.refresh();  // Rafraîchit l'affichage de tous les items
-            chapitreEnEdition = null;
-            tableViewChapitres.getSelectionModel().clearSelection();
-            showAlert("Succès", "✅ Chapitre modifié avec succès!", Alert.AlertType.INFORMATION);
+            boolean success = serviceChapitre.updateChapitre(result.get());
+            if (success) {
+                // Mettre à jour l'item dans la table directement sans recharger
+                tableViewChapitres.refresh();  // Rafraîchit l'affichage de tous les items
+                chapitreEnEdition = null;
+                tableViewChapitres.getSelectionModel().clearSelection();
+                showAlert("Succès", "✅ Chapitre modifié avec succès!", Alert.AlertType.INFORMATION);
+            } else {
+                showAlert("Erreur", "❌ Impossible de modifier le chapitre. Consultez la console pour les détails.", Alert.AlertType.ERROR);
+            }
         }
     }
 
