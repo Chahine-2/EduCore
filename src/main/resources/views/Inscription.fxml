@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.InscriptionController">
+    <padding>
+        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+    </padding>
+
+    <Label text="Créer un compte EduCore" textFill="#2c3e50">
+        <font><Font name="System Bold" size="24.0" /></font>
+        <VBox.margin><Insets bottom="10.0" /></VBox.margin>
+    </Label>
+
+    <ComboBox fx:id="comboRole" onAction="#handleChangementRole" prefHeight="35.0" prefWidth="250.0" promptText="Je suis un..." style="-fx-font-size: 14px;">
+        <VBox.margin><Insets bottom="10.0" /></VBox.margin>
+    </ComboBox>
+
+    <TextField fx:id="txtNom" prefHeight="35.0" promptText="Nom" />
+    <TextField fx:id="txtPrenom" prefHeight="35.0" promptText="Prénom" />
+    <TextField fx:id="txtAge" prefHeight="35.0" promptText="Âge" />
+    <TextField fx:id="txtEmail" prefHeight="35.0" promptText="Email" />
+    <TextField fx:id="txtTel" prefHeight="35.0" promptText="Téléphone" />
+    <PasswordField fx:id="txtMdp" prefHeight="35.0" promptText="Mot de passe" />
+
+    <VBox fx:id="boxEtudiant" managed="false" spacing="12.0" visible="false">
+        <TextField fx:id="txtNumEtud" prefHeight="35.0" promptText="Numéro d'étudiant (ex: MAT-2026)" />
+        <TextField fx:id="txtClasse" prefHeight="35.0" promptText="Classe (ex: GL-3)" />
+    </VBox>
+
+    <VBox fx:id="boxProf" managed="false" spacing="12.0" visible="false">
+        <TextField fx:id="txtSpecialite" prefHeight="35.0" promptText="Spécialité (ex: Informatique)" />
+        <TextField fx:id="txtMatriculeProf" prefHeight="35.0" promptText="Matricule Professeur (ex: PROF-101)" />
+    </VBox>
+
+    <Label fx:id="lblMessage" textFill="RED" visible="false" />
+
+    <Button mnemonicParsing="false" onAction="#handleValiderInscription" prefHeight="40.0" prefWidth="250.0" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" text="S'inscrire">
+        <font><Font name="System Bold" size="15.0" /></font>
+        <VBox.margin><Insets top="10.0" /></VBox.margin>
+    </Button>
+
+    <Hyperlink onAction="#handleRetourConnexion" text="← Retour à la connexion" textFill="#7f8c8d">
+        <VBox.margin><Insets top="10.0" /></VBox.margin>
+    </Hyperlink>
+</VBox>

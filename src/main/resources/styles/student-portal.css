@@ -32,29 +32,30 @@
     -fx-font-size: 14px;
     -fx-text-fill: #64748b;
     -fx-padding: 8 0 0 0;
-    -fx-max-width: 520;
+    -fx-max-width: 640;
     -fx-wrap-text: true;
 }
 
-.portal-id-label {
+.portal-session-column {
+    -fx-padding: 4 0 0 0;
+}
+
+.portal-session-chip {
     -fx-font-size: 12px;
     -fx-font-weight: 600;
-    -fx-text-fill: #475569;
-}
-
-.portal-id-field {
-    -fx-padding: 10 14;
-    -fx-background-radius: 8;
-    -fx-border-color: #cbd5e1;
-    -fx-border-radius: 8;
+    -fx-text-fill: #334155;
+    -fx-padding: 8 14;
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-background-radius: 999;
+    -fx-border-color: rgba(99, 102, 241, 0.35);
+    -fx-border-radius: 999;
     -fx-border-width: 1;
-    -fx-background-color: #f8fafc;
-    -fx-font-feature-settings: "tnum";
 }
 
-.portal-id-field:focused {
-    -fx-border-color: #6366f1;
-    -fx-background-color: #ffffff;
+.portal-session-chip.portal-session-muted {
+    -fx-text-fill: #94a3b8;
+    -fx-border-color: #e2e8f0;
+    -fx-background-color: #f8fafc;
 }
 
 .portal-toolbar {
@@ -68,13 +69,71 @@
 
 .portal-count {
     -fx-font-size: 13px;
-    -fx-font-weight: 600;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1e293b;
+}
+
+.root-portal .button.portal-btn-ghost {
+    -fx-padding: 10 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-background-color: #ffffff;
     -fx-text-fill: #334155;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+}
+
+.root-portal .button.portal-btn-ghost:hover {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #94a3b8;
+}
+
+.root-portal .button.portal-btn-primary {
+    -fx-padding: 10 22;
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-background-color: linear-gradient(to bottom, #4f46e5, #4338ca);
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+}
+
+.root-portal .button.portal-btn-primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #4338ca, #3730a3);
+    -fx-effect: dropshadow(gaussian, rgba(67, 56, 202, 0.35), 14, 0.2, 0, 2);
+}
+
+.portal-center-wrap {
+    -fx-background-color: transparent;
+}
+
+.portal-embed-toolbar {
+    -fx-padding: 10 20 12 20;
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(148, 163, 184, 0.2);
+    -fx-border-width: 0 0 1 0;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.portal-embed-count {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #64748b;
 }
 
 .portal-main {
     -fx-padding: 28 36 36 36;
     -fx-background-color: transparent;
+}
+
+.root-portal.embedded-dashboard .portal-main {
+    -fx-padding: 16 20 28 20;
 }
 
 .portal-scroll {
@@ -99,7 +158,7 @@
     -fx-spacing: 10;
     -fx-pref-width: 320;
     -fx-max-width: 380;
-    -fx-min-height: 260;
+    -fx-min-height: 200;
     -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.10), 20, 0.2, 0, 4);
 }
 

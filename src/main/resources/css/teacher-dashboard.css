@@ -1,0 +1,394 @@
+/* EduCore — Teacher / Enseignant dashboard (Canvas / Moodle–inspired) */
+
+.teacher-root {
+    -fx-font-family: "Segoe UI", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #eef2ff;
+}
+
+/* ----- Sidebar ----- */
+.teacher-sidebar {
+    -fx-background-color: linear-gradient(to bottom, #0f172a 0%, #1e1b4b 45%, #312e81 100%);
+    -fx-padding: 24 12 18 12;
+    -fx-spacing: 0;
+    -fx-min-width: 252px;
+    -fx-pref-width: 264px;
+    -fx-max-width: 288px;
+}
+
+.teacher-brand-block {
+    -fx-padding: 0 12 26 12;
+    -fx-spacing: 6;
+}
+
+.teacher-brand-title {
+    -fx-text-fill: #f8fafc;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: -0.4px;
+}
+
+.teacher-brand-sub {
+    -fx-text-fill: #a5b4fc;
+    -fx-font-size: 12px;
+}
+
+.teacher-sidebar-nav {
+    -fx-spacing: 5;
+    -fx-padding: 0 6 0 6;
+}
+
+.teacher-sidebar-spacer {
+    -fx-min-height: 10px;
+}
+
+.teacher-sidebar-footer {
+    -fx-padding: 8 6 0 6;
+    -fx-spacing: 12;
+}
+
+.teacher-sidebar-footer-line {
+    -fx-min-height: 1px;
+    -fx-max-height: 1px;
+    -fx-pref-height: 1px;
+    -fx-background-color: rgba(165, 180, 252, 0.2);
+}
+
+.button.teacher-nav-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 11px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 0 3px;
+    -fx-border-radius: 0 11px 11px 0;
+    -fx-padding: 12 14 12 10px;
+    -fx-font-size: 13.5px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #e0e7ff;
+    -fx-alignment: CENTER_LEFT;
+    -fx-graphic-text-gap: 12;
+    -fx-cursor: hand;
+    -fx-effect: null;
+}
+
+.button.teacher-nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+    -fx-text-fill: #ffffff;
+    -fx-translate-x: 2;
+}
+
+.button.teacher-nav-button:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+.button.teacher-nav-button:focused {
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.button.teacher-nav-button.teacher-nav-button-active {
+    -fx-background-color: rgba(99, 102, 241, 0.28);
+    -fx-text-fill: #ffffff;
+    -fx-border-color: transparent transparent transparent #a5b4fc;
+}
+
+.button.teacher-nav-button.teacher-nav-button-active:hover {
+    -fx-background-color: rgba(99, 102, 241, 0.38);
+    -fx-border-color: transparent transparent transparent #c7d2fe;
+}
+
+.teacher-nav-icon {
+    -fx-font-size: 15px;
+    -fx-min-width: 28px;
+    -fx-pref-width: 28px;
+    -fx-alignment: center;
+    -fx-text-fill: #c7d2fe;
+    -fx-font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", sans-serif;
+}
+
+.button.teacher-nav-button:hover .teacher-nav-icon {
+    -fx-text-fill: #eef2ff;
+}
+
+.button.teacher-nav-button.teacher-nav-button-active .teacher-nav-icon {
+    -fx-text-fill: #e0e7ff;
+}
+
+.button.teacher-nav-button.teacher-nav-logout {
+    -fx-background-color: rgba(248, 113, 113, 0.12);
+    -fx-text-fill: #fecaca;
+    -fx-border-color: transparent;
+}
+
+.button.teacher-nav-button.teacher-nav-logout:hover {
+    -fx-background-color: rgba(248, 113, 113, 0.24);
+    -fx-text-fill: #ffffff;
+    -fx-translate-x: 0;
+}
+
+.button.teacher-nav-button.teacher-nav-logout .teacher-nav-icon {
+    -fx-text-fill: #fca5a5;
+}
+
+/* ----- Main column ----- */
+.teacher-main-region {
+    -fx-background-color: #eef2ff;
+}
+
+.teacher-header {
+    -fx-background-color: #ffffff;
+    -fx-padding: 16 28 16 28;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.08), 18, 0.15, 0, 3);
+    -fx-border-color: transparent transparent #e0e7ff transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.teacher-welcome-title {
+    -fx-text-fill: #1e1b4b;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.teacher-welcome-sub {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 12px;
+}
+
+.teacher-header-datetime {
+    -fx-text-fill: #475569;
+    -fx-font-size: 12px;
+}
+
+.teacher-avatar-circle {
+    -fx-fill: linear-gradient(to bottom right, #6366f1, #8b5cf6);
+    -fx-stroke: #e0e7ff;
+    -fx-stroke-width: 2;
+}
+
+.teacher-avatar-initials {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.button.teacher-icon-button {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 10;
+    -fx-padding: 9 11 9 11;
+    -fx-cursor: hand;
+    -fx-text-fill: #475569;
+    -fx-font-size: 14px;
+}
+
+.button.teacher-icon-button:hover {
+    -fx-background-color: #e2e8f0;
+}
+
+/* Welcome row shown at top of Dashboard tab (mirrors main header) */
+.teacher-dashboard-header-embed {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 14px;
+    -fx-padding: 18 24 18 24;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.08), 18, 0.15, 0, 3);
+    -fx-border-color: #e8eaf6 #e8eaf6 #e0e7ff #e8eaf6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 14px;
+}
+
+.teacher-notify-stack {
+    -fx-padding: 0 4 0 0;
+}
+
+.teacher-notify-badge {
+    -fx-background-color: #f97316;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 1 6 1 6;
+    -fx-background-radius: 999;
+    -fx-translate-x: 8;
+    -fx-translate-y: -8;
+}
+
+.teacher-content-scroll {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.teacher-content-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.teacher-content-body {
+    -fx-padding: 22 28 36 28;
+    -fx-spacing: 18;
+}
+
+.teacher-section-title {
+    -fx-text-fill: #1e1b4b;
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+}
+
+.teacher-section-hint {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 12px;
+}
+
+.teacher-hero {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff 0%, #f5f3ff 50%, #eef2ff 100%);
+    -fx-background-radius: 16px;
+    -fx-padding: 20 22 18 22;
+    -fx-effect: dropshadow(gaussian, rgba(30, 27, 75, 0.08), 20, 0.2, 0, 4);
+    -fx-border-color: rgba(99, 102, 241, 0.15);
+    -fx-border-radius: 16px;
+    -fx-border-width: 1px;
+}
+
+.teacher-cards-flow {
+    -fx-hgap: 18;
+    -fx-vgap: 18;
+    -fx-padding: 4 0 0 0;
+}
+
+.teacher-stat-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16px;
+    -fx-padding: 20 20 20 20;
+    -fx-min-width: 220px;
+    -fx-pref-width: 248px;
+    -fx-max-width: 300px;
+    -fx-effect: dropshadow(gaussian, rgba(30, 27, 75, 0.09), 22, 0.2, 0, 5);
+    -fx-cursor: hand;
+}
+
+.teacher-stat-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.28), 26, 0.25, 0, 10);
+    -fx-translate-y: -4;
+}
+
+.teacher-stat-accent {
+    -fx-pref-height: 4px;
+    -fx-max-height: 4px;
+    -fx-background-radius: 2px;
+}
+
+.accent-teach-courses { -fx-background-color: #6366f1; }
+.accent-teach-eval { -fx-background-color: #8b5cf6; }
+.accent-teach-students { -fx-background-color: #0ea5e9; }
+.accent-teach-fraud { -fx-background-color: #f59e0b; }
+
+.teacher-stat-icon {
+    -fx-font-size: 26px;
+    -fx-padding: 0 0 2 0;
+}
+
+.teacher-stat-label {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 12px;
+}
+
+.teacher-stat-value {
+    -fx-text-fill: #1e1b4b;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+.teacher-stat-foot {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 11px;
+}
+
+/* Placeholder panels */
+.teacher-placeholder {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16px;
+    -fx-padding: 40 36 40 36;
+    -fx-effect: dropshadow(gaussian, rgba(30, 27, 75, 0.07), 18, 0.15, 0, 4);
+    -fx-spacing: 10;
+    -fx-alignment: center;
+}
+
+.teacher-placeholder-title {
+    -fx-text-fill: #1e1b4b;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.teacher-placeholder-text {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-max-width: 520px;
+}
+
+/* Absence / attendance panel */
+.teacher-panel-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16px;
+    -fx-padding: 22 24 24 24;
+    -fx-spacing: 16;
+    -fx-effect: dropshadow(gaussian, rgba(30, 27, 75, 0.07), 18, 0.15, 0, 4);
+}
+
+.teacher-toolbar {
+    -fx-spacing: 12;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.button.teacher-primary-btn {
+    -fx-background-color: #6366f1;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-padding: 10 18 10 18;
+    -fx-cursor: hand;
+}
+
+.button.teacher-primary-btn:hover {
+    -fx-background-color: #4f46e5;
+}
+
+.button.teacher-success-btn {
+    -fx-background-color: #059669;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+}
+
+.button.teacher-danger-btn {
+    -fx-background-color: #dc2626;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+}
+
+.teacher-table {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+}
+
+/* Profile */
+.teacher-profile-grid {
+    -fx-hgap: 20;
+    -fx-vgap: 12;
+    -fx-padding: 8 0 0 0;
+}
+
+.teacher-profile-label {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 11px;
+}
+
+.teacher-profile-value {
+    -fx-text-fill: #1e1b4b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}

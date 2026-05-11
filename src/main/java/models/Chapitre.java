@@ -12,7 +12,7 @@ public class Chapitre {
     private String urlContenu;
     private LocalDate dateCreation;
     private int coursId;
-    private boolean visible = true;   // ← ajouté
+    private boolean visible = true;
 
     public Chapitre() {}
 

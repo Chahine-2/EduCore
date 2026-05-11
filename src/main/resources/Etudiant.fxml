@@ -9,6 +9,8 @@
 <BorderPane xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.EtudiantController"
+            maxWidth="1.7976931348623157E308"
+            minWidth="0.0"
             style="-fx-background-color: #f8f9fa;">
 
     <!-- HAUT - EN-TÊTE ET FILTRES -->
@@ -57,14 +59,15 @@
 
     <!-- CENTRE - GRILLE DE COURS -->
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent;">
-            <VBox spacing="20" style="-fx-padding: 30;">
+        <ScrollPane fitToWidth="true" maxWidth="1.7976931348623157E308" minWidth="0.0"
+                    style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <VBox spacing="20" maxWidth="1.7976931348623157E308" minWidth="0.0" style="-fx-padding: 24 28 28 28;">
                 
                 <!-- Résultats compte -->
                 <Label fx:id="lblCompteur" text="0 résultats" style="-fx-text-fill: #6c757d; -fx-font-size: 14;"/>
                 
                 <!-- Conteneur des cartes de cours -->
-                <FlowPane fx:id="flowPaneCours" hgap="25" vgap="25" alignment="TOP_LEFT" />
+                <FlowPane fx:id="flowPaneCours" hgap="25" vgap="25" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minWidth="0.0"/>
 
             </VBox>
         </ScrollPane>

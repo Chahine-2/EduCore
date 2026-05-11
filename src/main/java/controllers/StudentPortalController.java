@@ -5,22 +5,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Evaluation;
 import models.Resultat;
+import models.Utilisateur;
 import services.EvaluationDAOImpl;
 import services.QuestionDAOImpl;
 import services.ResultatDAOImpl;
+import utils.UserSession;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,17 +35,30 @@ import java.util.Map;
 
 /**
  * Lists evaluations that are currently active (within start/end window). Opens {@link StudentQuizController} on demand.
+ * Student identity comes from {@link UserSession} (no manual ID field).
  */
 public class StudentPortalController {
 
     private static final DateTimeFormatter META_FMT =
-            DateTimeFormatter.ofPattern("MMM d, yyyy · HH:mm", Locale.ENGLISH);
+            DateTimeFormatter.ofPattern("d MMM yyyy · HH:mm", Locale.FRENCH);
 
     @FXML private BorderPane root;
-    @FXML private TextField studentIdField;
     @FXML private FlowPane cardsFlow;
     @FXML private Label countLabel;
     @FXML private Label emptyLabel;
+    @FXML private Label lblPortalEyebrow;
+    @FXML private Label lblPortalTitle;
+    @FXML private Label lblPortalSubtitle;
+    @FXML private Label lblSessionContext;
+    @FXML private VBox sessionColumn;
+    @FXML private Button btnPortalBack;
+    @FXML private HBox bottomBar;
+    @FXML private VBox portalTopChrome;
+    @FXML private HBox portalEmbedToolbar;
+    @FXML private Label countLabelCompact;
+
+    private boolean embeddedInDashboard;
+    private Runnable onBackToDashboard;
 
     private final EvaluationDAOImpl evaluationDAO = new EvaluationDAOImpl();
     private final QuestionDAOImpl questionDAO = new QuestionDAOImpl();
@@ -51,17 +66,111 @@ public class StudentPortalController {
 
     @FXML
     public void initialize() {
-        studentIdField.setText("1");
+        if (lblPortalTitle != null) {
+            lblPortalTitle.setText("Évaluations ouvertes");
+        }
+        if (lblPortalSubtitle != null) {
+            lblPortalSubtitle.setText("Les quiz actifs apparaissent ci-dessous. Vos tentatives sont enregistrées sur votre compte.");
+        }
+        updateSessionContext();
         refreshCards();
     }
 
-    @FXML
-    private void handleRefresh() {
+    /**
+     * When the portal is shown inside the student dashboard, the large header (title, session chip,
+     * full toolbar) is hidden; a slim count + refresh row appears above the cards. Footer is hidden.
+     */
+    public void setDashboardEmbedMode(boolean enabled, Runnable backToDashboard) {
+        this.embeddedInDashboard = enabled;
+        this.onBackToDashboard = backToDashboard;
+
+        if (root != null) {
+            root.getStyleClass().removeAll("embedded-dashboard");
+            if (enabled) {
+                root.getStyleClass().add("embedded-dashboard");
+            }
+        }
+        if (portalTopChrome != null) {
+            portalTopChrome.setVisible(!enabled);
+            portalTopChrome.setManaged(!enabled);
+        }
+        if (portalEmbedToolbar != null) {
+            portalEmbedToolbar.setVisible(enabled);
+            portalEmbedToolbar.setManaged(enabled);
+        }
+
+        if (!enabled) {
+            if (bottomBar != null) {
+                bottomBar.setVisible(true);
+                bottomBar.setManaged(true);
+            }
+            return;
+        }
+
+        if (bottomBar != null) {
+            bottomBar.setVisible(false);
+            bottomBar.setManaged(false);
+        }
+        updateSessionContext();
+        refreshCards();
+    }
+
+    private void setCountTexts(String text) {
+        if (countLabel != null) {
+            countLabel.setText(text);
+        }
+        if (countLabelCompact != null) {
+            countLabelCompact.setText(text);
+        }
+    }
+
+    private void updateSessionContext() {
+        if (lblSessionContext == null) {
+            return;
+        }
+        lblSessionContext.getStyleClass().removeAll("portal-session-muted");
+        Utilisateur u = UserSession.getCurrentUser();
+        if (u != null && u.getId() > 0) {
+            String name = (trimStr(u.getPrenom()) + " " + trimStr(u.getNom())).trim();
+            if (name.isEmpty()) {
+                name = "Étudiant";
+            }
+            lblSessionContext.setText(name + "  ·  session active");
+        } else {
+            lblSessionContext.setText("Non connecté");
+            lblSessionContext.getStyleClass().add("portal-session-muted");
+        }
+        if (sessionColumn != null) {
+            sessionColumn.setVisible(true);
+            sessionColumn.setManaged(true);
+        }
+    }
+
+    private static String trimStr(String s) {
+        return s == null ? "" : s.trim();
+    }
+
+    /** Positive utilisateur / étudiant id from session, or -1 if none. */
+    private int getLoggedInStudentId() {
+        Utilisateur u = UserSession.getCurrentUser();
+        if (u == null || u.getId() <= 0) {
+            return -1;
+        }
+        return u.getId();
+    }
+
+    /** Reloads active evaluations and counts (e.g. when opening the Evaluations tab). */
+    public void refreshEvaluationsList() {
+        updateSessionContext();
         refreshCards();
     }
 
     @FXML
     private void handleBackHome() {
+        if (embeddedInDashboard && onBackToDashboard != null) {
+            onBackToDashboard.run();
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
             Parent homeRoot = loader.load();
@@ -107,13 +216,21 @@ public class StudentPortalController {
             }
         }
 
-        countLabel.setText(active.size() == 1
-                ? "1 assessment available now"
-                : active.size() + " assessments available now");
-        emptyLabel.setVisible(active.isEmpty());
-        emptyLabel.setManaged(active.isEmpty());
+        int n = active.size();
+        String countText;
+        if (n == 0) {
+            countText = "Aucune évaluation ouverte";
+        } else if (n == 1) {
+            countText = "1 évaluation ouverte maintenant";
+        } else {
+            countText = n + " évaluations ouvertes maintenant";
+        }
+        setCountTexts(countText);
 
-        int studentId = parseStudentIdQuiet();
+        emptyLabel.setVisible(n == 0);
+        emptyLabel.setManaged(n == 0);
+
+        int studentId = getLoggedInStudentId();
         List<Evaluation> pending = new ArrayList<>();
         List<Evaluation> completed = new ArrayList<>();
         Map<Integer, Resultat> latestByEvalId = new HashMap<>();
@@ -141,16 +258,6 @@ public class StudentPortalController {
         }
     }
 
-    /** Returns a positive student id, or -1 if the field is empty or invalid (no dialog). */
-    private int parseStudentIdQuiet() {
-        try {
-            int id = Integer.parseInt(studentIdField.getText().trim());
-            return id > 0 ? id : -1;
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
-
     /** Quiz window is open between {@code date_debut} and {@code date_fin} (inclusive). */
     public static boolean isActive(Evaluation e, LocalDateTime now) {
         if (e.getDateDebut() == null || e.getDateFin() == null) {
@@ -160,27 +267,23 @@ public class StudentPortalController {
     }
 
     private VBox buildCard(Evaluation ev, Resultat submitted) {
-        VBox card = new VBox(12);
-        card.setStyle(submitted == null
-                ? "-fx-background-color: rgba(255,255,255,0.96); -fx-background-radius: 12; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-padding: 14 16; -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 12, 0.2, 0, 2);"
-                : "-fx-background-color: linear-gradient(to bottom, #fffef7, #fffdf2); -fx-background-radius: 12; -fx-border-color: #fcd34d; -fx-border-radius: 12; -fx-padding: 14 16; -fx-effect: dropshadow(gaussian, rgba(120,53,15,0.10), 12, 0.2, 0, 2);");
-        card.setPrefWidth(300);
-        card.setMinWidth(280);
-        card.setMaxWidth(340);
+        VBox card = new VBox(10);
+        card.getStyleClass().add("portal-card");
+        if (submitted != null) {
+            card.getStyleClass().add("portal-card-done");
+        }
         card.setAlignment(Pos.TOP_LEFT);
 
         HBox top = new HBox(10);
         top.setAlignment(Pos.CENTER_LEFT);
-        Label badge = new Label(submitted == null ? "Live now" : "Submitted");
-        badge.setStyle(submitted == null
-                ? "-fx-padding: 4 10; -fx-background-color: #d1fae5; -fx-background-radius: 999; -fx-text-fill: #065f46; -fx-font-size: 11px; -fx-font-weight: 800;"
-                : "-fx-padding: 4 10; -fx-background-color: #fef3c7; -fx-background-radius: 999; -fx-text-fill: #92400e; -fx-font-size: 11px; -fx-font-weight: 800;");
+        Label badge = new Label(submitted == null ? "En cours" : "Soumis");
+        badge.getStyleClass().add(submitted == null ? "portal-badge-live" : "portal-badge-done");
         Region sp = new Region();
         HBox.setHgrow(sp, Priority.ALWAYS);
         top.getChildren().addAll(badge, sp);
 
         Label title = new Label(ev.getTitre());
-        title.setStyle("-fx-font-size: 17px; -fx-font-weight: 800; -fx-text-fill: #0f172a;");
+        title.getStyleClass().add("portal-card-title");
         title.setWrapText(true);
 
         HBox titleRow = new HBox(10);
@@ -192,8 +295,8 @@ public class StudentPortalController {
             float totalPoints = questionDAO.findByEvaluationId(ev.getId()).stream()
                     .map(q -> q.getPoints())
                     .reduce(0f, Float::sum);
-            Label titleScore = new Label(formatScore(submitted.getScore()) + "/" + formatScore(totalPoints));
-            titleScore.setStyle("-fx-font-size: 12px; -fx-font-weight: 800; -fx-text-fill: #1e3a8a; -fx-background-color: #dbeafe; -fx-background-radius: 999; -fx-padding: 3 9;");
+            Label titleScore = new Label(formatScore(submitted.getScore()) + " / " + formatScore(totalPoints));
+            titleScore.getStyleClass().add("portal-title-score");
             titleRow.getChildren().add(titleScore);
         }
 
@@ -201,24 +304,20 @@ public class StudentPortalController {
         if (desc != null && desc.length() > 140) {
             desc = desc.substring(0, 137) + "…";
         }
-        Label descLbl = new Label(desc == null || desc.isBlank() ? "No description provided." : desc);
-        descLbl.setStyle("-fx-font-size: 13px; -fx-text-fill: #475569;");
+        Label descLbl = new Label(desc == null || desc.isBlank() ? "Aucune description." : desc);
+        descLbl.getStyleClass().add("portal-card-desc");
         descLbl.setWrapText(true);
 
-        String meta = ev.getDureeMinutes() + " min · Ends " + formatDt(ev.getDateFin());
-        if (submitted != null) {
-            if (submitted.getDatePassage() != null) {
-                meta = meta + " · Submitted " + submitted.getDatePassage().format(META_FMT);
-            }
+        String meta = ev.getDureeMinutes() + " min · fin " + formatDt(ev.getDateFin());
+        if (submitted != null && submitted.getDatePassage() != null) {
+            meta = meta + " · envoyé " + submitted.getDatePassage().format(META_FMT);
         }
         Label metaLbl = new Label(meta);
-        metaLbl.setStyle("-fx-font-size: 12px; -fx-text-fill: #64748b;");
+        metaLbl.getStyleClass().add("portal-meta");
         metaLbl.setWrapText(true);
 
-        Button action = new Button(submitted == null ? "Start quiz" : "View attempt");
-        action.setStyle(submitted == null
-                ? "-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8; -fx-padding: 9 12;"
-                : "-fx-background-color: white; -fx-text-fill: #1e40af; -fx-font-weight: 700; -fx-border-color: #93c5fd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 9 12;");
+        Button action = new Button(submitted == null ? "Démarrer le quiz" : "Voir la tentative");
+        action.getStyleClass().add(submitted == null ? "portal-start" : "portal-view");
         action.setMaxWidth(Double.MAX_VALUE);
         if (submitted == null) {
             action.setOnAction(e -> openQuiz(ev, null));
@@ -246,17 +345,14 @@ public class StudentPortalController {
      * @param existingResultat if non-null, opens read-only review; otherwise a new timed attempt
      */
     private void openQuiz(Evaluation evaluation, Resultat existingResultat) {
-        int studentId;
-        try {
-            studentId = Integer.parseInt(studentIdField.getText().trim());
-            if (studentId <= 0) {
-                throw new NumberFormatException();
+        int studentId = getLoggedInStudentId();
+        if (studentId <= 0) {
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            if (root.getScene() != null && root.getScene().getWindow() != null) {
+                a.initOwner(root.getScene().getWindow());
             }
-        } catch (NumberFormatException e) {
-            javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
-            a.initOwner(root.getScene().getWindow());
             a.setHeaderText(null);
-            a.setContentText("Enter a valid positive student ID at the top of the page.");
+            a.setContentText("Veuillez vous connecter en tant qu'étudiant pour passer ou consulter une évaluation.");
             a.showAndWait();
             return;
         }
@@ -271,7 +367,7 @@ public class StudentPortalController {
                 controller.openInViewMode(evaluation, studentId, existingResultat);
             }
             Stage stage = new Stage();
-            stage.setTitle(existingResultat == null ? "Quiz — " + evaluation.getTitre() : "Review — " + evaluation.getTitre());
+            stage.setTitle(existingResultat == null ? "Quiz — " + evaluation.getTitre() : "Relecture — " + evaluation.getTitre());
             stage.setScene(new Scene(quizRoot, 920, 800));
             stage.setMinWidth(640);
             stage.setMinHeight(560);
@@ -284,10 +380,12 @@ public class StudentPortalController {
             refreshCards();
         } catch (Exception ex) {
             ex.printStackTrace();
-            javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
-            a.initOwner(root.getScene().getWindow());
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            if (root.getScene() != null && root.getScene().getWindow() != null) {
+                a.initOwner(root.getScene().getWindow());
+            }
             a.setHeaderText(null);
-            a.setContentText("Could not open quiz: " + ex.getMessage());
+            a.setContentText("Impossible d'ouvrir le quiz : " + ex.getMessage());
             a.showAndWait();
         }
     }

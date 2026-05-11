@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -22,6 +23,10 @@ import models.QuestionType;
 import models.Reponse;
 import models.ReponseEtudiant;
 import models.Resultat;
+import models.FraudeLog;
+import services.FraudeLogDAO;
+import services.FraudeLogDAOImpl;
+import services.FraudeService;
 import services.QuestionDAOImpl;
 import services.ReponseDAOImpl;
 import services.ReponseEtudiantDAOImpl;
@@ -56,6 +61,7 @@ public class StudentQuizController {
     @FXML private Button nextBtn;
     @FXML private Button submitBtn;
     @FXML private Label navHintLabel;
+    @FXML private ImageView webcamPreview;
 
     private Evaluation evaluation;
     private int studentId;
@@ -64,6 +70,8 @@ public class StudentQuizController {
     private final ReponseDAOImpl reponseDAO = new ReponseDAOImpl();
     private final ReponseEtudiantDAOImpl reponseEtudiantDAO = new ReponseEtudiantDAOImpl();
     private final ResultatDAOImpl resultatDAO = new ResultatDAOImpl();
+    private final FraudeLogDAO fraudeLogDAO = new FraudeLogDAOImpl();
+    private final FraudeService fraudeService = new FraudeService();
 
     private boolean viewMode;
     private Resultat viewResultat;
@@ -75,6 +83,8 @@ public class StudentQuizController {
     private Timeline countdown;
     private int remainingSeconds;
     private boolean submitted;
+    private boolean fraudeDetected;
+    private int activeResultatId = -1;
 
     private ToggleGroup activeToggleGroup;
     private TextArea activeTextArea;
@@ -86,6 +96,8 @@ public class StudentQuizController {
         this.evaluation = evaluation;
         this.studentId = studentId;
         this.submitted = false;
+        this.fraudeDetected = false;
+        this.activeResultatId = -1;
         applyLiveChrome();
         initQuestionsAndUi();
         subtitleLabel.setText(evaluation.getDescription() != null && !evaluation.getDescription().isBlank()
@@ -101,6 +113,12 @@ public class StudentQuizController {
         }
         renderQuestion();
         updateNavState();
+        if (webcamPreview != null) {
+            boolean showCam = FraudeService.isVisionAnticheatEnabled();
+            webcamPreview.setVisible(showCam);
+            webcamPreview.setManaged(showCam);
+        }
+        Platform.runLater(this::initializeAntiCheatMonitoring);
     }
 
     /** Read-only review of a submitted attempt (no timer, no submit). */
@@ -110,6 +128,8 @@ public class StudentQuizController {
         this.evaluation = evaluation;
         this.studentId = studentId;
         this.submitted = true;
+        this.fraudeDetected = false;
+        this.activeResultatId = submittedResultat != null ? submittedResultat.getId() : -1;
         applyLiveChrome();
         root.getStyleClass().add("quiz-view-mode");
         initQuestionsAndUi();
@@ -139,6 +159,10 @@ public class StudentQuizController {
         }
         renderQuestion();
         updateNavState();
+        if (webcamPreview != null) {
+            webcamPreview.setVisible(false);
+            webcamPreview.setManaged(false);
+        }
     }
 
     private void applyLiveChrome() {
@@ -274,20 +298,28 @@ public class StudentQuizController {
         }
         captureFromActiveUi();
 
+        // Modal confirmation steals focus from the exam stage; keep monitoring on and you get a
+        // false WINDOW_FOCUS_LOST → fraud. Pause anti-cheat for the dialog, then resume if cancelled.
+        fraudeService.stop();
+
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.initOwner(root.getScene().getWindow());
         confirm.setTitle("Submit quiz");
         confirm.setHeaderText("Submit your answers?");
         confirm.setContentText("You will not be able to change responses after submitting.");
 
-        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+        ButtonType choice = confirm.showAndWait().orElse(ButtonType.CANCEL);
+        if (choice == ButtonType.OK) {
             persistSubmission(false);
+        } else {
+            Platform.runLater(this::initializeAntiCheatMonitoring);
         }
     }
 
     @FXML
     private void handleBackHome() {
         try {
+            fraudeService.stop();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
             Parent homeRoot = loader.load();
             Stage stage = root.getScene() != null && root.getScene().getWindow() instanceof Stage s ? s : null;
@@ -302,6 +334,7 @@ public class StudentQuizController {
     }
 
     private void closeQuizWindow() {
+        fraudeService.stop();
         var w = root.getScene() != null ? root.getScene().getWindow() : null;
         if (w instanceof javafx.stage.Stage st) {
             st.close();
@@ -502,13 +535,12 @@ public class StudentQuizController {
             return;
         }
         captureFromActiveUi();
+        fraudeService.stop();
         if (countdown != null) {
             countdown.stop();
         }
 
-        LocalDateTime now = LocalDateTime.now();
-        Resultat resultat = new Resultat(studentId, evaluation.getId(), null, now);
-        int resultatId = resultatDAO.insertAndGetId(resultat);
+        int resultatId = ensureResultatRow();
         if (resultatId <= 0) {
             alertError("Could not save your attempt. Please try again.");
             return;
@@ -541,6 +573,107 @@ public class StudentQuizController {
         done.showAndWait();
 
         closeQuizWindow();
+    }
+
+    private int ensureResultatRow() {
+        if (activeResultatId > 0) {
+            return activeResultatId;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        Resultat resultat = new Resultat(studentId, evaluation.getId(), null, now);
+        activeResultatId = resultatDAO.insertAndGetId(resultat);
+        return activeResultatId;
+    }
+
+    /**
+     * Required anti-fraud entry point:
+     * - save fraud in DB
+     * - show warning
+     * - auto submit immediately
+     * <p>
+     * Phone policy: {@code PHONE_IN_FRAME} is only raised after the vision pipeline accumulates
+     * enough suspicion (consecutive detections + cooldown + score threshold in {@link FraudeService}),
+     * not on a single SSD frame.
+     */
+    private void detectFraude(String type) {
+        detectFraude(type, "Suspicious behavior detected by anti-cheat module.");
+    }
+
+    private void detectFraude(String type, String description) {
+        if (viewMode || submitted || fraudeDetected) {
+            return;
+        }
+        fraudeDetected = true;
+        int resultatId = ensureResultatRow();
+        if (resultatId > 0) {
+            fraudeLogDAO.logFraude(new FraudeLog(
+                    resultatId,
+                    studentId,
+                    type,
+                    description
+            ));
+        }
+
+        String reason = (description != null && !description.isBlank())
+                ? description.trim()
+                : "No additional detail was recorded for this event.";
+        String category = fraudTypeLabel(type);
+        String body = "Category: " + category + "\n\n"
+                + "Reason:\n" + reason + "\n\n"
+                + "Your quiz will be submitted immediately.";
+
+        Alert warning = new Alert(Alert.AlertType.WARNING);
+        warning.initOwner(root.getScene().getWindow());
+        warning.setTitle("Fraud detected");
+        warning.setHeaderText("Anti-cheat: " + category);
+        warning.setContentText(body);
+        warning.showAndWait();
+
+        submitEvaluation();
+    }
+
+    private void submitEvaluation() {
+        persistSubmission(false);
+    }
+
+    private void initializeAntiCheatMonitoring() {
+        if (viewMode || submitted || root.getScene() == null || !(root.getScene().getWindow() instanceof Stage stage)) {
+            return;
+        }
+        fraudeService.initialize(stage, (type, description) -> {
+            switch (type) {
+                case "WINDOW_FOCUS_LOST" -> detectFraude("WINDOW_FOCUS_LOST", description);
+                case "FULLSCREEN_EXIT" -> detectFraude("FULLSCREEN_EXIT", description);
+                case "CAMERA_OFF" -> detectFraude("CAMERA_OFF", description);
+                case "CAMERA_BLOCKED" -> detectFraude("CAMERA_BLOCKED", description);
+                case "NO_FACE_DETECTED" -> detectFraude("NO_FACE_DETECTED", description);
+                case "MULTIPLE_FACES" -> detectFraude("MULTIPLE_FACES", description);
+                case "MOTION_ANOMALY_NO_FACE" -> detectFraude("MOTION_ANOMALY_NO_FACE", description);
+                case "OBJECT_NEAR_FACE" -> detectFraude("OBJECT_NEAR_FACE", description);
+                case "EXCESSIVE_HEAD_TURNS" -> detectFraude("EXCESSIVE_HEAD_TURNS", description);
+                case "PHONE_IN_FRAME" -> detectFraude("PHONE_IN_FRAME", description);
+                default -> detectFraude(type, description);
+            }
+        }, webcamPreview);
+    }
+
+    private static String fraudTypeLabel(String type) {
+        if (type == null || type.isBlank()) {
+            return "Unknown";
+        }
+        return switch (type) {
+            case "WINDOW_FOCUS_LOST" -> "Exam window lost focus";
+            case "FULLSCREEN_EXIT" -> "Fullscreen was turned off";
+            case "CAMERA_OFF" -> "Camera disconnected or off";
+            case "CAMERA_BLOCKED" -> "Camera blocked or feed lost";
+            case "NO_FACE_DETECTED" -> "No face detected";
+            case "MULTIPLE_FACES" -> "Multiple faces detected";
+            case "MOTION_ANOMALY_NO_FACE" -> "Movement with no face visible";
+            case "OBJECT_NEAR_FACE" -> "Object movement near face";
+            case "EXCESSIVE_HEAD_TURNS" -> "Too many head turns away from camera";
+            case "PHONE_IN_FRAME" -> "Phone or device visible in frame";
+            default -> type.replace('_', ' ');
+        };
     }
 
     private void alertError(String msg) {

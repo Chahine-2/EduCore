@@ -13,7 +13,7 @@ public class MainFx extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/startup.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
             var scene = new Scene(loader.load());
 
             stage.setTitle("EDUCORE");
@@ -25,8 +25,10 @@ public class MainFx extends Application {
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
+            System.err.println("Failed to load FXML: " + e.getMessage());
             e.printStackTrace();
             throw e;
         }
     }
+
 }

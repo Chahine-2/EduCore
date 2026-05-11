@@ -1,0 +1,93 @@
+/* EduCore — login screen */
+
+.login-root {
+    -fx-font-family: "Segoe UI", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: linear-gradient(to bottom right, #e8ecf4 0%, #eef2ff 45%, #f8fafc 100%);
+    -fx-padding: 32 20 40 20;
+}
+
+.login-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 18px;
+    -fx-padding: 36 40 32 40;
+    -fx-spacing: 14;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.12), 28, 0.2, 0, 8);
+    -fx-border-color: rgba(148, 163, 184, 0.25);
+    -fx-border-radius: 18px;
+    -fx-border-width: 1px;
+    -fx-max-width: 400px;
+    -fx-pref-width: 400px;
+    -fx-min-width: 320px;
+}
+
+.login-brand {
+    -fx-text-fill: #0f172a;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.login-sub {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 13px;
+}
+
+.text-input.login-field {
+    -fx-pref-width: 320px;
+    -fx-max-width: 320px;
+    -fx-min-width: 280px;
+    -fx-pref-height: 42px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1px;
+    -fx-background-color: #f8fafc;
+    -fx-padding: 8 12 8 12;
+}
+
+.text-input.login-field:focused {
+    -fx-border-color: #3b82f6;
+    -fx-background-color: #ffffff;
+}
+
+.button.login-primary {
+    -fx-pref-width: 320px;
+    -fx-max-width: 320px;
+    -fx-min-width: 280px;
+    -fx-pref-height: 44px;
+    -fx-background-color: linear-gradient(to bottom, #3b82f6, #2563eb);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.35), 12, 0.2, 0, 3);
+}
+
+.button.login-primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #2563eb, #1d4ed8);
+}
+
+.button.login-primary:pressed {
+    -fx-background-color: #1e40af;
+}
+
+.login-error {
+    -fx-text-fill: #dc2626;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+    -fx-max-width: 320px;
+}
+
+.hyperlink.login-signup {
+    -fx-text-fill: #2563eb;
+    -fx-font-size: 13px;
+    -fx-border-color: transparent;
+    -fx-underline: false;
+}
+
+.hyperlink.login-signup:hover {
+    -fx-text-fill: #1d4ed8;
+    -fx-underline: true;
+}
