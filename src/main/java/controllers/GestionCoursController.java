@@ -32,7 +32,7 @@ public class GestionCoursController {
     @FXML private DatePicker dpDebut;
     @FXML private DatePicker dpFin;
     @FXML private TableView<Cours> tableViewCours;
-    @FXML private TableColumn<Cours, Integer> colId;
+
     @FXML private TableColumn<Cours, String> colTitre;
     @FXML private TableColumn<Cours, String> colNiveau;
     @FXML private TableColumn<Cours, String> colCategorie;
@@ -56,8 +56,6 @@ public class GestionCoursController {
             );
 
             // Configurer les colonnes de la TableView
-            colId.setCellValueFactory(
-                    new javafx.scene.control.cell.PropertyValueFactory<>("id"));
             colTitre.setCellValueFactory(
                     new javafx.scene.control.cell.PropertyValueFactory<>("titre"));
             colNiveau.setCellValueFactory(
