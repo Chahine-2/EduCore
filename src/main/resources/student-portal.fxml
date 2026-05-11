@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="root"
             fx:controller="controllers.StudentPortalController"
             style="-fx-font-family: 'Segoe UI'; -fx-background-color: linear-gradient(to bottom right, #eef2ff, #f8fafc);"
@@ -36,7 +36,7 @@
     </top>
 
     <center>
-        <StackPane VBox.vgrow="ALWAYS" style="-fx-padding: 20 24;">
+        <StackPane style="-fx-padding: 20 24;">
             <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
                         style="-fx-background-color: transparent; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-background-radius: 12;">
                 <FlowPane fx:id="cardsFlow" hgap="16" vgap="16" alignment="TOP_LEFT"

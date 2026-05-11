@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:id="root"
             fx:controller="controllers.StudentQuizController"
             style="-fx-font-family: 'Segoe UI'; -fx-background-color: #f8fafc;"
@@ -16,6 +17,8 @@
                     <Label fx:id="titleLabel" text="Evaluation" style="-fx-font-size: 22px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
                     <Label fx:id="subtitleLabel" text="Read each question carefully." style="-fx-font-size: 13px; -fx-text-fill: #64748b;" wrapText="true"/>
                 </VBox>
+                <ImageView fx:id="webcamPreview" fitHeight="88" fitWidth="120" preserveRatio="true" smooth="true"
+                           style="-fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6;"/>
                 <VBox style="-fx-padding: 8 10; -fx-background-color: #eff6ff; -fx-background-radius: 8;">
                     <Label fx:id="timerCaptionLabel" text="TIME LEFT" style="-fx-font-size: 11px; -fx-text-fill: #1e40af; -fx-font-weight: 700;"/>
                     <Label fx:id="timerLabel" text="60:00" style="-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #1e3a8a;"/>

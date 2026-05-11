@@ -1,40 +1,59 @@
-/* Questions Management — matches EDUCORE admin style */
+/* Questions Management — EDUCORE admin (indigo / slate) */
 
 .root-questions {
-    -fx-font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+    -fx-font-family: "Segoe UI", "Inter", "SF Pro Text", system-ui, sans-serif;
     -fx-font-size: 13px;
-    -fx-background-color: #f1f5f9;
 }
 
 .q-sidebar {
-    -fx-background-color: #0f172a;
-    -fx-min-width: 4px;
-    -fx-max-width: 4px;
+    -fx-background-color: #4f46e5;
+    -fx-min-width: 6px;
+    -fx-max-width: 6px;
+    -fx-pref-width: 6px;
 }
 
 .q-header {
-    -fx-background-color: #ffffff;
+    -fx-background-color: rgba(255, 255, 255, 0.96);
     -fx-border-color: #e2e8f0;
     -fx-border-width: 0 0 1 0;
-    -fx-padding: 20 28 18 28;
+    -fx-padding: 16 20 14 20;
+}
+
+.q-breadcrumb {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
 }
 
 .q-title {
-    -fx-font-size: 20px;
-    -fx-font-weight: 700;
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
     -fx-text-fill: #0f172a;
+    -fx-padding: 4 0 0 0;
 }
 
 .q-eval-name {
     -fx-font-size: 14px;
-    -fx-font-weight: 600;
-    -fx-text-fill: #4338ca;
+    -fx-font-weight: 700;
+    -fx-text-fill: #3730a3;
     -fx-padding: 6 0 0 0;
 }
 
+.q-sub {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 12px;
+    -fx-wrap-text: true;
+}
+
+.q-count {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
 .q-toolbar {
-    -fx-padding: 14 28;
-    -fx-background-color: #ffffff;
+    -fx-padding: 10 20;
+    -fx-background-color: rgba(255, 255, 255, 0.92);
     -fx-border-color: #e2e8f0;
     -fx-border-width: 0 0 1 0;
 }
@@ -71,9 +90,83 @@
     -fx-background-color: #f8fafc;
 }
 
+/* Primary actions (Add question, + Answer) — same indigo as Evaluations */
+.root-questions .button.btn-q-accent {
+    -fx-padding: 10 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-background-color: #4f46e5;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+    -fx-effect: null;
+}
+
+.root-questions .button.btn-q-accent:hover {
+    -fx-background-color: #4338ca;
+}
+
+.root-questions .button.btn-q-accent:pressed {
+    -fx-background-color: #3730a3;
+}
+
+.root-questions .button.btn-q-edit {
+    -fx-padding: 8 14;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #334155;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+    -fx-effect: null;
+}
+
+.root-questions .button.btn-q-edit:hover {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #94a3b8;
+}
+
+.root-questions .button.btn-q-delete {
+    -fx-padding: 8 14;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-background-color: #fef2f2;
+    -fx-text-fill: #991b1b;
+    -fx-border-color: #fca5a5;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+    -fx-effect: null;
+}
+
+.root-questions .button.btn-q-delete:hover {
+    -fx-background-color: #fee2e2;
+    -fx-border-color: #ef4444;
+}
+
 .q-scroll {
     -fx-background-color: transparent;
-    -fx-padding: 24 28 28 28;
+    -fx-padding: 14 18 18 18;
+    -fx-border-color: transparent;
+}
+
+.q-scroll-pane-shell {
+    -fx-background-color: rgba(255, 255, 255, 0.94);
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 0;
+}
+
+.q-scroll-pane-shell > .viewport {
+    -fx-background-color: transparent;
 }
 
 .q-scroll > .viewport {
@@ -125,10 +218,10 @@
 }
 
 .badge-type {
-    -fx-padding: 3 10;
+    -fx-padding: 4 10;
     -fx-font-size: 11px;
     -fx-font-weight: 700;
-    -fx-background-radius: 4;
+    -fx-background-radius: 999;
 }
 
 .badge-qcm {
@@ -137,8 +230,8 @@
 }
 
 .badge-vf {
-    -fx-background-color: #fef3c7;
-    -fx-text-fill: #92400e;
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #166534;
 }
 
 .badge-texte {
@@ -147,12 +240,12 @@
 }
 
 .badge-points {
-    -fx-padding: 3 10;
+    -fx-padding: 4 10;
     -fx-font-size: 11px;
     -fx-font-weight: 700;
-    -fx-background-color: #f1f5f9;
-    -fx-text-fill: #475569;
-    -fx-background-radius: 4;
+    -fx-background-color: #eef2ff;
+    -fx-text-fill: #3730a3;
+    -fx-background-radius: 999;
 }
 
 .q-section-label {
@@ -203,8 +296,186 @@
 }
 
 .q-footer {
-    -fx-background-color: #ffffff;
+    -fx-background-color: rgba(255, 255, 255, 0.96);
     -fx-border-color: #e2e8f0;
     -fx-border-width: 1 0 0 0;
-    -fx-padding: 10 28;
+    -fx-padding: 10 20;
+}
+
+.q-status-ok {
+    -fx-text-fill: #0f766e;
+    -fx-font-weight: 600;
+}
+
+.q-status-neutral {
+    -fx-text-fill: #475569;
+    -fx-font-weight: 600;
+}
+
+/* Question cards (programmatic) */
+.question-card {
+    -fx-background-color: rgba(255, 255, 255, 0.98);
+    -fx-background-radius: 12;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 14 16 14 16;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.06), 18, 0, 0, 1);
+}
+
+.question-card-heading {
+    -fx-padding: 0 0 10 0;
+    -fx-border-color: #f1f5f9;
+    -fx-border-width: 0 0 1 0;
+}
+
+.question-card-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0f172a;
+}
+
+.question-body-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #1e293b;
+    -fx-wrap-text: true;
+}
+
+.question-section-title {
+    -fx-font-weight: 700;
+    -fx-text-fill: #334155;
+    -fx-font-size: 13px;
+}
+
+.question-empty-hint {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 12px;
+    -fx-wrap-text: true;
+}
+
+.answer-chip-row {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 12;
+}
+
+.answer-chip-row-correct {
+    -fx-background-color: #ecfdf5;
+    -fx-border-color: #86efac;
+}
+
+.answer-chip-text {
+    -fx-text-fill: #1f2937;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+}
+
+.badge-correct-pill {
+    -fx-background-color: #d1fae5;
+    -fx-text-fill: #166534;
+    -fx-padding: 3 10;
+    -fx-background-radius: 999;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+
+/* Dialogs (stylesheet attached to DialogPane) */
+.qm-form-label {
+    -fx-font-weight: 600;
+    -fx-text-fill: #475569;
+    -fx-font-size: 13px;
+}
+
+.qm-dialog-field {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #cbd5e1;
+    -fx-background-color: #ffffff;
+    -fx-prompt-text-fill: #94a3b8;
+}
+
+.qm-dialog-textarea {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #cbd5e1;
+    -fx-background-color: #ffffff;
+}
+
+.qm-dialog-textarea .content {
+    -fx-background-color: #ffffff;
+}
+
+.qm-dialog-field:focused,
+.qm-dialog-textarea:focused {
+    -fx-border-color: #6366f1;
+    -fx-border-width: 1;
+}
+
+.qm-dialog-combo {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #cbd5e1;
+    -fx-background-color: #ffffff;
+}
+
+.qm-dialog-section {
+    -fx-font-weight: 700;
+    -fx-text-fill: #334155;
+    -fx-font-size: 13px;
+}
+
+.qm-dialog-hint {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 12px;
+    -fx-wrap-text: true;
+}
+
+.qm-dialog-scroll {
+    -fx-background-color: transparent;
+    -fx-background: #f8fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+.button.qm-btn-add-option {
+    -fx-padding: 8 16;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-background-color: #4f46e5;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+    -fx-effect: null;
+}
+
+.button.qm-btn-add-option:hover {
+    -fx-background-color: #4338ca;
+}
+
+.button.qm-btn-add-option:pressed {
+    -fx-background-color: #3730a3;
+}
+
+.button.qm-btn-remove {
+    -fx-padding: 6 12;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #64748b;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-background-insets: 0;
+    -fx-effect: null;
+}
+
+.button.qm-btn-remove:hover {
+    -fx-background-color: #fef2f2;
+    -fx-border-color: #fecaca;
+    -fx-text-fill: #991b1b;
 }

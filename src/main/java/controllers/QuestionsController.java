@@ -1,6 +1,7 @@
 package controllers;
 
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -119,13 +120,13 @@ public class QuestionsController {
             titlePreview = titlePreview.substring(0, 69) + "…";
         }
         VBox card = new VBox(12);
-        card.setStyle("-fx-background-color: rgba(255,255,255,0.97); -fx-background-radius: 12; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-padding: 12 12 10 12;");
+        card.getStyleClass().add("question-card");
 
         HBox heading = new HBox();
         heading.setAlignment(Pos.CENTER_LEFT);
-        heading.setStyle("-fx-padding: 0 0 8 0; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0;");
+        heading.getStyleClass().add("question-card-heading");
         Label headingText = new Label(titlePreview + "  ·  " + formatPoints(q.getPoints()) + " pts");
-        headingText.setStyle("-fx-font-size: 14px; -fx-font-weight: 800; -fx-text-fill: #0f172a;");
+        headingText.getStyleClass().add("question-card-title");
         heading.getChildren().add(headingText);
 
         VBox body = new VBox(12);
@@ -145,18 +146,18 @@ public class QuestionsController {
         actions.setAlignment(Pos.CENTER_RIGHT);
 
         Button editBtn = new Button("Edit");
-        editBtn.setStyle("-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;");
+        editBtn.getStyleClass().add("btn-q-edit");
         editBtn.setOnAction(e -> showQuestionEditor(q));
 
         Button delBtn = new Button("Delete");
-        delBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;");
+        delBtn.getStyleClass().add("btn-q-delete");
         delBtn.setOnAction(e -> deleteQuestion(q));
 
         actions.getChildren().addAll(editBtn, delBtn);
 
         if (q.getType() == QuestionType.QCM) {
             Button addAnsBtn = new Button("+ Answer");
-            addAnsBtn.setStyle("-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;");
+            addAnsBtn.getStyleClass().add("btn-q-accent");
             addAnsBtn.setOnAction(e -> showQuickAddAnswer(q));
             actions.getChildren().add(addAnsBtn);
         }
@@ -164,7 +165,7 @@ public class QuestionsController {
         meta.getChildren().add(actions);
 
         Label fullText = new Label(q.getTexte());
-        fullText.setStyle("-fx-font-size: 14px; -fx-text-fill: #0f172a;");
+        fullText.getStyleClass().add("question-body-text");
         fullText.setWrapText(true);
         fullText.setMaxWidth(Double.MAX_VALUE);
 
@@ -172,28 +173,28 @@ public class QuestionsController {
 
         if (q.getType() == QuestionType.QCM) {
             Label sec = new Label("Answer choices");
-            sec.setStyle("-fx-font-weight: 700; -fx-text-fill: #334155;");
+            sec.getStyleClass().add("question-section-title");
             VBox list = new VBox(8);
             if (reponses.isEmpty()) {
                 Label emptyAns = new Label("No answers yet. Use Edit or + Answer to add options.");
-                emptyAns.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
+                emptyAns.getStyleClass().add("question-empty-hint");
                 list.getChildren().add(emptyAns);
             }
             for (Reponse r : reponses) {
                 HBox row = new HBox(10);
                 row.setAlignment(Pos.CENTER_LEFT);
-                row.setStyle("-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
+                row.getStyleClass().add("answer-chip-row");
                 if (r.isEstCorrect()) {
-                    row.setStyle("-fx-background-color: #ecfdf5; -fx-border-color: #86efac; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
+                    row.getStyleClass().add("answer-chip-row-correct");
                 }
                 Label txt = new Label(r.getTexte());
-                txt.setStyle("-fx-text-fill: #1f2937;");
+                txt.getStyleClass().add("answer-chip-text");
                 txt.setWrapText(true);
                 HBox.setHgrow(txt, Priority.ALWAYS);
                 row.getChildren().add(txt);
                 if (r.isEstCorrect()) {
                     Label ok = new Label("Correct");
-                    ok.setStyle("-fx-background-color: #bbf7d0; -fx-text-fill: #166534; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
+                    ok.getStyleClass().add("badge-correct-pill");
                     row.getChildren().add(ok);
                 }
                 list.getChildren().add(row);
@@ -201,29 +202,29 @@ public class QuestionsController {
             body.getChildren().addAll(sec, list);
         } else if (q.getType() == QuestionType.VRAI_FAUX) {
             Label sec = new Label("Vrai / Faux");
-            sec.setStyle("-fx-font-weight: 700; -fx-text-fill: #334155;");
+            sec.getStyleClass().add("question-section-title");
             VBox list = new VBox(8);
             if (reponses.isEmpty() || reponses.size() < 2) {
                 Label emptyAns = new Label("Open Edit and save to create the “Vrai” and “Faux” options and mark the correct one.");
-                emptyAns.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
+                emptyAns.getStyleClass().add("question-empty-hint");
                 emptyAns.setWrapText(true);
                 list.getChildren().add(emptyAns);
             }
             for (Reponse r : orderVraiFaux(reponses)) {
                 HBox row = new HBox(10);
                 row.setAlignment(Pos.CENTER_LEFT);
-                row.setStyle("-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
+                row.getStyleClass().add("answer-chip-row");
                 if (r.isEstCorrect()) {
-                    row.setStyle("-fx-background-color: #ecfdf5; -fx-border-color: #86efac; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;");
+                    row.getStyleClass().add("answer-chip-row-correct");
                 }
                 Label txt = new Label(r.getTexte());
-                txt.setStyle("-fx-text-fill: #1f2937;");
+                txt.getStyleClass().add("answer-chip-text");
                 txt.setWrapText(true);
                 HBox.setHgrow(txt, Priority.ALWAYS);
                 row.getChildren().add(txt);
                 if (r.isEstCorrect()) {
                     Label ok = new Label("Correct");
-                    ok.setStyle("-fx-background-color: #bbf7d0; -fx-text-fill: #166534; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
+                    ok.getStyleClass().add("badge-correct-pill");
                     row.getChildren().add(ok);
                 }
                 list.getChildren().add(row);
@@ -237,17 +238,18 @@ public class QuestionsController {
 
     private static Label typeBadge(QuestionType t) {
         Label l = new Label(typeDisplay(t));
+        l.getStyleClass().add("badge-type");
         switch (t) {
-            case QCM -> l.setStyle("-fx-background-color: #dbeafe; -fx-text-fill: #1e3a8a; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
-            case VRAI_FAUX -> l.setStyle("-fx-background-color: #dcfce7; -fx-text-fill: #166534; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
-            case TEXTE_LIBRE -> l.setStyle("-fx-background-color: #f3f4f6; -fx-text-fill: #334155; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
+            case QCM -> l.getStyleClass().add("badge-qcm");
+            case VRAI_FAUX -> l.getStyleClass().add("badge-vf");
+            case TEXTE_LIBRE -> l.getStyleClass().add("badge-texte");
         }
         return l;
     }
 
     private static Label pointsBadge(float p) {
         Label l = new Label(formatPoints(p) + " pts");
-        l.setStyle("-fx-background-color: #eef2ff; -fx-text-fill: #3730a3; -fx-padding: 3 8; -fx-background-radius: 999; -fx-font-size: 11px; -fx-font-weight: 700;");
+        l.getStyleClass().add("badge-points");
         return l;
     }
 
@@ -310,15 +312,26 @@ public class QuestionsController {
         }
     }
 
+    private void attachDialogStyles(Dialog<?> dialog) {
+        var url = getClass().getResource("/styles/questions-management.css");
+        if (url != null) {
+            String s = url.toExternalForm();
+            if (!dialog.getDialogPane().getStylesheets().contains(s)) {
+                dialog.getDialogPane().getStylesheets().add(s);
+            }
+        }
+    }
+
     private void showQuickAddAnswer(Question q) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Add answer option");
         dialog.initOwner(root.getScene().getWindow());
         dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
+        attachDialogStyles(dialog);
 
         TextField textField = new TextField();
         textField.setPromptText("Answer text");
-        textField.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;");
+        textField.getStyleClass().add("qm-dialog-field");
 
         CheckBox correct = new CheckBox("Mark as correct");
 
@@ -347,11 +360,12 @@ public class QuestionsController {
         dialog.setTitle(existing == null ? "New question" : "Edit question");
         dialog.initOwner(root.getScene().getWindow());
         dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
+        attachDialogStyles(dialog);
 
         TextArea textArea = new TextArea(existing != null ? existing.getTexte() : "");
         textArea.setWrapText(true);
         textArea.setPromptText("Enter the question wording…");
-        textArea.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;");
+        textArea.getStyleClass().add("qm-dialog-textarea");
         textArea.setPrefRowCount(5);
 
         ComboBox<QuestionType> typeCombo = new ComboBox<>(
@@ -377,13 +391,15 @@ public class QuestionsController {
             initialType = QuestionType.QCM;
         }
         typeCombo.setValue(initialType);
+        typeCombo.getStyleClass().add("qm-dialog-combo");
+        typeCombo.setMaxWidth(Double.MAX_VALUE);
 
         TextField pointsField = new TextField(existing != null ? formatPoints(existing.getPoints()) : "1");
-        pointsField.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;");
+        pointsField.getStyleClass().add("qm-dialog-field");
 
         VBox answerSection = new VBox(10);
         Label ansTitle = new Label("Answer options (QCM only)");
-        ansTitle.setStyle("-fx-font-weight: 700; -fx-text-fill: #334155;");
+        ansTitle.getStyleClass().add("qm-dialog-section");
         VBox answerList = new VBox(6);
         List<AnswerRow> answerRows = new ArrayList<>();
 
@@ -396,30 +412,14 @@ public class QuestionsController {
         vfRow.setAlignment(Pos.CENTER_LEFT);
         VBox vfSection = new VBox(8);
         Label vfTitle = new Label("Correct answer (Vrai / Faux)");
-        vfTitle.setStyle("-fx-font-weight: 700; -fx-text-fill: #334155;");
-        Label vfHint = new Label("Same pattern as QCM: two fixed choices (Vrai and Faux) are stored; choose which one is correct.");
+        vfTitle.getStyleClass().add("qm-dialog-section");
+        Label vfHint = new Label("Answer options (vrai / faux only)");
         vfHint.setWrapText(true);
-        vfHint.setStyle("-fx-text-fill: #64748b; -fx-font-size: 12px;");
+        vfHint.getStyleClass().add("qm-dialog-hint");
         vfSection.getChildren().addAll(vfTitle, vfRow, vfHint);
 
-        Runnable refillForQcm = () -> {
-            answerList.getChildren().clear();
-            answerRows.clear();
-            if (existing != null && existing.getType() == QuestionType.QCM) {
-                List<Reponse> reps = reponseDAO.findByQuestionId(existing.getId());
-                if (reps.isEmpty()) {
-                    addAnswerRow(answerList, answerRows, "", false);
-                    addAnswerRow(answerList, answerRows, "", false);
-                } else {
-                    for (Reponse r : reps) {
-                        addAnswerRow(answerList, answerRows, r.getTexte(), r.isEstCorrect());
-                    }
-                }
-            } else {
-                addAnswerRow(answerList, answerRows, "", false);
-                addAnswerRow(answerList, answerRows, "", false);
-            }
-        };
+        // Built after answerScroll exists — assigned below
+        Runnable[] refillForQcmRef = new Runnable[1];
 
         Runnable refillForVf = () -> {
             vfGroup.selectToggle(null);
@@ -440,10 +440,41 @@ public class QuestionsController {
         };
 
         Button addOptionBtn = new Button("+ Add option");
-        addOptionBtn.setStyle("-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;");
-        addOptionBtn.setOnAction(e -> addAnswerRow(answerList, answerRows, "", false));
+        addOptionBtn.getStyleClass().add("qm-btn-add-option");
+        addOptionBtn.setMaxWidth(Double.MAX_VALUE);
 
-        answerSection.getChildren().addAll(ansTitle, answerList, addOptionBtn);
+        VBox answerScrollContent = new VBox(10);
+        answerScrollContent.setFillWidth(true);
+        answerScrollContent.getChildren().addAll(answerList, addOptionBtn);
+
+        ScrollPane answerScroll = new ScrollPane(answerScrollContent);
+        answerScroll.setFitToWidth(true);
+        answerScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        answerScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        answerScroll.getStyleClass().add("qm-dialog-scroll");
+
+        addOptionBtn.setOnAction(e -> addAnswerRow(answerList, answerRows, "", false, answerScroll));
+
+        refillForQcmRef[0] = () -> {
+            answerList.getChildren().clear();
+            answerRows.clear();
+            if (existing != null && existing.getType() == QuestionType.QCM) {
+                List<Reponse> reps = reponseDAO.findByQuestionId(existing.getId());
+                if (reps.isEmpty()) {
+                    addAnswerRow(answerList, answerRows, "", false, answerScroll);
+                    addAnswerRow(answerList, answerRows, "", false, answerScroll);
+                } else {
+                    for (Reponse r : reps) {
+                        addAnswerRow(answerList, answerRows, r.getTexte(), r.isEstCorrect(), answerScroll);
+                    }
+                }
+            } else {
+                addAnswerRow(answerList, answerRows, "", false, answerScroll);
+                addAnswerRow(answerList, answerRows, "", false, answerScroll);
+            }
+        };
+
+        answerSection.getChildren().addAll(ansTitle, answerScroll);
 
         Runnable updateAnswerVisibility = () -> {
             boolean qcm = typeCombo.getValue() == QuestionType.QCM;
@@ -453,7 +484,7 @@ public class QuestionsController {
             vfSection.setManaged(vf);
             vfSection.setVisible(vf);
             if (qcm) {
-                refillForQcm.run();
+                refillForQcmRef[0].run();
             }
             if (vf) {
                 refillForVf.run();
@@ -469,11 +500,17 @@ public class QuestionsController {
         GridPane grid = new GridPane();
         grid.setHgap(12);
         grid.setVgap(14);
-        grid.add(new Label("Question"), 0, 0);
+        Label lQuestion = new Label("Question");
+        lQuestion.getStyleClass().add("qm-form-label");
+        Label lType = new Label("Type");
+        lType.getStyleClass().add("qm-form-label");
+        Label lPoints = new Label("Points");
+        lPoints.getStyleClass().add("qm-form-label");
+        grid.add(lQuestion, 0, 0);
         grid.add(textArea, 1, 0);
-        grid.add(new Label("Type"), 0, 1);
+        grid.add(lType, 0, 1);
         grid.add(typeCombo, 1, 1);
-        grid.add(new Label("Points"), 0, 2);
+        grid.add(lPoints, 0, 2);
         grid.add(pointsField, 1, 2);
         grid.add(answerStack, 0, 3, 2, 1);
 
@@ -485,6 +522,14 @@ public class QuestionsController {
 
         dialog.getDialogPane().setContent(grid);
         dialog.getDialogPane().setPrefWidth(620);
+        dialog.setResizable(true);
+        dialog.setOnShown(e -> {
+            if (dialog.getDialogPane().getScene() != null
+                    && dialog.getDialogPane().getScene().getWindow() instanceof Stage stage) {
+                stage.setMinWidth(560);
+                stage.setMinHeight(480);
+            }
+        });
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         Button ok = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
         ok.setText("Save");
@@ -515,24 +560,61 @@ public class QuestionsController {
         return null;
     }
 
-    private void addAnswerRow(VBox answerList, List<AnswerRow> models, String initialText, boolean correct) {
+    /** ~5 answer rows + spacing + “+ Add option” — viewport caps here, then scrolls. */
+    private static final int QCM_ANSWER_VISIBLE_ROWS_CAP = 5;
+
+    private static void syncQcmAnswerScrollViewport(ScrollPane scroll, boolean scrollToBottom) {
+        Region content = scroll.getContent() instanceof Region r ? r : null;
+        if (content == null) {
+            return;
+        }
+        Platform.runLater(() -> {
+            content.applyCss();
+            content.layout();
+            double cw = scroll.getWidth() > 0 ? scroll.getWidth() : 580;
+            double natural = content.prefHeight(cw);
+            double cap = qcmAnswerScrollViewportCap();
+            double vh = Math.min(Math.max(natural, 72), cap);
+            scroll.setPrefViewportHeight(vh);
+            scroll.setMinViewportHeight(0);
+            scroll.setMaxHeight(cap + 32);
+            scroll.layout();
+            if (scrollToBottom && natural > vh - 2) {
+                scroll.setVvalue(1.0);
+            }
+        });
+    }
+
+    private static double qcmAnswerScrollViewportCap() {
+        double rowH = 48;
+        double listSpacing = 6;
+        double shellSpacing = 10;
+        double addBtnH = 44;
+        int n = QCM_ANSWER_VISIBLE_ROWS_CAP;
+        return n * rowH + Math.max(0, n - 1) * listSpacing + shellSpacing + addBtnH + 24;
+    }
+
+    private void addAnswerRow(VBox answerList, List<AnswerRow> models, String initialText, boolean correct,
+                              ScrollPane answerScroll) {
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
         TextField tf = new TextField(initialText);
-        tf.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;");
+        tf.getStyleClass().add("qm-dialog-field");
         HBox.setHgrow(tf, Priority.ALWAYS);
         CheckBox cb = new CheckBox("Correct");
         cb.setSelected(correct);
         Button remove = new Button("Remove");
-        remove.setStyle("-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;");
+        remove.getStyleClass().add("qm-btn-remove");
         AnswerRow model = new AnswerRow(tf, cb);
         models.add(model);
         remove.setOnAction(e -> {
             models.remove(model);
             answerList.getChildren().remove(row);
+            syncQcmAnswerScrollViewport(answerScroll, false);
         });
         row.getChildren().addAll(tf, cb, remove);
         answerList.getChildren().add(row);
+        syncQcmAnswerScrollViewport(answerScroll, true);
     }
 
     private boolean validateQuestionForm(TextArea textArea, TextField pointsField, QuestionType type,
@@ -641,6 +723,7 @@ public class QuestionsController {
     private static HBox labeledRow(String label, javafx.scene.Node field) {
         Label l = new Label(label);
         l.setMinWidth(72);
+        l.getStyleClass().add("qm-form-label");
         HBox h = new HBox(12, l, field);
         h.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(field, Priority.ALWAYS);
@@ -657,9 +740,8 @@ public class QuestionsController {
 
     private void setFooterStatus(String msg, boolean ok) {
         statusLabel.setText(msg);
-        statusLabel.setStyle(ok
-                ? "-fx-text-fill: #0f766e; -fx-font-weight: 600;"
-                : "-fx-text-fill: #475569; -fx-font-weight: 600;");
+        statusLabel.getStyleClass().removeAll("q-status-ok", "q-status-neutral");
+        statusLabel.getStyleClass().add(ok ? "q-status-ok" : "q-status-neutral");
     }
 
     private static final class AnswerRow {

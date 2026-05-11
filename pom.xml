@@ -60,6 +60,25 @@
             <artifactId>json</artifactId>
             <version>20250517</version>
         </dependency>
+
+        <!-- OpenCV Java + natives (face detection for exam proctoring) -->
+        <dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.9.0-0</version>
+        </dependency>
+        <!-- Webcam fallback when OpenCV VideoCapture cannot open the device -->
+        <dependency>
+            <groupId>com.github.sarxos</groupId>
+            <artifactId>webcam-capture</artifactId>
+            <version>0.3.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>22.0.2</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -78,6 +97,10 @@
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>test.MainFX</mainClass>
+                    <!-- Prepended to the java command line (JVM flags). Avoids some Windows GPU driver crashes with JavaFX. -->
+                    <options>
+                        <option>-Dprism.order=sw</option>
+                    </options>
                 </configuration>
             </plugin>
         </plugins>

@@ -6,15 +6,19 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
 import models.Evaluation;
+import models.Resultat;
 import services.EvaluationDAOImpl;
+import services.ResultatDAOImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +26,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Locale;
 
@@ -88,6 +93,7 @@ public class EvaluationController {
         pageSizeCombo.getSelectionModel().select(Integer.valueOf(12));
 
         setupTableColumns();
+        evaluationTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         wireSelection();
         wireToolbarListeners();
 
@@ -249,6 +255,8 @@ public class EvaluationController {
 
         @SuppressWarnings("unchecked")
         TableColumn<Evaluation, String> colActions = (TableColumn<Evaluation, String>) c9;
+        colActions.setMinWidth(500);
+        colActions.setPrefWidth(600);
         colActions.setCellValueFactory(cv -> new SimpleStringProperty(""));
         colActions.setCellFactory(column -> new TableCell<Evaluation, String>() {
             @Override
@@ -270,8 +278,9 @@ public class EvaluationController {
     }
 
     private HBox createActionButtons(Evaluation evaluation) {
-        HBox actionBox = new HBox(6);
-        actionBox.setPadding(new Insets(2));
+        HBox actionBox = new HBox(10);
+        actionBox.setAlignment(Pos.CENTER_LEFT);
+        actionBox.setPadding(new Insets(4, 6, 4, 6));
 
         Button btnView = new Button("View");
         btnView.getStyleClass().addAll("btn-row", "btn-row-view");
@@ -289,7 +298,16 @@ public class EvaluationController {
         btnQuestions.getStyleClass().addAll("btn-row", "btn-row-questions");
         btnQuestions.setOnAction(e -> handleManageQuestions(evaluation));
 
-        actionBox.getChildren().addAll(btnView, btnEdit, btnDelete, btnQuestions);
+        Button btnStats = new Button("Statistique");
+        btnStats.getStyleClass().addAll("btn-row", "btn-row-stats");
+        btnStats.setOnAction(e -> handleShowStatistics(evaluation));
+
+        for (Button b : new Button[] { btnView, btnEdit, btnDelete, btnQuestions, btnStats }) {
+            b.setMinWidth(Region.USE_PREF_SIZE);
+            b.setMaxWidth(Region.USE_PREF_SIZE);
+        }
+
+        actionBox.getChildren().addAll(btnView, btnEdit, btnDelete, btnQuestions, btnStats);
         return actionBox;
     }
 
@@ -547,6 +565,44 @@ public class EvaluationController {
             e.printStackTrace();
             showError("Could not open questions: " + e.getMessage());
         }
+    }
+
+    private void handleShowStatistics(Evaluation evaluation) {
+        List<Resultat> attempts = new ResultatDAOImpl().getAll().stream()
+                .filter(r -> r.getEvaluationId() == evaluation.getId())
+                .toList();
+
+        long participants = attempts.stream()
+                .map(Resultat::getStudentId)
+                .distinct()
+                .count();
+        long graded = attempts.stream().filter(r -> r.getScore() != null).count();
+
+        DoubleSummaryStatistics scoreStats = attempts.stream()
+                .filter(r -> r.getScore() != null)
+                .mapToDouble(r -> r.getScore())
+                .summaryStatistics();
+
+        double passThreshold = evaluation.getNotePassage();
+        long passed = attempts.stream()
+                .filter(r -> r.getScore() != null && r.getScore() >= passThreshold)
+                .count();
+        double passRate = graded == 0 ? 0 : (passed * 100.0) / graded;
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Statistique");
+        alert.setHeaderText("Evaluation — " + evaluation.getTitre());
+        alert.setContentText(
+                "Participants: " + participants + "\n"
+                        + "Attempts: " + attempts.size() + "\n"
+                        + "Graded attempts: " + graded + "\n"
+                        + "Average score: " + (graded == 0 ? "—" : String.format(Locale.ENGLISH, "%.2f", scoreStats.getAverage())) + "\n"
+                        + "Min score: " + (graded == 0 ? "—" : String.format(Locale.ENGLISH, "%.2f", scoreStats.getMin())) + "\n"
+                        + "Max score: " + (graded == 0 ? "—" : String.format(Locale.ENGLISH, "%.2f", scoreStats.getMax())) + "\n"
+                        + "Pass mark: " + String.format(Locale.ENGLISH, "%.2f", evaluation.getNotePassage()) + "\n"
+                        + "Pass rate: " + (graded == 0 ? "—" : String.format(Locale.ENGLISH, "%.1f%%", passRate))
+        );
+        alert.showAndWait();
     }
 
     private void loadAllEvaluations() {
