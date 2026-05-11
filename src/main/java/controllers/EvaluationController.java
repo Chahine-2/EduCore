@@ -65,6 +65,8 @@ public class EvaluationController {
 
     private IService<Evaluation> evaluationDAO;
     private Evaluation selectedEvaluation;
+    /** When set (embedded in TeacherDashboard), "Retour Home" runs this instead of opening home.fxml. */
+    private Runnable teacherDashboardBack;
     /** Full list from persistence (unfiltered). */
     private final ObservableList<Evaluation> masterEvaluations = FXCollections.observableArrayList();
     private List<Evaluation> viewPipeline = new ArrayList<>();
@@ -107,6 +109,13 @@ public class EvaluationController {
         });
 
         loadAllEvaluations();
+    }
+
+    /**
+     * When embedded in the teacher dashboard, back leaves the evaluation module for the dashboard home.
+     */
+    public void setTeacherDashboardEmbedMode(boolean enabled, Runnable backToTeacherDashboard) {
+        this.teacherDashboardBack = (enabled && backToTeacherDashboard != null) ? backToTeacherDashboard : null;
     }
 
     private void initAvailabilityControls() {
@@ -361,6 +370,10 @@ public class EvaluationController {
 
     @FXML
     private void handleBackHome() {
+        if (teacherDashboardBack != null) {
+            teacherDashboardBack.run();
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
             Parent homeRoot = loader.load();

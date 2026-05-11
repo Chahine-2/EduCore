@@ -298,14 +298,21 @@ public class StudentQuizController {
         }
         captureFromActiveUi();
 
+        // Modal confirmation steals focus from the exam stage; keep monitoring on and you get a
+        // false WINDOW_FOCUS_LOST → fraud. Pause anti-cheat for the dialog, then resume if cancelled.
+        fraudeService.stop();
+
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.initOwner(root.getScene().getWindow());
         confirm.setTitle("Submit quiz");
         confirm.setHeaderText("Submit your answers?");
         confirm.setContentText("You will not be able to change responses after submitting.");
 
-        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+        ButtonType choice = confirm.showAndWait().orElse(ButtonType.CANCEL);
+        if (choice == ButtonType.OK) {
             persistSubmission(false);
+        } else {
+            Platform.runLater(this::initializeAntiCheatMonitoring);
         }
     }
 

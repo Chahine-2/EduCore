@@ -20,6 +20,16 @@ import java.time.LocalDate;
 })
 public class GestionCoursController {
 
+    /** When set, "Retour" returns to TeacherDashboard instead of Accueil.fxml. */
+    private Runnable teacherDashboardBack;
+
+    /**
+     * When embedded in the teacher dashboard, {@link #retourAccueil} runs {@code back} instead of navigating to Accueil.
+     */
+    public void setTeacherDashboardEmbedMode(boolean enabled, Runnable backToTeacherDashboard) {
+        this.teacherDashboardBack = (enabled && backToTeacherDashboard != null) ? backToTeacherDashboard : null;
+    }
+
     // fx:id du FXML → doivent correspondre exactement
     @FXML private TextField tfTitre;
     @FXML private TextArea taDescription;
@@ -180,7 +190,10 @@ public class GestionCoursController {
         clearForm();
         showAlert("Succès", "✅ Cours ajouté avec succès!", Alert.AlertType.INFORMATION);
 
-        // Passer à la scène des détails
+        if (teacherDashboardBack != null) {
+            return;
+        }
+        // Passer à la scène des détails (hors intégration tableau enseignant)
         try {
             System.out.println("📌 Navigation vers DetailsCoursController avec ID=" + c.getId());
             DetailsCoursController.cours = c;
@@ -292,6 +305,10 @@ public class GestionCoursController {
 
     @FXML
     public void retourAccueil(ActionEvent event) {
+        if (teacherDashboardBack != null) {
+            teacherDashboardBack.run();
+            return;
+        }
         try {
             Scene scene = tableViewCours.getScene();
             if (scene != null) {

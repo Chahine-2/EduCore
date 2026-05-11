@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,8 @@ import utils.NavigationManager;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({
@@ -40,6 +43,21 @@ public class EtudiantController {
     private ServiceCours serviceCours    = new ServiceCours();
     private ServiceChapitre serviceChapitre = new ServiceChapitre();
     private List<Cours>     tousLesCours;   // cache de tous les cours
+
+    private boolean embeddedInDashboard;
+    private Runnable backToAccueil;
+    private Consumer<Parent> showLectureInShell;
+    private Runnable restoreCatalogView;
+
+    public void setStudentDashboardEmbedMode(boolean enabled,
+                                             Runnable backToAccueil,
+                                             Consumer<Parent> showLectureInShell,
+                                             Runnable restoreCatalogView) {
+        this.embeddedInDashboard = enabled;
+        this.backToAccueil = enabled ? backToAccueil : null;
+        this.showLectureInShell = enabled ? showLectureInShell : null;
+        this.restoreCatalogView = enabled ? restoreCatalogView : null;
+    }
 
     // ───────────────────────────────────────────
     @FXML
@@ -66,6 +84,7 @@ public class EtudiantController {
 
             // Charger tous les cours
             chargerTousLesCours();
+            bindFlowPaneWrapToParentWidth();
             System.out.println("✅ EtudiantController initialisé avec succès");
         } catch (Exception e) {
             System.out.println("❌ ERREUR lors de l'initialisation d'EtudiantController :");
@@ -82,6 +101,29 @@ public class EtudiantController {
     }
 
     // ── Charger tous les cours ──────────────────
+    /**
+     * FlowPane defaults to prefWrapLength 600px, which shrinks the whole Etudiant view when embedded.
+     * Bind wrap length to the parent content width so cards use the full dashboard column.
+     */
+    private void bindFlowPaneWrapToParentWidth() {
+        Runnable bind = () -> {
+            Parent p = flowPaneCours.getParent();
+            if (!(p instanceof Region r)) {
+                return;
+            }
+            flowPaneCours.prefWrapLengthProperty().unbind();
+            Insets pad = r.getPadding();
+            double inset = pad != null ? pad.getLeft() + pad.getRight() : 0;
+            flowPaneCours.prefWrapLengthProperty().bind(r.widthProperty().subtract(Math.max(0, inset + 1)));
+        };
+        flowPaneCours.parentProperty().addListener((o, prev, cur) -> {
+            if (cur != null) {
+                Platform.runLater(bind);
+            }
+        });
+        Platform.runLater(bind);
+    }
+
     private void chargerTousLesCours() {
         try {
             System.out.println("📚 Chargement des cours...");
@@ -217,6 +259,16 @@ public class EtudiantController {
              LectureChapitreController.chapitreActuel = premierChapitre;
              LectureChapitreController.tousChapitres  = chapitres;
 
+             if (embeddedInDashboard && showLectureInShell != null && restoreCatalogView != null) {
+                 FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
+                         getClass().getResource("/LectureChapitre.fxml")));
+                 Parent lectureRoot = loader.load();
+                 LectureChapitreController lectCtrl = loader.getController();
+                 lectCtrl.setDashboardEmbedMode(true, restoreCatalogView);
+                 showLectureInShell.accept(lectureRoot);
+                 return;
+             }
+
              // Utiliser NavigationManager pour une navigation sûre
              Scene scene = flowPaneCours.getScene();
              if (scene != null) {
@@ -287,6 +339,10 @@ public class EtudiantController {
      @FXML
      public void retour(ActionEvent event) {
          try {
+             if (embeddedInDashboard && backToAccueil != null) {
+                 backToAccueil.run();
+                 return;
+             }
              Scene scene = flowPaneCours.getScene();
              if (scene != null) {
                  NavigationManager.navigateTo(scene, "/Accueil.fxml");

@@ -13,7 +13,7 @@ public class MainFX extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/startup.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
             var scene = new Scene(loader.load());
 
             stage.setTitle("EDUCORE");

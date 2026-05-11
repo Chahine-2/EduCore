@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #ecf0f1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminDashboardController">
+
+    <left>
+        <VBox prefWidth="260.0" spacing="10.0" style="-fx-background-color: #2c3e50;" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" left="15.0" right="15.0" top="30.0" />
+            </padding>
+            <children>
+                <Label text="PANNEAU ADMIN" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="22.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="20.0" />
+                    </VBox.margin>
+                </Label>
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#chargerUtilisateurs" prefHeight="35.0" style="-fx-background-color: #34495e; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="1. 👥 Lister Utilisateurs" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAjouterEtudiant" prefHeight="35.0" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="2. 👨‍🎓 Ajouter Étudiant" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleModifierEmail" prefHeight="35.0" style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="3. ✏️ Modifier Utilisateur" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSupprimerUtilisateur" prefHeight="35.0" style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="4. 🗑️ Supprimer Utilisateur" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSuspendreCompte" prefHeight="35.0" style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="5. 🛑 Suspendre / Activer" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleHistorique" prefHeight="35.0" style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="6. 🕒 Historique de Connexion" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAjouterProf" prefHeight="35.0" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="7. 👨‍🏫 Ajouter Enseignant" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleGestionClasses" prefHeight="35.0" style="-fx-background-color: #16a085; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="8. 🏫 Ajouter une Classe" />
+
+                <VBox VBox.vgrow="ALWAYS" />
+
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleDeconnexion" prefHeight="40.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-cursor: hand;" text="0. 🚪 Se déconnecter">
+                    <font><Font name="System Bold" size="14.0" /></font>
+                </Button>
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="20.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                    <children>
+                        <Label text="Gestion des Utilisateurs" textFill="#2c3e50">
+                            <font><Font name="System Bold" size="28.0" /></font>
+                        </Label>
+                        <HBox HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#chargerUtilisateurs" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-cursor: hand;" text="🔄 Rafraîchir" />
+                    </children>
+                </HBox>
+
+                <TableView fx:id="tableUtilisateurs" prefHeight="450.0" prefWidth="650.0" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
+                        <TableColumn fx:id="colNom" prefWidth="120.0" text="Nom" />
+                        <TableColumn fx:id="colPrenom" prefWidth="120.0" text="Prénom" />
+                        <TableColumn fx:id="colEmail" prefWidth="200.0" text="Email" />
+                        <TableColumn fx:id="colRole" prefWidth="100.0" text="Rôle" />
+                        <TableColumn fx:id="colStatut" prefWidth="100.0" text="Statut" />
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

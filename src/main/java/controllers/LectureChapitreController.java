@@ -74,6 +74,9 @@ public class LectureChapitreController {
     @FXML private Label lblFeedbackEtat;
 
 
+    /** When set, {@link #retour} returns to the embedded catalogue instead of replacing the scene root. */
+    private Runnable embeddedBackToCatalog;
+
     private int indexActuel = 0;
     private Process ttsProcess;
     private volatile boolean arretManuel = false;
@@ -260,11 +263,19 @@ public class LectureChapitreController {
         }
     }
 
+    public void setDashboardEmbedMode(boolean enabled, Runnable backToCatalog) {
+        this.embeddedBackToCatalog = (enabled && backToCatalog != null) ? backToCatalog : null;
+    }
+
     // ── Retour à la liste des cours ──────────────────────────
     @FXML
     public void retour(ActionEvent event) {
         try {
             arreterLectureInterne();
+            if (embeddedBackToCatalog != null) {
+                embeddedBackToCatalog.run();
+                return;
+            }
             Scene scene = lblTitreChapitre.getScene();
             if (scene != null) {
                 NavigationManager.navigateTo(scene, "/Etudiant.fxml");

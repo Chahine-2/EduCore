@@ -49,9 +49,11 @@ CREATE TABLE IF NOT EXISTS reponse (
     FOREIGN KEY (question_id) REFERENCES question(id)
 );
 
+-- etudiant_id stores the same id as utilisateurs.id for logged-in students (see UtilisateurService login).
+-- score may be 0 until the app runs correction after submit.
 CREATE TABLE IF NOT EXISTS resultat (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    score FLOAT NOT NULL,
+    score FLOAT DEFAULT 0,
     score_pourcentage FLOAT,
     est_reussi BOOLEAN DEFAULT FALSE,
     temps_passe_min INT,
