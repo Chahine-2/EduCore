@@ -230,6 +230,19 @@ public class TeacherDashboardController {
             coursCtrl.setTeacherDashboardEmbedMode(true, () -> {
                 showPane(paneDashboard);
                 selectNav(btnNavDashboard);
+            }, (cours) -> {
+                try {
+                    FXMLLoader detailsLoader = new FXMLLoader(getClass().getResource("/DetailsCours.fxml"));
+                    Parent detailsRoot = detailsLoader.load();
+                    DetailsCoursController detailsCtrl = detailsLoader.getController();
+                    detailsCtrl.setTeacherDashboardEmbedMode(true, () -> {
+                        courseMgmtShell.setCenter(gestionRoot);
+                    });
+                    courseMgmtShell.setCenter(detailsRoot);
+                } catch (IOException ex) {
+                    new Alert(Alert.AlertType.ERROR, "Impossible de charger les détails : " + ex.getMessage()).showAndWait();
+                    ex.printStackTrace();
+                }
             });
             courseMgmtShell.setCenter(gestionRoot);
             coursesEmbeddedLoaded = true;

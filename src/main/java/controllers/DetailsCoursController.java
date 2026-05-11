@@ -63,6 +63,12 @@ public class DetailsCoursController {
     private ServiceChapitre serviceChapitre = new ServiceChapitre();
     private final ServiceFeedback serviceFeedback = new ServiceFeedback();
 
+    private Runnable embeddedBackToGestion;
+
+    public void setTeacherDashboardEmbedMode(boolean enabled, Runnable backToGestion) {
+        this.embeddedBackToGestion = (enabled && backToGestion != null) ? backToGestion : null;
+    }
+
     @FXML
     void initialize() {
         try {
@@ -458,6 +464,10 @@ public class DetailsCoursController {
     @FXML
     public void retour(ActionEvent event) {
         try {
+            if (embeddedBackToGestion != null) {
+                embeddedBackToGestion.run();
+                return;
+            }
             Scene scene = lblTitre.getScene();
             if (scene != null) {
                 NavigationManager.navigateTo(scene, "/GestionCours.fxml");

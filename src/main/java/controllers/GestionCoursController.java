@@ -22,12 +22,14 @@ public class GestionCoursController {
 
     /** When set, "Retour" returns to TeacherDashboard instead of Accueil.fxml. */
     private Runnable teacherDashboardBack;
+    private java.util.function.Consumer<Cours> openDetailsCallback;
 
     /**
      * When embedded in the teacher dashboard, {@link #retourAccueil} runs {@code back} instead of navigating to Accueil.
      */
-    public void setTeacherDashboardEmbedMode(boolean enabled, Runnable backToTeacherDashboard) {
+    public void setTeacherDashboardEmbedMode(boolean enabled, Runnable backToTeacherDashboard, java.util.function.Consumer<Cours> openDetails) {
         this.teacherDashboardBack = (enabled && backToTeacherDashboard != null) ? backToTeacherDashboard : null;
+        this.openDetailsCallback = (enabled && openDetails != null) ? openDetails : null;
     }
 
     // fx:id du FXML → doivent correspondre exactement
@@ -289,6 +291,11 @@ public class GestionCoursController {
         System.out.println("✅ DetailsCoursController.cours assigné");
         System.out.println("   - DetailsCoursController.cours.getId() = " + DetailsCoursController.cours.getId());
         System.out.println("   - DetailsCoursController.cours.getTitre() = " + DetailsCoursController.cours.getTitre());
+
+        if (openDetailsCallback != null) {
+            openDetailsCallback.accept(selected);
+            return;
+        }
 
         try {
             Scene scene = tableViewCours.getScene();
