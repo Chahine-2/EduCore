@@ -5,12 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class MainFx extends Application {
+public class MainFX extends Application {
     public static void main(String[] args) {
-        Thread.setDefaultUncaughtExceptionHandler((thread, err) -> {
-            System.err.println("Uncaught exception in thread \"" + thread.getName() + "\":");
-            err.printStackTrace();
-        });
         launch(args);
     }
 
@@ -29,8 +25,10 @@ public class MainFx extends Application {
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
+            System.err.println("Failed to load FXML: " + e.getMessage());
             e.printStackTrace();
             throw e;
         }
     }
+
 }

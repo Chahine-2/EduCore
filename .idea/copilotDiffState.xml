@@ -38,6 +38,15 @@
             </PendingDiffInfo>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/test/MainFX.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/src/main/java/test/MainFX.java" />
+              <option name="originalContent" value="package test;&#10;&#10;import javafx.application.Application;&#10;import javafx.fxml.FXMLLoader;&#10;import javafx.scene.Parent;&#10;import javafx.scene.Scene;&#10;import javafx.stage.Stage;&#10;&#10;public class MainFX extends Application {&#10;    public static void main(String[] args) {&#10;        launch(args);&#10;    }&#10;&#10;    @Override&#10;    public void start(Stage stage) throws Exception {&#10;        try {&#10;            FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/home.fxml&quot;));&#10;            var scene = new Scene(loader.load());&#10;&#10;            stage.setTitle(&quot;EDUCORE&quot;);&#10;            stage.setMinWidth(760);&#10;            stage.setMinHeight(520);&#10;            stage.setWidth(980);&#10;            stage.setHeight(680);&#10;            stage.centerOnScreen();&#10;            stage.setScene(scene);&#10;            stage.show();&#10;        } catch (Exception e) {&#10;            e.printStackTrace();&#10;            throw e;&#10;        }&#10;    }&#10;&#10;}&#10;&#10;&#10;" />
+              <option name="updatedContent" value="package test;&#10;&#10;import javafx.application.Application;&#10;import javafx.fxml.FXMLLoader;&#10;import javafx.scene.Scene;&#10;import javafx.stage.Stage;&#10;&#10;public class MainFX extends Application {&#10;    public static void main(String[] args) {&#10;        launch(args);&#10;    }&#10;&#10;    @Override&#10;    public void start(Stage stage) throws Exception {&#10;        try {&#10;            FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;/home.fxml&quot;));&#10;            var scene = new Scene(loader.load());&#10;&#10;            stage.setTitle(&quot;EDUCORE&quot;);&#10;            stage.setMinWidth(760);&#10;            stage.setMinHeight(520);&#10;            stage.setWidth(980);&#10;            stage.setHeight(680);&#10;            stage.centerOnScreen();&#10;            stage.setScene(scene);&#10;            stage.show();&#10;        } catch (Exception e) {&#10;            System.err.println(&quot;Failed to load FXML: &quot; + e.getMessage());&#10;            e.printStackTrace();&#10;            throw e;&#10;        }&#10;    }&#10;&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
