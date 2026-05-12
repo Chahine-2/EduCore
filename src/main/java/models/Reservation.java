@@ -41,4 +41,4 @@ public class Reservation {
     public String toString() {
         return "Reservation{id=" + id + ", materielId=" + materielId + ", motif=" + motif + ", statut=" + statut + "}\n";
     }
-}{}
+}

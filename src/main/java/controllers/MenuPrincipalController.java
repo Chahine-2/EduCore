@@ -55,4 +55,4 @@ public class MenuPrincipalController {
     public void quitter(ActionEvent e) {
         Platform.exit();
     }
-}{}
+}

@@ -47,4 +47,4 @@ public class Materiel {
     public String toString() {
         return "Materiel{id=" + id + ", nom=" + nom + ", code=" + code + ", quantite=" + quantite + ", etat=" + etat + "}\n";
     }
-}{}
+}

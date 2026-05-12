@@ -27,4 +27,4 @@ public class MainFx extends Application {
             System.out.println(e.getMessage());
         }
     }
-}{}
+}
