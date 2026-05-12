@@ -11,13 +11,11 @@ import java.time.LocalDateTime;
 
 public class GestionReservationController {
 
-    @FXML private TextField tfMaterielId;
     @FXML private TextField tfMotif;
     @FXML private TextField tfDateDebut;
     @FXML private TextField tfDateFin;
     @FXML private ComboBox<String> cbStatut;
     @FXML private TableView<Reservation> tvReservations;
-    @FXML private TableColumn<Reservation, Integer> colId;
     @FXML private TableColumn<Reservation, Integer> colMaterielId;
     @FXML private TableColumn<Reservation, String> colMotif;
     @FXML private TableColumn<Reservation, String> colDateDebut;
@@ -34,8 +32,7 @@ public class GestionReservationController {
         ));
         cbStatut.setValue("en_attente");
 
-        colId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
-        colMaterielId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("materielId"));
+
         colMotif.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("motif"));
         colDateDebut.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("dateDebut"));
         colDateFin.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("dateFin"));
@@ -45,7 +42,6 @@ public class GestionReservationController {
                 .addListener((obs, oldVal, newVal) -> {
                     if (newVal != null) {
                         reservationSelectionnee = newVal;
-                        tfMaterielId.setText(String.valueOf(newVal.getMaterielId()));
                         tfMotif.setText(newVal.getMotif());
                         tfDateDebut.setText(newVal.getDateDebut().toString());
                         tfDateFin.setText(newVal.getDateFin().toString());
@@ -100,7 +96,7 @@ public class GestionReservationController {
     private Reservation getFromForm() {
         try {
             Reservation r = new Reservation();
-            r.setMaterielId(Integer.parseInt(tfMaterielId.getText().trim()));
+
             r.setMotif(tfMotif.getText().trim());
             r.setDateDebut(LocalDateTime.parse(tfDateDebut.getText().trim()));
             r.setDateFin(LocalDateTime.parse(tfDateFin.getText().trim()));
@@ -113,7 +109,7 @@ public class GestionReservationController {
     }
 
     private void vider() {
-        tfMaterielId.clear(); tfMotif.clear();
+
         tfDateDebut.clear(); tfDateFin.clear();
         cbStatut.setValue("en_attente");
         reservationSelectionnee = null;
