@@ -8,18 +8,23 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.net.URL;
 
 public class MenuPrincipalController {
 
     private void ouvrirFenetre(String fxmlFile, String titre) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/" + fxmlFile)
-            );
+            URL url = getClass().getClassLoader().getResource(fxmlFile);
+            if (url == null) {
+                System.out.println("Fichier introuvable : " + fxmlFile);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(url);
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle(titre);
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(root, 1100, 750));
+            stage.setMaximized(true);
             stage.show();
         } catch (IOException e) {
             System.out.println("Erreur : " + e.getMessage());
@@ -42,7 +47,12 @@ public class MenuPrincipalController {
     }
 
     @FXML
+    public void ouvrirMap(ActionEvent e) {
+        ouvrirFenetre("Map.fxml", "Localisation du Centre");
+    }
+
+    @FXML
     public void quitter(ActionEvent e) {
         Platform.exit();
     }
-}
+}{}
