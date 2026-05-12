@@ -38,6 +38,7 @@ public class Hackathon {
     public void setReservationId(int rid)    { this.reservationId = rid; }
 
     @Override
+
     public String toString() {
         return "Acaton{id=" + id +
                 ", nom='" + nom + "'" +

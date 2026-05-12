@@ -3,169 +3,118 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1000.0"
-            style="-fx-background-color: #f4f6f9;"
-            xmlns="http://javafx.com/javafx/22.0.2"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.GestionReservationController">
+<AnchorPane prefHeight="750.0" prefWidth="1000.0" style="-fx-background-color: #f4f6f9;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.GestionReservationController">
     <children>
 
-        <!-- HEADER -->
-        <AnchorPane layoutX="0.0" layoutY="0.0" prefWidth="1000.0" prefHeight="64.0"
-                    style="-fx-background-color: #1a73e8;">
+        <!-- ══ HEADER ══ -->
+        <AnchorPane layoutX="0.0" layoutY="0.0" prefHeight="64.0" prefWidth="1000.0" style="-fx-background-color: #1a73e8;">
             <children>
-                <Label layoutX="30.0" layoutY="16.0"
-                       text="🎓  Site Éducatif — Gestion des Réservations"
-                       style="-fx-text-fill: white;">
-                    <font><Font name="Arial Bold" size="20.0"/></font>
+                <Label layoutX="30.0" layoutY="16.0" style="-fx-text-fill: white;" text="🎓  Site Éducatif — Gestion des Réservations">
+                    <font><Font name="Arial Bold" size="20.0" /></font>
                 </Label>
-                <Button layoutX="800.0" layoutY="14.0"
-                        text="📊  Dashboard"
-                        prefWidth="150.0" prefHeight="34.0"
-                        onAction="#allerDashboard"
-                        style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white;
-                               -fx-background-radius: 6; -fx-cursor: hand;
-                               -fx-border-color: rgba(255,255,255,0.5); -fx-border-radius: 6;">
-                    <font><Font name="Arial Bold" size="12.0"/></font>
+                <Button layoutX="800.0" layoutY="14.0" onAction="#allerDashboard" prefHeight="34.0" prefWidth="150.0" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white;                                -fx-background-radius: 6; -fx-cursor: hand;                                -fx-border-color: rgba(255,255,255,0.5); -fx-border-radius: 6;" text="📊  Dashboard">
+                    <font><Font name="Arial Bold" size="12.0" /></font>
                 </Button>
             </children>
         </AnchorPane>
 
-        <!-- CARTE FORMULAIRE -->
-        <AnchorPane layoutX="30.0" layoutY="84.0" prefWidth="460.0" prefHeight="310.0"
-                    style="-fx-background-color: white; -fx-background-radius: 10;
-                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),8,0,0,2);">
+        <!-- ══ FORMULAIRE ══ -->
+        <AnchorPane layoutX="30.0" layoutY="73.0" prefHeight="320.0" prefWidth="460.0" style="-fx-background-color: white; -fx-background-radius: 10;                            -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),8,0,0,2);">
             <children>
-                <Label layoutX="20.0" layoutY="14.0" text="Nouvelle réservation"
-                       style="-fx-text-fill: #1a73e8;">
-                    <font><Font name="Arial Bold" size="13.0"/></font>
+                <Label layoutX="20.0" layoutY="14.0" style="-fx-text-fill: #1a73e8;" text="Nouvelle réservation">
+                    <font><Font name="Arial Bold" size="13.0" /></font>
                 </Label>
-                <Separator layoutX="0.0" layoutY="38.0" prefWidth="460.0"/>
-
-                <Label layoutX="20.0" layoutY="54.0"  text="Titre :"><font><Font name="Arial Bold" size="12.0"/></font></Label>
-                <Label layoutX="20.0" layoutY="100.0" text="Description :"><font><Font name="Arial Bold" size="12.0"/></font></Label>
-                <Label layoutX="20.0" layoutY="146.0" text="Date début :"><font><Font name="Arial Bold" size="12.0"/></font></Label>
-                <Label layoutX="20.0" layoutY="192.0" text="Date fin :"><font><Font name="Arial Bold" size="12.0"/></font></Label>
-                <Label layoutX="20.0" layoutY="238.0" text="Nb places :"><font><Font name="Arial Bold" size="12.0"/></font></Label>
-
-                <TextField fx:id="tfTitre" layoutX="140.0" layoutY="50.0" prefWidth="300.0" prefHeight="32.0"
-                           promptText="ex : Atelier Java"
-                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
-                <TextField fx:id="tfDescription" layoutX="140.0" layoutY="96.0" prefWidth="300.0" prefHeight="32.0"
-                           promptText="ex : Formation avancée"
-                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
-                <DatePicker fx:id="dpDateDebut" layoutX="140.0" layoutY="142.0" prefWidth="300.0" prefHeight="32.0"/>
-                <DatePicker fx:id="dpDateFin"   layoutX="140.0" layoutY="188.0" prefWidth="300.0" prefHeight="32.0"/>
-                <TextField fx:id="tfNbPlaces" layoutX="140.0" layoutY="234.0" prefWidth="300.0" prefHeight="32.0"
-                           promptText="ex : 30"
-                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
-
-                <Button layoutX="20.0"  layoutY="274.0" text="✚  Ajouter"   prefWidth="120.0" prefHeight="34.0"
-                        onAction="#ajouterReservation"
-                        style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;">
-                    <font><Font name="Arial Bold" size="12.0"/></font>
-                </Button>
-                <Button layoutX="150.0" layoutY="274.0" text="✎  Modifier"  prefWidth="120.0" prefHeight="34.0"
-                        onAction="#modifierReservation"
-                        style="-fx-background-color: #f9ab00; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;">
-                    <font><Font name="Arial Bold" size="12.0"/></font>
-                </Button>
-                <Button layoutX="280.0" layoutY="274.0" text="✖  Supprimer" prefWidth="140.0" prefHeight="34.0"
-                        onAction="#supprimerReservation"
-                        style="-fx-background-color: #d93025; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;">
-                    <font><Font name="Arial Bold" size="12.0"/></font>
-                </Button>
+                <Separator layoutX="0.0" layoutY="38.0" prefWidth="460.0" />
+                <Label layoutX="20.0" layoutY="54.0" text="Titre :"><font><Font name="Arial Bold" size="12.0" /></font></Label>
+                <Label layoutX="20.0" layoutY="100.0" text="Description :"><font><Font name="Arial Bold" size="12.0" /></font></Label>
+                <Label layoutX="20.0" layoutY="146.0" text="Date début :"><font><Font name="Arial Bold" size="12.0" /></font></Label>
+                <Label layoutX="20.0" layoutY="192.0" text="Date fin :"><font><Font name="Arial Bold" size="12.0" /></font></Label>
+                <Label layoutX="20.0" layoutY="238.0" text="Nb places :"><font><Font name="Arial Bold" size="12.0" /></font></Label>
+                <TextField fx:id="tfTitre" layoutX="140.0" layoutY="50.0" prefHeight="32.0" prefWidth="300.0" promptText="ex : Atelier Java" style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;" />
+                <TextField fx:id="tfDescription" layoutX="140.0" layoutY="96.0" prefHeight="32.0" prefWidth="300.0" promptText="ex : Formation avancée" style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;" />
+                <DatePicker fx:id="dpDateDebut" layoutX="140.0" layoutY="142.0" prefHeight="32.0" prefWidth="300.0" />
+                <DatePicker fx:id="dpDateFin" layoutX="140.0" layoutY="188.0" prefHeight="32.0" prefWidth="300.0" />
+                <TextField fx:id="tfNbPlaces" layoutX="140.0" layoutY="234.0" prefHeight="32.0" prefWidth="300.0" promptText="ex : 30" style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;" />
+                <Button fx:id="btnAjouter" layoutX="20.0" layoutY="276.0" onAction="#ajouterReservation" prefHeight="34.0" prefWidth="120.0" style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;" text="✚  Ajouter"><font><Font name="Arial Bold" size="12.0" /></font></Button>
+                <Button layoutX="150.0" layoutY="276.0" onAction="#modifierReservation" prefHeight="34.0" prefWidth="140.0" style="-fx-background-color: #f9ab00; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;" text="✎  Modifier"><font><Font name="Arial Bold" size="12.0" /></font></Button>
+                <Button layoutX="300.0" layoutY="276.0" onAction="#supprimerReservation" prefHeight="34.0" prefWidth="140.0" style="-fx-background-color: #d93025; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;" text="✖  Supprimer"><font><Font name="Arial Bold" size="12.0" /></font></Button>
             </children>
         </AnchorPane>
 
-        <!-- CARTE INFOS DROITE -->
-        <AnchorPane layoutX="510.0" layoutY="84.0" prefWidth="460.0" prefHeight="310.0"
-                    style="-fx-background-color: white; -fx-background-radius: 10;
-                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),8,0,0,2);">
+        <!-- ══ INSTRUCTIONS ══ -->
+        <AnchorPane layoutX="510.0" layoutY="84.0" prefHeight="310.0" prefWidth="460.0" style="-fx-background-color: white; -fx-background-radius: 10;                            -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),8,0,0,2);">
             <children>
-                <Label layoutX="20.0" layoutY="14.0" text="ℹ  Instructions"
-                       style="-fx-text-fill: #1a73e8;">
-                    <font><Font name="Arial Bold" size="13.0"/></font>
+                <Label layoutX="20.0" layoutY="14.0" style="-fx-text-fill: #1a73e8;" text="ℹ  Instructions">
+                    <font><Font name="Arial Bold" size="13.0" /></font>
                 </Label>
-                <Separator layoutX="0.0" layoutY="38.0" prefWidth="460.0"/>
-
-                <Label layoutX="20.0" layoutY="58.0"
-                       text="• Remplissez le formulaire et cliquez Ajouter"
-                       style="-fx-text-fill: #5f6368;">
-                    <font><Font name="Arial" size="12.0"/></font>
-                </Label>
-                <Label layoutX="20.0" layoutY="88.0"
-                       text="• Cliquez sur une ligne pour la sélectionner"
-                       style="-fx-text-fill: #5f6368;">
-                    <font><Font name="Arial" size="12.0"/></font>
-                </Label>
-                <Label layoutX="20.0" layoutY="118.0"
-                       text="• Modifiez les champs puis cliquez Modifier"
-                       style="-fx-text-fill: #5f6368;">
-                    <font><Font name="Arial" size="12.0"/></font>
-                </Label>
-                <Label layoutX="20.0" layoutY="148.0"
-                       text="• Supprimer efface la réservation sélectionnée"
-                       style="-fx-text-fill: #5f6368;">
-                    <font><Font name="Arial" size="12.0"/></font>
-                </Label>
-
-                <Separator layoutX="20.0" layoutY="180.0" prefWidth="420.0"/>
-
-                <Label layoutX="20.0" layoutY="196.0"
-                       text="📌  Champs obligatoires : Titre, Dates, Places"
-                       style="-fx-text-fill: #d93025;">
-                    <font><Font name="Arial Bold" size="12.0"/></font>
-                </Label>
-                <Label layoutX="20.0" layoutY="226.0"
-                       text="📅  La date de fin doit être après la date de début"
-                       style="-fx-text-fill: #d93025;">
-                    <font><Font name="Arial Bold" size="12.0"/></font>
-                </Label>
+                <Separator layoutX="0.0" layoutY="38.0" prefWidth="460.0" />
+                <Label layoutX="20.0" layoutY="58.0" style="-fx-text-fill: #5f6368;" text="• Remplissez le formulaire et cliquez Ajouter"><font><Font name="Arial" size="12.0" /></font></Label>
+                <Label layoutX="20.0" layoutY="88.0" style="-fx-text-fill: #5f6368;" text="• Cliquez sur une ligne pour la sélectionner"><font><Font name="Arial" size="12.0" /></font></Label>
+                <Label layoutX="20.0" layoutY="118.0" style="-fx-text-fill: #5f6368;" text="• Modifiez les champs puis cliquez Modifier"><font><Font name="Arial" size="12.0" /></font></Label>
+                <Label layoutX="20.0" layoutY="148.0" style="-fx-text-fill: #5f6368;" text="• Supprimer efface la réservation sélectionnée"><font><Font name="Arial" size="12.0" /></font></Label>
+                <Separator layoutX="20.0" layoutY="182.0" prefWidth="420.0" />
+                <Label layoutX="20.0" layoutY="198.0" style="-fx-text-fill: #d93025;" text="📌  Champs obligatoires : Titre, Dates, Places"><font><Font name="Arial Bold" size="12.0" /></font></Label>
+                <Label layoutX="20.0" layoutY="228.0" style="-fx-text-fill: #d93025;" text="📅  La date de fin doit être après la date de début"><font><Font name="Arial Bold" size="12.0" /></font></Label>
+                <Label layoutX="20.0" layoutY="258.0" style="-fx-text-fill: #1a73e8;" text="🔍  Recherche texte + filtre par période disponibles"><font><Font name="Arial Bold" size="12.0" /></font></Label>
+                <Label layoutX="20.0" layoutY="284.0" style="-fx-text-fill: #1a73e8;" text="🟢 Vert = valide   🔴 Rouge = invalide"><font><Font name="Arial Bold" size="12.0" /></font></Label>
             </children>
         </AnchorPane>
 
         <!-- MESSAGE -->
-        <Label fx:id="lbMessage" layoutX="40.0" layoutY="404.0" prefWidth="460.0">
-            <font><Font name="Arial Italic" size="12.0"/></font>
+        <Label fx:id="lbMessage" layoutX="40.0" layoutY="404.0" prefWidth="600.0">
+            <font><Font name="Arial Italic" size="12.0" /></font>
         </Label>
 
-        <!-- CARTE TABLEAU -->
-        <AnchorPane layoutX="30.0" layoutY="420.0" prefWidth="940.0" prefHeight="240.0"
-                    style="-fx-background-color: white; -fx-background-radius: 10;
-                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),8,0,0,2);">
+        <!-- ══ TABLEAU avec barre recherche + filtre date ══ -->
+        <AnchorPane layoutX="30.0" layoutY="404.0" prefHeight="296.0" prefWidth="940.0" style="-fx-background-color: white; -fx-background-radius: 10;                            -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),8,0,0,2);">
             <children>
-                <Label layoutX="20.0" layoutY="12.0" text="Liste des Réservations"
-                       style="-fx-text-fill: #1a73e8;">
-                    <font><Font name="Arial Bold" size="13.0"/></font>
+                <Label layoutX="20.0" layoutY="12.0" style="-fx-text-fill: #1a73e8;" text="Liste des Réservations">
+                    <font><Font name="Arial Bold" size="13.0" /></font>
                 </Label>
-                <Separator layoutX="0.0" layoutY="36.0" prefWidth="940.0"/>
-                <TableView fx:id="tableReservation" layoutX="10.0" layoutY="44.0"
-                           prefHeight="186.0" prefWidth="920.0" onMouseClicked="#selectionnerLigne">
+
+                <!-- Recherche texte -->
+                <TextField fx:id="tfRecherche" layoutX="198.0" layoutY="8.0" onKeyReleased="#rechercherReservation" prefHeight="30.0" prefWidth="190.0" promptText="🔍  Titre / description..." style="-fx-background-radius: 20; -fx-border-radius: 20;                                   -fx-border-color: #1a73e8; -fx-border-width: 1.5;                                   -fx-padding: 0 10 0 10; -fx-font-size: 11;" />
+
+                <!-- Filtre Du : -->
+                <Label layoutX="396.0" layoutY="13.0" style="-fx-font-size:11; -fx-font-weight:bold; -fx-text-fill:#5f6368;" text="📅 Du :" />
+                <DatePicker fx:id="dpFiltreDebut" layoutX="434.0" layoutY="7.0" onAction="#filtrerParDate" prefHeight="30.0" prefWidth="148.0" style="-fx-font-size: 11;" />
+
+                <!-- Filtre Au : -->
+                <Label layoutX="590.0" layoutY="13.0" style="-fx-font-size:11; -fx-font-weight:bold; -fx-text-fill:#5f6368;" text="Au :" />
+                <DatePicker fx:id="dpFiltreFin" layoutX="616.0" layoutY="7.0" onAction="#filtrerParDate" prefHeight="30.0" prefWidth="148.0" style="-fx-font-size: 11;" />
+
+                <!-- Effacer filtres -->
+                <Button layoutX="772.0" layoutY="7.0" onAction="#effacerFiltres" prefHeight="30.0" prefWidth="148.0" style="-fx-background-color: #5f6368; -fx-text-fill: white;                                -fx-background-radius: 6; -fx-cursor: hand;" text="✕ Effacer">
+                    <font><Font name="Arial Bold" size="11.0" /></font>
+                </Button>
+
+                <Separator layoutX="0.0" layoutY="46.0" prefWidth="940.0" />
+
+                <TableView fx:id="tableReservation" layoutX="10.0" layoutY="54.0" onMouseClicked="#selectionnerLigne" prefHeight="232.0" prefWidth="920.0">
                     <columns>
-                        <TableColumn fx:id="colId"          text="ID"          prefWidth="60.0"/>
-                        <TableColumn fx:id="colTitre"        text="Titre"       prefWidth="180.0"/>
-                        <TableColumn fx:id="colDescription"  text="Description" prefWidth="220.0"/>
-                        <TableColumn fx:id="colDateDebut"    text="Date début"  prefWidth="130.0"/>
-                        <TableColumn fx:id="colDateFin"      text="Date fin"    prefWidth="130.0"/>
-                        <TableColumn fx:id="colPlaces"       text="Nb places"   prefWidth="110.0"/>
+                        <TableColumn fx:id="colTitre" prefWidth="210.0" text="Titre" />
+                        <TableColumn fx:id="colDescription" prefWidth="260.0" text="Description" />
+                        <TableColumn fx:id="colDateDebut" prefWidth="150.0" text="Date début" />
+                        <TableColumn fx:id="colDateFin" prefWidth="150.0" text="Date fin" />
+                        <TableColumn fx:id="colPlaces" prefWidth="146.0" text="Nb places" />
                     </columns>
                 </TableView>
             </children>
         </AnchorPane>
 
-        <!-- NAVIGATION BAS -->
-        <Button layoutX="30.0" layoutY="674.0" text="➜  Gérer les Hackathons"
-                prefWidth="200.0" prefHeight="36.0" onAction="#allerAcaton"
-                style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;">
-            <font><Font name="Arial Bold" size="12.0"/></font>
+        <!-- ══ NAVIGATION ══ -->
+        <Button layoutX="30.0" layoutY="708.0" onAction="#allerAcaton" prefHeight="36.0" prefWidth="200.0" style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;" text="➜  Gérer les Hackathons">
+            <font><Font name="Arial Bold" size="12.0" /></font>
+        </Button>
+        <Button layoutX="240.0" layoutY="708.0" onAction="#allerPaiement" prefHeight="36.0" prefWidth="200.0" style="-fx-background-color: #1a1a2e; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;" text="💳  Paiement">
+            <font><Font name="Arial Bold" size="12.0" /></font>
         </Button>
 
     </children>

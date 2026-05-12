@@ -10,154 +10,112 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1000.0"
-            style="-fx-background-color: #f4f6f9;"
-            xmlns="http://javafx.com/javafx/22.0.2"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.DashboardController">
+<AnchorPane prefHeight="840.0" prefWidth="1000.0" style="-fx-background-color: #f4f6f9;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DashboardController">
     <children>
 
-        <!-- HEADER -->
-        <AnchorPane layoutX="0.0" layoutY="0.0" prefWidth="1000.0" prefHeight="64.0"
-                    style="-fx-background-color: #1a1a2e;">
+        <!-- ══ HEADER ══ -->
+        <AnchorPane layoutX="0.0" layoutY="0.0" prefHeight="64.0" prefWidth="1000.0" style="-fx-background-color: #1a1a2e;">
             <children>
-                <Label layoutX="30.0" layoutY="16.0"
-                       text="📊  Tableau de Bord — Statistiques"
-                       style="-fx-text-fill: white;">
-                    <font><Font name="Arial Bold" size="20.0"/></font>
+                <Label layoutX="30.0" layoutY="16.0" style="-fx-text-fill: white;" text="📊  Tableau de Bord — Statistiques">
+                    <font><Font name="Arial Bold" size="20.0" /></font>
                 </Label>
             </children>
         </AnchorPane>
 
-        <!-- KPI 1 : Réservations -->
-        <AnchorPane layoutX="30.0" layoutY="84.0" prefWidth="200.0" prefHeight="90.0"
-                    style="-fx-background-color: #1a73e8; -fx-background-radius: 12;
-                           -fx-effect: dropshadow(gaussian,rgba(26,115,232,0.35),10,0,0,3);">
+        <!-- ══ KPI 1 : Réservations (bleu) ══ -->
+        <AnchorPane layoutX="20.0" layoutY="80.0" prefHeight="90.0" prefWidth="182.0" style="-fx-background-color: #1a73e8; -fx-background-radius: 12;                            -fx-effect: dropshadow(gaussian,rgba(26,115,232,0.38),12,0,0,4);">
             <children>
-                <Label layoutX="16.0" layoutY="12.0" text="Réservations"
-                       style="-fx-text-fill: rgba(255,255,255,0.85);">
-                    <font><Font name="Arial" size="12.0"/></font>
-                </Label>
-                <Label fx:id="lbTotalReservations" layoutX="16.0" layoutY="36.0" text="—"
-                       style="-fx-text-fill: white;">
-                    <font><Font name="Arial Bold" size="32.0"/></font>
-                </Label>
-                <Label layoutX="16.0" layoutY="72.0" text="au total"
-                       style="-fx-text-fill: rgba(255,255,255,0.7);">
-                    <font><Font name="Arial" size="11.0"/></font>
-                </Label>
+                <Label layoutX="14" layoutY="11" style="-fx-text-fill: rgba(255,255,255,0.88);" text="Réservations"><font><Font name="Arial" size="12" /></font></Label>
+                <Label fx:id="lbTotalReservations" layoutX="14" layoutY="34" style="-fx-text-fill: white;" text="—"><font><Font name="Arial Bold" size="32" /></font></Label>
+                <Label layoutX="14" layoutY="72" style="-fx-text-fill: rgba(255,255,255,0.70);" text="au total"><font><Font name="Arial" size="11" /></font></Label>
             </children>
         </AnchorPane>
 
-        <!-- KPI 2 : Hackathons -->
-        <AnchorPane layoutX="250.0" layoutY="84.0" prefWidth="200.0" prefHeight="90.0"
-                    style="-fx-background-color: #0f9d58; -fx-background-radius: 12;
-                           -fx-effect: dropshadow(gaussian,rgba(15,157,88,0.35),10,0,0,3);">
+        <!-- ══ KPI 2 : Hackathons (vert) ══ -->
+        <AnchorPane layoutX="214.0" layoutY="80.0" prefHeight="90.0" prefWidth="182.0" style="-fx-background-color: #0f9d58; -fx-background-radius: 12;                            -fx-effect: dropshadow(gaussian,rgba(15,157,88,0.38),12,0,0,4);">
             <children>
-                <Label layoutX="16.0" layoutY="12.0" text="Hackathons"
-                       style="-fx-text-fill: rgba(255,255,255,0.85);">
-                    <font><Font name="Arial" size="12.0"/></font>
-                </Label>
-                <Label fx:id="lbTotalHackathons" layoutX="16.0" layoutY="36.0" text="—"
-                       style="-fx-text-fill: white;">
-                    <font><Font name="Arial Bold" size="32.0"/></font>
-                </Label>
-                <Label layoutX="16.0" layoutY="72.0" text="au total"
-                       style="-fx-text-fill: rgba(255,255,255,0.7);">
-                    <font><Font name="Arial" size="11.0"/></font>
-                </Label>
+                <Label layoutX="14" layoutY="11" style="-fx-text-fill: rgba(255,255,255,0.88);" text="Hackathons"><font><Font name="Arial" size="12" /></font></Label>
+                <Label fx:id="lbTotalHackathons" layoutX="14" layoutY="34" style="-fx-text-fill: white;" text="—"><font><Font name="Arial Bold" size="32" /></font></Label>
+                <Label layoutX="14" layoutY="72" style="-fx-text-fill: rgba(255,255,255,0.70);" text="au total"><font><Font name="Arial" size="11" /></font></Label>
             </children>
         </AnchorPane>
 
-        <!-- KPI 3 : Places -->
-        <AnchorPane layoutX="470.0" layoutY="84.0" prefWidth="200.0" prefHeight="90.0"
-                    style="-fx-background-color: #f9ab00; -fx-background-radius: 12;
-                           -fx-effect: dropshadow(gaussian,rgba(249,171,0,0.35),10,0,0,3);">
+        <!-- ══ KPI 3 : Places (orange) ══ -->
+        <AnchorPane layoutX="408.0" layoutY="80.0" prefHeight="90.0" prefWidth="182.0" style="-fx-background-color: #f9ab00; -fx-background-radius: 12;                            -fx-effect: dropshadow(gaussian,rgba(249,171,0,0.38),12,0,0,4);">
             <children>
-                <Label layoutX="16.0" layoutY="12.0" text="Places disponibles"
-                       style="-fx-text-fill: rgba(255,255,255,0.9);">
-                    <font><Font name="Arial" size="12.0"/></font>
-                </Label>
-                <Label fx:id="lbTotalPlaces" layoutX="16.0" layoutY="36.0" text="—"
-                       style="-fx-text-fill: white;">
-                    <font><Font name="Arial Bold" size="32.0"/></font>
-                </Label>
-                <Label layoutX="16.0" layoutY="72.0" text="toutes réservations"
-                       style="-fx-text-fill: rgba(255,255,255,0.7);">
-                    <font><Font name="Arial" size="11.0"/></font>
-                </Label>
+                <Label layoutX="14" layoutY="11" style="-fx-text-fill: rgba(255,255,255,0.92);" text="Places disponibles"><font><Font name="Arial" size="12" /></font></Label>
+                <Label fx:id="lbTotalPlaces" layoutX="14" layoutY="34" style="-fx-text-fill: white;" text="—"><font><Font name="Arial Bold" size="32" /></font></Label>
+                <Label layoutX="14" layoutY="72" style="-fx-text-fill: rgba(255,255,255,0.70);" text="toutes réservations"><font><Font name="Arial" size="11" /></font></Label>
             </children>
         </AnchorPane>
 
-        <!-- KPI 4 : Prix moyen -->
-        <AnchorPane layoutX="690.0" layoutY="84.0" prefWidth="280.0" prefHeight="90.0"
-                    style="-fx-background-color: #d93025; -fx-background-radius: 12;
-                           -fx-effect: dropshadow(gaussian,rgba(217,48,37,0.35),10,0,0,3);">
+        <!-- ══ KPI 4 : Prix moyen (rouge) ══ -->
+        <AnchorPane layoutX="602.0" layoutY="80.0" prefHeight="90.0" prefWidth="182.0" style="-fx-background-color: #d93025; -fx-background-radius: 12;                            -fx-effect: dropshadow(gaussian,rgba(217,48,37,0.38),12,0,0,4);">
             <children>
-                <Label layoutX="16.0" layoutY="12.0" text="Prix moyen hackathon"
-                       style="-fx-text-fill: rgba(255,255,255,0.85);">
-                    <font><Font name="Arial" size="12.0"/></font>
-                </Label>
-                <Label fx:id="lbPrixMoyen" layoutX="16.0" layoutY="36.0" text="—"
-                       style="-fx-text-fill: white;">
-                    <font><Font name="Arial Bold" size="28.0"/></font>
-                </Label>
-                <Label layoutX="16.0" layoutY="72.0" text="DT en moyenne"
-                       style="-fx-text-fill: rgba(255,255,255,0.7);">
-                    <font><Font name="Arial" size="11.0"/></font>
-                </Label>
+                <Label layoutX="14" layoutY="11" style="-fx-text-fill: rgba(255,255,255,0.88);" text="Prix moyen hackathon"><font><Font name="Arial" size="11" /></font></Label>
+                <Label fx:id="lbPrixMoyen" layoutX="14" layoutY="34" style="-fx-text-fill: white;" text="—"><font><Font name="Arial Bold" size="28" /></font></Label>
+                <Label layoutX="14" layoutY="72" style="-fx-text-fill: rgba(255,255,255,0.70);" text="DT en moyenne"><font><Font name="Arial" size="11" /></font></Label>
             </children>
         </AnchorPane>
 
-        <!-- GRAPHIQUE BARRES -->
-        <AnchorPane layoutX="30.0" layoutY="196.0" prefWidth="470.0" prefHeight="300.0"
-                    style="-fx-background-color: white; -fx-background-radius: 10;
-                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.08),8,0,0,2);">
+        <!-- ══ KPI 5 : Total Paiements (violet) ══ -->
+        <AnchorPane layoutX="796.0" layoutY="80.0" prefHeight="90.0" prefWidth="184.0" style="-fx-background-color: #7c3aed; -fx-background-radius: 12;                            -fx-effect: dropshadow(gaussian,rgba(124,58,237,0.38),12,0,0,4);">
             <children>
-                <Label layoutX="16.0" layoutY="12.0" text="Hackathons par catégorie"
-                       style="-fx-text-fill: #1a1a2e;">
-                    <font><Font name="Arial Bold" size="13.0"/></font>
-                </Label>
-                <Separator layoutX="0" layoutY="36.0" prefWidth="470.0"/>
-                <BarChart fx:id="barChart" layoutX="8.0" layoutY="42.0"
-                          prefWidth="454.0" prefHeight="248.0"
-                          legendVisible="false" animated="true">
-                    <xAxis><CategoryAxis label="Catégorie"/></xAxis>
-                    <yAxis><NumberAxis label="Nombre" minorTickCount="1"/></yAxis>
+                <Label layoutX="14" layoutY="11" style="-fx-text-fill: rgba(255,255,255,0.88);" text="💳 Total paiements"><font><Font name="Arial" size="12" /></font></Label>
+                <Label fx:id="lbTotalPaiements" layoutX="14" layoutY="34" style="-fx-text-fill: white;" text="—"><font><Font name="Arial Bold" size="28" /></font></Label>
+                <Label layoutX="14" layoutY="72" style="-fx-text-fill: rgba(255,255,255,0.70);" text="DT encaissés"><font><Font name="Arial" size="11" /></font></Label>
+            </children>
+        </AnchorPane>
+
+        <!-- ══ GRAPHIQUE BARRES : hackathons par catégorie ══ -->
+        <AnchorPane layoutX="20.0" layoutY="186.0" prefHeight="290.0" prefWidth="470.0" style="-fx-background-color: white; -fx-background-radius: 10;                            -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.08),8,0,0,2);">
+            <children>
+                <Label layoutX="16" layoutY="12" style="-fx-text-fill: #1a1a2e;" text="Hackathons par catégorie"><font><Font name="Arial Bold" size="13" /></font></Label>
+                <Separator layoutX="0" layoutY="36" prefWidth="470" />
+                <BarChart fx:id="barChart" animated="true" layoutX="8" layoutY="42" legendVisible="false" prefHeight="238" prefWidth="454">
+                    <xAxis><CategoryAxis label="Catégorie" /></xAxis>
+                    <yAxis><NumberAxis label="Nombre" minorTickCount="1" /></yAxis>
                 </BarChart>
             </children>
         </AnchorPane>
 
-        <!-- GRAPHIQUE CAMEMBERT -->
-        <AnchorPane layoutX="520.0" layoutY="196.0" prefWidth="450.0" prefHeight="300.0"
-                    style="-fx-background-color: white; -fx-background-radius: 10;
-                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.08),8,0,0,2);">
+        <!-- ══ GRAPHIQUE CAMEMBERT : places par réservation ══ -->
+        <AnchorPane layoutX="506.0" layoutY="186.0" prefHeight="290.0" prefWidth="474.0" style="-fx-background-color: white; -fx-background-radius: 10;                            -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.08),8,0,0,2);">
             <children>
-                <Label layoutX="16.0" layoutY="12.0" text="Répartition des places par réservation"
-                       style="-fx-text-fill: #1a1a2e;">
-                    <font><Font name="Arial Bold" size="13.0"/></font>
-                </Label>
-                <Separator layoutX="0" layoutY="36.0" prefWidth="450.0"/>
-                <PieChart fx:id="pieChart" layoutX="8.0" layoutY="42.0"
-                          prefWidth="434.0" prefHeight="248.0"
-                          animated="true" labelsVisible="true"/>
+                <Label layoutX="16" layoutY="12" style="-fx-text-fill: #1a1a2e;" text="Répartition des places par réservation"><font><Font name="Arial Bold" size="13" /></font></Label>
+                <Separator layoutX="0" layoutY="36" prefWidth="474" />
+                <PieChart fx:id="pieChart" animated="true" labelsVisible="true" layoutX="8" layoutY="42" prefHeight="238" prefWidth="458" />
             </children>
         </AnchorPane>
 
-        <!-- NAVIGATION BAS -->
-        <Button layoutX="30.0" layoutY="514.0" text="◀  Réservations"
-                prefWidth="160.0" prefHeight="36.0" onAction="#allerReservation"
-                style="-fx-background-color: #1a73e8; -fx-text-fill: white;
-                       -fx-background-radius: 6; -fx-cursor: hand;">
-            <font><Font name="Arial Bold" size="12.0"/></font>
-        </Button>
-
-        <Button layoutX="205.0" layoutY="514.0" text="💻  Hackathons"
-                prefWidth="160.0" prefHeight="36.0" onAction="#allerHackathon"
-                style="-fx-background-color: #0f9d58; -fx-text-fill: white;
-                       -fx-background-radius: 6; -fx-cursor: hand;">
-            <font><Font name="Arial Bold" size="12.0"/></font>
-        </Button>
+        <!-- ══ GRAPHIQUE BARRES : paiements par mois (NOUVEAU) ══ -->
+        <AnchorPane layoutX="19.0" layoutY="485.0" prefHeight="254.0" prefWidth="444.0" style="-fx-background-color: white; -fx-background-radius: 10;                            -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.08),8,0,0,2);">
+            <children>
+                <Label layoutX="16" layoutY="12" style="-fx-text-fill: #7c3aed;" text="💳  Revenus encaissés par mois (DT)"><font><Font name="Arial Bold" size="13" /></font></Label>
+                <BarChart fx:id="barChartPaiements" animated="true" layoutX="14.0" layoutY="36.0" legendVisible="false" prefHeight="218" prefWidth="458.0">
+                    <xAxis><CategoryAxis label="Mois" /></xAxis>
+                    <yAxis><NumberAxis label="Total (DT)" minorTickCount="1" /></yAxis>
+                </BarChart>
+                <Separator layoutX="0" layoutY="36" prefWidth="960" />
+      
+              <!-- ══ NAVIGATION ══ -->
+              <Button layoutX="627.0" layoutY="55.0" onAction="#allerReservation" prefHeight="36.0" prefWidth="160.0" style="-fx-background-color: #1a73e8; -fx-text-fill: white;                        -fx-background-radius: 6; -fx-cursor: hand;" text="◀  Réservations">
+                  <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+              </Button>
+              <Button layoutX="627.0" layoutY="127.0" onAction="#allerHackathon" prefHeight="36.0" prefWidth="160.0" style="-fx-background-color: #0f9d58; -fx-text-fill: white;                        -fx-background-radius: 6; -fx-cursor: hand;" text="💻  Hackathons">
+                  <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+              </Button>
+              <Button layoutX="627.0" layoutY="197.0" onAction="#allerPaiement" prefHeight="36.0" prefWidth="160.0" style="-fx-background-color: #7c3aed; -fx-text-fill: white;                        -fx-background-radius: 6; -fx-cursor: hand;" text="💳  Paiements">
+                  <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+              </Button>
+            </children>
+        </AnchorPane>
 
     </children>
 </AnchorPane>

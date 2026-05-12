@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="780.0" prefWidth="1000.0"
+            style="-fx-background-color: #f4f6f9;"
+            xmlns="http://javafx.com/javafx/22.0.2"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.PaiementController">
+    <children>
+
+        <!-- ══ HEADER ══ -->
+        <AnchorPane layoutX="0" layoutY="0" prefWidth="1000" prefHeight="64"
+                    style="-fx-background-color: #1a1a2e;">
+            <children>
+                <Label layoutX="30" layoutY="16" text="💳  Paiement Sécurisé — Site Éducatif"
+                       style="-fx-text-fill: white;">
+                    <font><Font name="Arial Bold" size="20"/></font>
+                </Label>
+                <Button layoutX="760" layoutY="14" text="📊  Dashboard" onAction="#allerDashboard"
+                        prefWidth="110" prefHeight="34"
+                        style="-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white;
+                               -fx-background-radius: 6; -fx-border-color: rgba(255,255,255,0.4);
+                               -fx-border-radius: 6; -fx-cursor: hand;">
+                    <font><Font name="Arial Bold" size="11"/></font>
+                </Button>
+                <Button layoutX="878" layoutY="14" text="◀  Retour" onAction="#allerReservation"
+                        prefWidth="100" prefHeight="34"
+                        style="-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white;
+                               -fx-background-radius: 6; -fx-border-color: rgba(255,255,255,0.4);
+                               -fx-border-radius: 6; -fx-cursor: hand;">
+                    <font><Font name="Arial Bold" size="11"/></font>
+                </Button>
+            </children>
+        </AnchorPane>
+
+        <!-- ══ FORMULAIRE ══ -->
+        <AnchorPane layoutX="30" layoutY="84" prefWidth="470" prefHeight="420"
+                    style="-fx-background-color: white; -fx-background-radius: 12;
+                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),10,0,0,3);">
+            <children>
+                <Label layoutX="20" layoutY="14" text="🔒  Informations de paiement"
+                       style="-fx-text-fill: #1a1a2e;">
+                    <font><Font name="Arial Bold" size="13"/></font>
+                </Label>
+                <Separator layoutX="0" layoutY="38" prefWidth="470"/>
+
+                <Label layoutX="20" layoutY="56"  text="Réservation :"><font><Font name="Arial Bold" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="104" text="Nom porteur :"><font><Font name="Arial Bold" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="152" text="N° carte :"><font><Font name="Arial Bold" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="200" text="Expiration :"><font><Font name="Arial Bold" size="12"/></font></Label>
+                <Label layoutX="320" layoutY="200" text="CVV :"><font><Font name="Arial Bold" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="248" text="Montant (DT) :"><font><Font name="Arial Bold" size="12"/></font></Label>
+
+                <ComboBox fx:id="cbReservation" layoutX="160" layoutY="52"
+                          prefWidth="290" prefHeight="32" promptText="Choisissez une réservation"
+                          style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+                <TextField fx:id="tfNomCarte" layoutX="160" layoutY="100"
+                           prefWidth="290" prefHeight="32" promptText="ex : Mohamed Ben Ali"
+                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+                <TextField fx:id="tfNumeroCarte" layoutX="160" layoutY="148"
+                           prefWidth="290" prefHeight="32" promptText="XXXX XXXX XXXX XXXX"
+                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+                <TextField fx:id="tfExpiration" layoutX="160" layoutY="196"
+                           prefWidth="140" prefHeight="32" promptText="MM/YYYY"
+                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+                <TextField fx:id="tfCVV" layoutX="360" layoutY="196"
+                           prefWidth="90" prefHeight="32" promptText="123"
+                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+                <TextField fx:id="tfMontant" layoutX="160" layoutY="244"
+                           prefWidth="290" prefHeight="32" promptText="ex : 25.00"
+                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+
+                <Separator layoutX="20" layoutY="292" prefWidth="430"/>
+                <Label layoutX="20" layoutY="302" text="Cartes acceptées :"
+                       style="-fx-text-fill: #5f6368;"><font><Font name="Arial" size="11"/></font></Label>
+                <Label layoutX="140" layoutY="302" text="💳 Visa   💳 Mastercard   💳 CIB"
+                       style="-fx-text-fill: #1a73e8;"><font><Font name="Arial Bold" size="11"/></font></Label>
+
+                <!-- Message validation réservation déjà payée -->
+                <Label fx:id="lbDejaPayee" layoutX="20" layoutY="326" prefWidth="430"
+                       style="-fx-text-fill: #d93025; -fx-font-style: italic;">
+                    <font><Font name="Arial" size="11"/></font>
+                </Label>
+
+                <Button fx:id="btnPayer" layoutX="20" layoutY="368"
+                        text="🔒  Confirmer le Paiement" onAction="#payer"
+                        prefWidth="430" prefHeight="42" disable="true"
+                        style="-fx-background-color: #1a73e8; -fx-text-fill: white;
+                               -fx-background-radius: 8; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian,rgba(26,115,232,0.4),8,0,0,3);">
+                    <font><Font name="Arial Bold" size="14"/></font>
+                </Button>
+            </children>
+        </AnchorPane>
+
+        <!-- ══ GUIDE SÉCURITÉ ══ -->
+        <AnchorPane layoutX="520" layoutY="84" prefWidth="450" prefHeight="420"
+                    style="-fx-background-color: white; -fx-background-radius: 12;
+                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),10,0,0,3);">
+            <children>
+                <Label layoutX="20" layoutY="14" text="ℹ  Guide &amp; Sécurité"
+                       style="-fx-text-fill: #1a1a2e;">
+                    <font><Font name="Arial Bold" size="13"/></font>
+                </Label>
+                <Separator layoutX="0" layoutY="38" prefWidth="450"/>
+                <Label layoutX="20" layoutY="58" style="-fx-text-fill: #5f6368;"
+                       text="• Choisissez la réservation à payer"><font><Font name="Arial" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="88" style="-fx-text-fill: #5f6368;"
+                       text="• Entrez le nom tel qu'il apparaît sur la carte"><font><Font name="Arial" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="118" style="-fx-text-fill: #5f6368;"
+                       text="• N° carte : 16 chiffres, formaté automatiquement"><font><Font name="Arial" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="148" style="-fx-text-fill: #5f6368;"
+                       text="• Expiration : MM/YYYY (ex : 12/2027)"><font><Font name="Arial" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="178" style="-fx-text-fill: #5f6368;"
+                       text="• CVV : 3 chiffres au dos de la carte"><font><Font name="Arial" size="12"/></font></Label>
+                <Separator layoutX="20" layoutY="212" prefWidth="410"/>
+                <Label layoutX="20" layoutY="228" text="🟢 Validation Luhn automatique du numéro"
+                       style="-fx-text-fill: #0f9d58;"><font><Font name="Arial Bold" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="258" text="📧 Email de confirmation envoyé automatiquement"
+                       style="-fx-text-fill: #1a73e8;"><font><Font name="Arial Bold" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="288" text="🔒 Numéro masqué dans la base de données"
+                       style="-fx-text-fill: #f9ab00;"><font><Font name="Arial Bold" size="12"/></font></Label>
+                <Label layoutX="20" layoutY="318" text="⛔ Réservation déjà payée = refusée automatiquement"
+                       style="-fx-text-fill: #d93025;"><font><Font name="Arial Bold" size="12"/></font></Label>
+                <Separator layoutX="20" layoutY="350" prefWidth="410"/>
+                <Label layoutX="20" layoutY="366" text="🟢 Vert = valide   🔴 Rouge = invalide"
+                       style="-fx-text-fill: #5f6368;"><font><Font name="Arial Bold" size="12"/></font></Label>
+                <AnchorPane layoutX="20" layoutY="388" prefWidth="410" prefHeight="24"
+                            style="-fx-background-color: #e8f5e9; -fx-background-radius: 6;">
+                    <children>
+                        <Label layoutX="10" layoutY="4"
+                               text="🔐  Connexion sécurisée SSL/TLS — Données chiffrées"
+                               style="-fx-text-fill: #0f9d58;">
+                            <font><Font name="Arial Bold" size="11"/></font>
+                        </Label>
+                    </children>
+                </AnchorPane>
+            </children>
+        </AnchorPane>
+
+        <!-- MESSAGE GLOBAL -->
+        <Label fx:id="lbMessage" layoutX="40" layoutY="518" prefWidth="700">
+            <font><Font name="Arial Italic" size="12"/></font>
+        </Label>
+
+        <!-- ══ TABLEAU HISTORIQUE ══ -->
+        <AnchorPane layoutX="30" layoutY="534" prefWidth="940" prefHeight="228"
+                    style="-fx-background-color: white; -fx-background-radius: 12;
+                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.08),8,0,0,2);">
+            <children>
+                <Label layoutX="20" layoutY="12" text="📋  Historique des paiements"
+                       style="-fx-text-fill: #1a1a2e;">
+                    <font><Font name="Arial Bold" size="13"/></font>
+                </Label>
+
+                <!-- 🔍 Barre de recherche -->
+                <TextField fx:id="tfRecherche" layoutX="560" layoutY="8"
+                           prefHeight="30" prefWidth="260"
+                           promptText="🔍  Rechercher par porteur..."
+                           onKeyReleased="#rechercherPaiement"
+                           style="-fx-background-radius: 20; -fx-border-radius: 20;
+                                  -fx-border-color: #7c3aed; -fx-border-width: 1.5;
+                                  -fx-padding: 0 12 0 12; -fx-font-size: 12;"/>
+
+                <!-- Bouton Rembourser -->
+                <Button layoutX="830" layoutY="8" text="↩  Rembourser"
+                        onAction="#rembourserPaiement"
+                        prefWidth="100" prefHeight="30"
+                        style="-fx-background-color: #d93025; -fx-text-fill: white;
+                               -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 11;">
+                    <font><Font name="Arial Bold" size="11"/></font>
+                </Button>
+
+                <Separator layoutX="0" layoutY="46" prefWidth="940"/>
+
+                <TableView fx:id="tablePaiement" layoutX="10" layoutY="54"
+                           onMouseClicked="#selectionnerPaiement"
+                           prefWidth="920" prefHeight="164">
+                    <columns>
+                        <TableColumn fx:id="colId"          prefWidth="0"   text="ID"          visible="false"/>
+                        <TableColumn fx:id="colReservation" prefWidth="0"   text="Réservation" visible="false"/>
+                        <TableColumn fx:id="colNom"         prefWidth="210" text="Porteur"/>
+                        <TableColumn fx:id="colCarte"       prefWidth="210" text="Carte (masquée)"/>
+                        <TableColumn fx:id="colMontant"     prefWidth="120" text="Montant (DT)"/>
+                        <TableColumn fx:id="colStatut"      prefWidth="130" text="Statut"/>
+                        <TableColumn fx:id="colDate"        prefWidth="250" text="Date paiement"/>
+                    </columns>
+                </TableView>
+            </children>
+        </AnchorPane>
+
+    </children>
+</AnchorPane>
