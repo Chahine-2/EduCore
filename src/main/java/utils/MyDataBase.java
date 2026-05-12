@@ -12,6 +12,10 @@ public class MyDataBase {
     private Connection cnx;
 
     private MyDataBase() {
+        connect();
+    }
+
+    private void connect() {
         try {
             this.cnx = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             System.out.println("Connected to database education ......");
@@ -27,6 +31,14 @@ public class MyDataBase {
     }
 
     public Connection getCnx() {
+        try {
+            if (cnx == null || cnx.isClosed() || !cnx.isValid(2)) {
+                System.out.println("Reconnexion a la base de donnees...");
+                connect();
+            }
+        } catch (SQLException e) {
+            connect();
+        }
         return cnx;
     }
-}
+}{}
