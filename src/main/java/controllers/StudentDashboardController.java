@@ -50,16 +50,20 @@ public class StudentDashboardController {
     @FXML private StackPane contentStack;
     @FXML private VBox paneDashboard;
     @FXML private VBox paneCourses;
+    @FXML private VBox paneReservations;
     @FXML private VBox paneEvaluations;
     @FXML private VBox paneResults;
     @FXML private VBox paneProfile;
     @FXML private BorderPane evalPortalShell;
     @FXML private BorderPane coursesAccueilShell;
+    @FXML private BorderPane reservationsShell;
 
     @FXML private Button btnNavDashboard;
     @FXML private Button btnNavCourses;
     @FXML private Button btnNavEvaluations;
     @FXML private Button btnNavResults;
+    @FXML private Button btnNavStatHackathon;
+    @FXML private Button btnNavReservations;
     @FXML private Button btnNavProfile;
     @FXML private Button btnNavLogout;
 
@@ -67,6 +71,10 @@ public class StudentDashboardController {
 
     private boolean evaluationsPortalLoaded;
     private StudentPortalController evalPortalController;
+
+    private boolean statisticsEmbeddedLoaded;
+
+    private boolean reservationsLoaded;
 
     private boolean coursesAccueilLoaded;
     private Parent accueilCourseRoot;
@@ -80,6 +88,8 @@ public class StudentDashboardController {
         navButtons.add(btnNavCourses);
         navButtons.add(btnNavEvaluations);
         navButtons.add(btnNavResults);
+        navButtons.add(btnNavStatHackathon);
+        navButtons.add(btnNavReservations);
         navButtons.add(btnNavProfile);
 
         Utilisateur user = UserSession.getCurrentUser();
@@ -161,7 +171,7 @@ public class StudentDashboardController {
     }
 
     private void showPane(VBox pane) {
-        for (VBox p : List.of(paneDashboard, paneCourses, paneEvaluations, paneResults, paneProfile)) {
+        for (VBox p : List.of(paneDashboard, paneCourses, paneReservations, paneEvaluations, paneResults, paneProfile)) {
             boolean on = p == pane;
             p.setVisible(on);
             p.setManaged(on);
@@ -275,6 +285,54 @@ public class StudentDashboardController {
     void onNavResults(ActionEvent event) {
         showPane(paneResults);
         selectNav(btnNavResults);
+    }
+
+    @FXML
+    void onNavReservations(ActionEvent event) {
+        ensureReservationsEmbedded();
+        showPane(paneReservations);
+        selectNav(btnNavReservations);
+    }
+
+    private void ensureReservationsEmbedded() {
+        if (reservationsLoaded || reservationsShell == null) {
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
+                    getClass().getResource("/GestionReservation.fxml")));
+            Parent reservationsRoot = loader.load();
+            reservationsShell.setCenter(reservationsRoot);
+            reservationsLoaded = true;
+        } catch (IOException ex) {
+            reservationsLoaded = false;
+            new Alert(Alert.AlertType.ERROR,
+                    "Could not load reservations view: " + ex.getMessage()).showAndWait();
+        }
+    }
+
+    @FXML
+    void onNavStatHackathon(ActionEvent event) {
+        ensureHackathonEmbedded();
+        showPane(paneResults);
+        selectNav(btnNavStatHackathon);
+    }
+
+    private void ensureHackathonEmbedded() {
+        if (statisticsEmbeddedLoaded || paneResults == null) {
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
+                    getClass().getResource("/Dashboard.fxml")));
+            Parent dashboardRoot = loader.load();
+            paneResults.getChildren().setAll(dashboardRoot);
+            statisticsEmbeddedLoaded = true;
+        } catch (IOException ex) {
+            statisticsEmbeddedLoaded = false;
+            new Alert(Alert.AlertType.ERROR,
+                    "Could not load hackathon statistics: " + ex.getMessage()).showAndWait();
+        }
     }
 
     @FXML

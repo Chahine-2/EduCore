@@ -75,6 +75,7 @@ public class TeacherDashboardController {
     @FXML private Button btnNavStudents;
     @FXML private Button btnNavFraud;
     @FXML private Button btnNavStatistics;
+    @FXML private Button btnNavStatHackathon;
     @FXML private Button btnNavProfile;
     @FXML private Button btnNavLogout;
 
@@ -92,6 +93,7 @@ public class TeacherDashboardController {
 
     private boolean evaluationsEmbeddedLoaded;
     private boolean coursesEmbeddedLoaded;
+    private boolean statisticsEmbeddedLoaded;
 
     @FXML
     void initialize() {
@@ -102,6 +104,7 @@ public class TeacherDashboardController {
         navButtons.add(btnNavStudents);
         navButtons.add(btnNavFraud);
         navButtons.add(btnNavStatistics);
+        navButtons.add(btnNavStatHackathon);
         navButtons.add(btnNavProfile);
 
         colMatricule.setCellValueFactory(new PropertyValueFactory<>("numeroEtudiant"));
@@ -304,6 +307,31 @@ public class TeacherDashboardController {
     void onNavStatistics(ActionEvent event) {
         showPane(paneStatistics);
         selectNav(btnNavStatistics);
+    }
+
+    @FXML
+    void onNavStatHackathon(ActionEvent event) {
+        ensureHackathonStatsEmbedded();
+        showPane(paneStatistics);
+        selectNav(btnNavStatHackathon);
+    }
+
+    private void ensureHackathonStatsEmbedded() {
+        if (statisticsEmbeddedLoaded || paneStatistics == null) {
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
+                    getClass().getResource("/Dashboard.fxml")));
+            Parent dashboardRoot = loader.load();
+            // replace the placeholder contents with the loaded dashboard
+            paneStatistics.getChildren().setAll(dashboardRoot);
+            statisticsEmbeddedLoaded = true;
+        } catch (IOException ex) {
+            statisticsEmbeddedLoaded = false;
+            new Alert(Alert.AlertType.ERROR,
+                    "Could not load hackathon statistics: " + ex.getMessage()).showAndWait();
+        }
     }
 
     @FXML

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1000.0"
+            style="-fx-background-color: #f4f6f9;"
+            xmlns="http://javafx.com/javafx/22.0.2"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.GestionHackathonController">
+    <children>
+
+        <!-- HEADER -->
+        <AnchorPane layoutX="0.0" layoutY="0.0" prefHeight="64.0" prefWidth="1000.0"
+                    style="-fx-background-color: #0f9d58;">
+            <children>
+                <Label layoutX="30.0" layoutY="16.0" style="-fx-text-fill: white;"
+                       text="💻  Site Éducatif — Gestion des Hackathons">
+                    <font><Font name="Arial Bold" size="20.0"/></font>
+                </Label>
+                <Button layoutX="800.0" layoutY="14.0" onAction="#allerDashboard"
+                        prefHeight="34.0" prefWidth="150.0"
+                        style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white;
+                               -fx-background-radius: 6; -fx-cursor: hand;
+                               -fx-border-color: rgba(255,255,255,0.5); -fx-border-radius: 6;"
+                        text="📊  Dashboard">
+                    <font><Font name="Arial Bold" size="12.0"/></font>
+                </Button>
+            </children>
+        </AnchorPane>
+
+        <!-- CARTE FORMULAIRE -->
+        <AnchorPane layoutX="30.0" layoutY="84.0" prefHeight="320.0" prefWidth="460.0"
+                    style="-fx-background-color: white; -fx-background-radius: 10;
+                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),8,0,0,2);">
+            <children>
+                <Label layoutX="20.0" layoutY="14.0" style="-fx-text-fill: #0f9d58;" text="Nouveau hackathon">
+                    <font><Font name="Arial Bold" size="13.0"/></font>
+                </Label>
+                <Separator layoutX="0.0" layoutY="38.0" prefWidth="460.0"/>
+
+                <Label layoutX="20.0" layoutY="54.0"  text="Nom :"><font><Font name="Arial Bold" size="12.0"/></font></Label>
+                <Label layoutX="20.0" layoutY="100.0" text="Catégorie :"><font><Font name="Arial Bold" size="12.0"/></font></Label>
+                <Label layoutX="20.0" layoutY="146.0" text="Durée (min) :"><font><Font name="Arial Bold" size="12.0"/></font></Label>
+                <Label layoutX="20.0" layoutY="192.0" text="Prix (DT) :"><font><Font name="Arial Bold" size="12.0"/></font></Label>
+                <Label layoutX="20.0" layoutY="238.0" text="ID Réservation :"><font><Font name="Arial Bold" size="12.0"/></font></Label>
+
+                <TextField fx:id="tfNom" layoutX="160.0" layoutY="50.0" prefHeight="32.0" prefWidth="280.0"
+                           promptText="ex : Hackathon IA"
+                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+                <TextField fx:id="tfCategorie" layoutX="160.0" layoutY="96.0" prefHeight="32.0" prefWidth="280.0"
+                           promptText="ex : Informatique"
+                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+                <TextField fx:id="tfDuree" layoutX="160.0" layoutY="142.0" prefHeight="32.0" prefWidth="280.0"
+                           promptText="ex : 90"
+                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+                <TextField fx:id="tfPrix" layoutX="160.0" layoutY="188.0" prefHeight="32.0" prefWidth="280.0"
+                           promptText="ex : 25.0"
+                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+                <TextField fx:id="tfReservationId" layoutX="160.0" layoutY="234.0" prefHeight="32.0" prefWidth="280.0"
+                           promptText="ex : 1"
+                           style="-fx-background-radius: 6; -fx-border-color: #dde1e7; -fx-border-radius: 6;"/>
+
+                <Button fx:id="btnAjouter" layoutX="20.0" layoutY="276.0"
+                        onAction="#ajouterAcaton" prefHeight="34.0" prefWidth="120.0"
+                        style="-fx-background-color: #0f9d58; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;"
+                        text="✚  Ajouter">
+                    <font><Font name="Arial Bold" size="12.0"/></font>
+                </Button>
+                <Button layoutX="150.0" layoutY="276.0" onAction="#modifierAcaton"
+                        prefHeight="34.0" prefWidth="140.0"
+                        style="-fx-background-color: #f9ab00; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;"
+                        text="✎  Modifier">
+                    <font><Font name="Arial Bold" size="12.0"/></font>
+                </Button>
+                <Button layoutX="300.0" layoutY="276.0" onAction="#supprimerAcaton"
+                        prefHeight="34.0" prefWidth="140.0"
+                        style="-fx-background-color: #d93025; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;"
+                        text="✖  Supprimer">
+                    <font><Font name="Arial Bold" size="12.0"/></font>
+                </Button>
+            </children>
+        </AnchorPane>
+
+        <!-- CARTE INFOS DROITE -->
+        <AnchorPane layoutX="510.0" layoutY="84.0" prefHeight="310.0" prefWidth="460.0"
+                    style="-fx-background-color: white; -fx-background-radius: 10;
+                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),8,0,0,2);">
+            <children>
+                <Label layoutX="20.0" layoutY="14.0" style="-fx-text-fill: #0f9d58;" text="ℹ  Instructions">
+                    <font><Font name="Arial Bold" size="13.0"/></font>
+                </Label>
+                <Separator layoutX="0.0" layoutY="38.0" prefWidth="460.0"/>
+                <Label layoutX="20.0" layoutY="58.0" style="-fx-text-fill: #5f6368;" text="• Remplissez le formulaire et cliquez Ajouter"><font><Font name="Arial" size="12.0"/></font></Label>
+                <Label layoutX="20.0" layoutY="88.0" style="-fx-text-fill: #5f6368;" text="• Cliquez sur une ligne pour la sélectionner"><font><Font name="Arial" size="12.0"/></font></Label>
+                <Label layoutX="20.0" layoutY="118.0" style="-fx-text-fill: #5f6368;" text="• Modifiez les champs puis cliquez Modifier"><font><Font name="Arial" size="12.0"/></font></Label>
+                <Label layoutX="20.0" layoutY="148.0" style="-fx-text-fill: #5f6368;" text="• Supprimer efface le hackathon sélectionné"><font><Font name="Arial" size="12.0"/></font></Label>
+                <Separator layoutX="20.0" layoutY="180.0" prefWidth="420.0"/>
+                <Label layoutX="20.0" layoutY="196.0" style="-fx-text-fill: #d93025;" text="📌  ID Réservation doit exister dans la BD"><font><Font name="Arial Bold" size="12.0"/></font></Label>
+                <Label layoutX="20.0" layoutY="226.0" style="-fx-text-fill: #d93025;" text="⏱  Durée en minutes — Prix en dinars tunisiens"><font><Font name="Arial Bold" size="12.0"/></font></Label>
+                <Label layoutX="20.0" layoutY="256.0" style="-fx-text-fill: #0f9d58;" text="🟢 Vert = valide   🔴 Rouge = invalide"><font><Font name="Arial Bold" size="12.0"/></font></Label>
+            </children>
+        </AnchorPane>
+
+        <!-- MESSAGE -->
+        <Label fx:id="lbMessage" layoutX="40.0" layoutY="414.0" prefWidth="600.0">
+            <font><Font name="Arial Italic" size="12.0"/></font>
+        </Label>
+
+        <!-- CARTE TABLEAU avec barre de recherche -->
+        <AnchorPane layoutX="30.0" layoutY="430.0" prefHeight="250.0" prefWidth="940.0"
+                    style="-fx-background-color: white; -fx-background-radius: 10;
+                           -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.10),8,0,0,2);">
+            <children>
+                <Label layoutX="20.0" layoutY="12.0" style="-fx-text-fill: #0f9d58;" text="Liste des Hackathons">
+                    <font><Font name="Arial Bold" size="13.0"/></font>
+                </Label>
+
+                <!-- 🔍 Barre de recherche -->
+                <TextField fx:id="tfRecherche" layoutX="600.0" layoutY="8.0"
+                           prefHeight="30.0" prefWidth="320.0"
+                           promptText="🔍  Rechercher par nom..."
+                           onKeyReleased="#rechercherHackathon"
+                           style="-fx-background-radius: 20; -fx-border-radius: 20;
+                                  -fx-border-color: #0f9d58; -fx-border-width: 1.5;
+                                  -fx-padding: 0 12 0 12;"/>
+
+                <Separator layoutX="0.0" layoutY="46.0" prefWidth="940.0"/>
+                <TableView fx:id="tableAcaton" layoutX="10.0" layoutY="54.0"
+                           onMouseClicked="#selectionnerLigne"
+                           prefHeight="186.0" prefWidth="920.0">
+                    <columns>
+                        <TableColumn fx:id="colNom"           prefWidth="290.0" text="Nom"/>
+                        <TableColumn fx:id="colCategorie"     prefWidth="250.0" text="Catégorie"/>
+                        <TableColumn fx:id="colDuree"         prefWidth="200.0" text="Durée (min)"/>
+                        <TableColumn fx:id="colPrix"          prefWidth="178.0" text="Prix (DT)"/>
+                        <TableColumn fx:id="colReservationId" prefWidth="0"     text="ID Réservation" visible="false"/>
+                    </columns>
+                </TableView>
+            </children>
+        </AnchorPane>
+
+        <!-- NAVIGATION BAS -->
+        <Button layoutX="30.0" layoutY="692.0" onAction="#allerReservation"
+                prefHeight="36.0" prefWidth="200.0"
+                style="-fx-background-color: #5f6368; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;"
+                text="◀  Retour Réservations">
+            <font><Font name="Arial Bold" size="12.0"/></font>
+        </Button>
+
+    </children>
+</AnchorPane>

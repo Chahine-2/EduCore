@@ -16,7 +16,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import models.Utilisateur;
+import models.Hackathon;
 import services.UtilisateurService;
+import services.ServiceHackathon;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,6 +27,7 @@ import java.util.ResourceBundle;
 
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.AnchorPane;
 import java.util.Optional;
 import javafx.stage.Modality;
 import javafx.scene.control.ButtonType;
@@ -41,8 +44,12 @@ public class AdminDashboardController implements Initializable {
     @FXML private TableColumn<Utilisateur, String> colEmail;
     @FXML private TableColumn<Utilisateur, String> colRole;
     @FXML private TableColumn<Utilisateur, String> colStatut;
+    @FXML private javafx.scene.control.Label lbTotalHackathonsAdmin;
+    @FXML private javafx.scene.control.Label lbPrixMoyenHackathonsAdmin;
+    @FXML private AnchorPane centerShell;
 
     private IUtilisateurService service = new UtilisateurService();
+    private final ServiceHackathon serviceHackathon = new ServiceHackathon();
     private ObservableList<Utilisateur> utilisateursObservableList = FXCollections.observableArrayList();
 
     @Override
@@ -62,17 +69,38 @@ public class AdminDashboardController implements Initializable {
 
         // 3. Charger les données au démarrage de l'écran
         chargerUtilisateurs();
+        chargerStatistiquesHackathon();
     }
 
     @FXML
     void chargerUtilisateurs() {
         // On vide la liste, on appelle le backend, et on remplit la liste
+        // Ensure the users table is visible in the center shell (restore if another view replaced it)
+        if (centerShell != null && !centerShell.getChildren().contains(tableUtilisateurs)) {
+            centerShell.getChildren().setAll(tableUtilisateurs);
+            AnchorPane.setTopAnchor(tableUtilisateurs, 0.0);
+            AnchorPane.setBottomAnchor(tableUtilisateurs, 0.0);
+            AnchorPane.setLeftAnchor(tableUtilisateurs, 0.0);
+            AnchorPane.setRightAnchor(tableUtilisateurs, 0.0);
+        }
+
         utilisateursObservableList.clear();
         List<Utilisateur> usersFromDB = service.listerUtilisateurs();
         utilisateursObservableList.addAll(usersFromDB);
 
         // On injecte la liste dans le tableau JavaFX
         tableUtilisateurs.setItems(utilisateursObservableList);
+    }
+
+    private void chargerStatistiquesHackathon() {
+        List<Hackathon> hackathons = serviceHackathon.getAll();
+        lbTotalHackathonsAdmin.setText(String.valueOf(hackathons.size()));
+
+        double prixMoyen = hackathons.stream()
+                .mapToDouble(Hackathon::getPrix)
+                .average()
+                .orElse(0.0);
+        lbPrixMoyenHackathonsAdmin.setText(String.format("%.1f DT", prixMoyen));
     }
 
     @FXML
@@ -148,6 +176,41 @@ public class AdminDashboardController implements Initializable {
                 alert.setContentText("Cette classe existe déjà ou une erreur est survenue.");
                 alert.showAndWait();
             }
+        }
+    }
+
+    @FXML
+    void handleStatHackathon(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root, 1000, 840));
+            stage.setTitle("Statistiques Hackathon");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            afficherAlerte("Erreur", "Impossible de charger le tableau de bord des statistiques.", Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    void handleGestionHackathonSection(ActionEvent event) {
+        // Open GestionHackathon.fxml in a separate modal window (consistent with other admin actions)
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionHackathon.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Gestion Hackathon");
+            stage.setScene(new Scene(root, 1000, 700));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            afficherAlerte("Erreur", "Impossible de charger la gestion des hackathons.", Alert.AlertType.ERROR);
         }
     }
 

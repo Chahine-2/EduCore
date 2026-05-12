@@ -7,12 +7,10 @@ import java.sql.SQLException;
 public class MyDataBase {
 
     private static MyDataBase instance;
-
-    private final String URL ="jdbc:mysql://127.0.0.1:3306/educore";
-
-    private final String  USERNAME ="root";
-    private final String PASSWORD ="";
-    private Connection cnx ;
+    private final String URL = "jdbc:mysql://127.0.0.1:3306/educore";
+    private final String USERNAME = "root";
+    private final String PASSWORD = "";
+    private Connection cnx;
 
     private MyDataBase() {
         connecter();
@@ -20,7 +18,6 @@ public class MyDataBase {
 
     private void connecter() {
         try {
-
             this.cnx = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             System.out.println("✓ Database connected successfully!");
         } catch (SQLException e) {
@@ -29,15 +26,14 @@ public class MyDataBase {
             System.err.println("URL: " + URL);
             System.err.println("Username: " + USERNAME);
             System.err.println("Please ensure MySQL is running and the database 'educore' exists.");
-
             this.cnx = null;
         }
-
     }
 
     public static MyDataBase getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new MyDataBase();
+        }
         return instance;
     }
 
@@ -55,6 +51,6 @@ public class MyDataBase {
 
     // Backward-compatible alias used by older service classes.
     public Connection getConnection() {
-        return cnx;
+        return getCnx();
     }
 }

@@ -55,6 +55,10 @@
                         onAction="#onNavStatistics" text="Results &amp; Statistics" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic><Label styleClass="teacher-nav-icon" text="📈"/></graphic>
                 </Button>
+                <Button fx:id="btnNavStatHackathon" styleClass="teacher-nav-button"
+                        onAction="#onNavStatHackathon" text="Stat Hackathon" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="teacher-nav-icon" text="🎯"/></graphic>
+                </Button>
                 <Button fx:id="btnNavProfile" styleClass="teacher-nav-button"
                         onAction="#onNavProfile" text="Profile" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic><Label styleClass="teacher-nav-icon" text="👤"/></graphic>

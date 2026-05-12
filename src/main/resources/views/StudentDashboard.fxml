@@ -36,6 +36,12 @@
                 <Button fx:id="btnNavResults" styleClass="nav-button" onAction="#onNavResults" text="Results" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic><Label styleClass="nav-icon" text="📈"/></graphic>
                 </Button>
+                <Button fx:id="btnNavReservations" styleClass="nav-button" onAction="#onNavReservations" text="Reservations" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="nav-icon" text="📅"/></graphic>
+                </Button>
+                <Button fx:id="btnNavStatHackathon" styleClass="nav-button" onAction="#onNavStatHackathon" text="Stat Hackathon" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="nav-icon" text="🎯"/></graphic>
+                </Button>
                 <Button fx:id="btnNavProfile" styleClass="nav-button" onAction="#onNavProfile" text="Profile" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic><Label styleClass="nav-icon" text="👤"/></graphic>
                 </Button>
@@ -118,6 +124,15 @@
                                 <Label text="Choisissez catégorie et niveau, puis ouvrez le catalogue filtré (écran Accueil)." styleClass="section-hint"/>
                             </VBox>
                             <BorderPane fx:id="coursesAccueilShell" styleClass="eval-portal-shell courses-shell-fullbleed" minHeight="520" maxWidth="1.7976931348623157E308" minWidth="0.0" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+
+                        <!-- Reservations -->
+                        <VBox fx:id="paneReservations" visible="false" managed="false" spacing="14" styleClass="content-body" maxWidth="1.7976931348623157E308">
+                            <VBox spacing="4">
+                                <Label text="Reservations" styleClass="section-title"/>
+                                <Label text="Manage your reservations and bookings." styleClass="section-hint"/>
+                            </VBox>
+                            <BorderPane fx:id="reservationsShell" minHeight="520" VBox.vgrow="ALWAYS"/>
                         </VBox>
 
                         <!-- Évaluations — portail étudiant intégré -->
