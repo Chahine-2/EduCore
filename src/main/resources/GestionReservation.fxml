@@ -16,8 +16,7 @@
     <GridPane hgap="10" vgap="10">
         <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
 
-        <Label text="ID Materiel :"   GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="tfMaterielId" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="200"/>
+
 
         <Label text="Motif :"         GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="tfMotif"    GridPane.rowIndex="1" GridPane.columnIndex="1"/>
@@ -45,8 +44,7 @@
 
     <TableView fx:id="tvReservations" prefHeight="350" prefWidth="800">
         <columns>
-            <TableColumn fx:id="colId"         text="ID"          prefWidth="50"/>
-            <TableColumn fx:id="colMaterielId"  text="ID Materiel" prefWidth="100"/>
+
             <TableColumn fx:id="colMotif"       text="Motif"       prefWidth="150"/>
             <TableColumn fx:id="colDateDebut"   text="Date debut"  prefWidth="150"/>
             <TableColumn fx:id="colDateFin"     text="Date fin"    prefWidth="150"/>
