@@ -10,16 +10,13 @@ public class Materiel {
     private int quantite;
     private String etat;
     private LocalDateTime dateCreation;
+    private int salleId;
+    private String salleNom;
+    private String departementNom;
+    private double latitude;
+    private double longitude;
 
     public Materiel() {}
-
-    public Materiel(String nom, String code, String description, int quantite, String etat) {
-        this.nom = nom;
-        this.code = code;
-        this.description = description;
-        this.quantite = quantite;
-        this.etat = etat;
-    }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -35,6 +32,16 @@ public class Materiel {
     public void setEtat(String etat) { this.etat = etat; }
     public LocalDateTime getDateCreation() { return dateCreation; }
     public void setDateCreation(LocalDateTime dateCreation) { this.dateCreation = dateCreation; }
+    public int getSalleId() { return salleId; }
+    public void setSalleId(int salleId) { this.salleId = salleId; }
+    public String getSalleNom() { return salleNom; }
+    public void setSalleNom(String salleNom) { this.salleNom = salleNom; }
+    public String getDepartementNom() { return departementNom; }
+    public void setDepartementNom(String departementNom) { this.departementNom = departementNom; }
+    public double getLatitude() { return latitude; }
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+    public double getLongitude() { return longitude; }
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 
     @Override
     public String toString() {
