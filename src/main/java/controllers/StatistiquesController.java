@@ -1,93 +1,120 @@
 package controllers;
 
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
+import javafx.scene.chart.*;
+import javafx.scene.control.Label;
 import services.Statistiques;
 import utils.MyDataBase;
 import java.sql.*;
+import java.util.Map;
 
 public class StatistiquesController {
 
-    @FXML private TextArea taResultat;
+    @FXML private PieChart pieEtat;
+    @FXML private PieChart pieStatut;
+    @FXML private BarChart<String, Number> barReservations;
+    @FXML private BarChart<String, Number> barQuantite;
+    @FXML private Label lblTotalMateriels;
+    @FXML private Label lblTotalReservations;
+    @FXML private Label lblDisponibles;
+    @FXML private Label lblMaintenance;
+    @FXML private Label lblReservationsMois;
+    @FXML private Label lblConfirmees;
 
     private Statistiques stats = new Statistiques();
 
     @FXML
-    public void afficherReservationsParMateriel(ActionEvent e) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("=== Reservations par materiel ===\n\n");
-        String req = "SELECT m.nom, COUNT(r.id) as total " +
-                "FROM materiel m LEFT JOIN reservation r ON m.id = r.materiel_id " +
-                "GROUP BY m.id, m.nom ORDER BY total DESC";
-        try {
-            Statement stm = MyDataBase.getInstance().getCnx().createStatement();
-            ResultSet rs = stm.executeQuery(req);
-            while (rs.next()) {
-                sb.append("📦 ").append(rs.getString("nom"))
-                        .append(" → ").append(rs.getInt("total")).append(" reservation(s)\n");
-            }
-        } catch (SQLException ex) {
-            sb.append("Erreur : ").append(ex.getMessage());
-        }
-        taResultat.setText(sb.toString());
+    void initialize() {
+        Platform.runLater(() -> {
+            chargerCartes();
+            chargerPieEtat();
+            chargerPieStatut();
+            chargerBarReservations();
+            chargerBarQuantite();
+        });
     }
 
-    @FXML
-    public void afficherMaterielPlusDemande(ActionEvent e) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("=== Materiel le plus demande ===\n\n");
-        String req = "SELECT m.nom, COUNT(r.id) as total " +
-                "FROM materiel m JOIN reservation r ON m.id = r.materiel_id " +
-                "GROUP BY m.id, m.nom ORDER BY total DESC LIMIT 1";
+    private void chargerCartes() {
         try {
-            Statement stm = MyDataBase.getInstance().getCnx().createStatement();
-            ResultSet rs = stm.executeQuery(req);
-            if (rs.next()) {
-                sb.append("🏆 ").append(rs.getString("nom"))
-                        .append(" avec ").append(rs.getInt("total")).append(" reservation(s)\n");
-            } else {
-                sb.append("Aucune reservation trouvee.");
-            }
-        } catch (SQLException ex) {
-            sb.append("Erreur : ").append(ex.getMessage());
+            Connection cnx = MyDataBase.getInstance().getCnx();
+            PreparedStatement ps;
+            ResultSet rs;
+
+            ps = cnx.prepareStatement("SELECT COUNT(*) FROM materiel");
+            rs = ps.executeQuery();
+            if (rs.next()) lblTotalMateriels.setText(String.valueOf(rs.getInt(1)));
+
+            ps = cnx.prepareStatement("SELECT COUNT(*) FROM materiel WHERE etat='disponible'");
+            rs = ps.executeQuery();
+            if (rs.next()) lblDisponibles.setText(String.valueOf(rs.getInt(1)));
+
+            ps = cnx.prepareStatement("SELECT COUNT(*) FROM materiel WHERE etat='maintenance'");
+            rs = ps.executeQuery();
+            if (rs.next()) lblMaintenance.setText(String.valueOf(rs.getInt(1)));
+
+            ps = cnx.prepareStatement("SELECT COUNT(*) FROM reservation");
+            rs = ps.executeQuery();
+            if (rs.next()) lblTotalReservations.setText(String.valueOf(rs.getInt(1)));
+
+            ps = cnx.prepareStatement("SELECT COUNT(*) FROM reservation WHERE MONTH(date_debut)=MONTH(NOW()) AND YEAR(date_debut)=YEAR(NOW())");
+            rs = ps.executeQuery();
+            if (rs.next()) lblReservationsMois.setText(String.valueOf(rs.getInt(1)));
+
+            ps = cnx.prepareStatement("SELECT COUNT(*) FROM reservation WHERE statut='confirmee'");
+            rs = ps.executeQuery();
+            if (rs.next()) lblConfirmees.setText(String.valueOf(rs.getInt(1)));
+
+        } catch (SQLException e) {
+            System.out.println("Erreur cartes : " + e.getMessage());
         }
-        taResultat.setText(sb.toString());
     }
 
-    @FXML
-    public void afficherMaterielsParEtat(ActionEvent e) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("=== Materiels par etat ===\n\n");
-        String req = "SELECT etat, COUNT(*) as total FROM materiel GROUP BY etat";
-        try {
-            Statement stm = MyDataBase.getInstance().getCnx().createStatement();
-            ResultSet rs = stm.executeQuery(req);
-            while (rs.next()) {
-                sb.append("🔹 ").append(rs.getString("etat"))
-                        .append(" : ").append(rs.getInt("total")).append("\n");
-            }
-        } catch (SQLException ex) {
-            sb.append("Erreur : ").append(ex.getMessage());
+    private void chargerPieEtat() {
+        pieEtat.getData().clear();
+        Map<String, Integer> map = stats.getMaterielsParEtat();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            pieEtat.getData().add(new PieChart.Data(
+                    entry.getKey() + " (" + entry.getValue() + ")",
+                    entry.getValue()
+            ));
         }
-        taResultat.setText(sb.toString());
     }
 
-    @FXML
-    public void afficherReservationsMois(ActionEvent e) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("=== Reservations ce mois-ci ===\n\n");
-        String req = "SELECT COUNT(*) as total FROM reservation " +
-                "WHERE MONTH(date_debut) = MONTH(NOW()) AND YEAR(date_debut) = YEAR(NOW())";
-        try {
-            Statement stm = MyDataBase.getInstance().getCnx().createStatement();
-            ResultSet rs = stm.executeQuery(req);
-            if (rs.next()) {
-                sb.append("📅 Total : ").append(rs.getInt("total")).append(" reservation(s)\n");
-            }
-        } catch (SQLException ex) {
-            sb.append("Erreur : ").append(ex.getMessage());
+    private void chargerPieStatut() {
+        pieStatut.getData().clear();
+        Map<String, Integer> map = stats.getReservationsParStatut();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            pieStatut.getData().add(new PieChart.Data(
+                    entry.getKey() + " (" + entry.getValue() + ")",
+                    entry.getValue()
+            ));
         }
-        taResultat.setText(sb.toString());
     }
-}
+
+    private void chargerBarReservations() {
+        barReservations.getData().clear();
+        Map<String, Integer> map = stats.getReservationsParMateriel();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Reservations");
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            series.getData().add(new XYChart.Data<>(
+                    entry.getKey(), entry.getValue()
+            ));
+        }
+        barReservations.getData().add(series);
+    }
+
+    private void chargerBarQuantite() {
+        barQuantite.getData().clear();
+        Map<String, Integer> map = stats.getQuantiteParMateriel();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Quantite");
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            series.getData().add(new XYChart.Data<>(
+                    entry.getKey(), entry.getValue()
+            ));
+        }
+        barQuantite.getData().add(series);
+    }
+}{}
