@@ -2,22 +2,82 @@ package services;
 
 import utils.MyDataBase;
 import java.sql.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Statistiques {
 
-    public void reservationsParMateriel() {
+    public Map<String, Integer> getReservationsParMateriel() {
+        Map<String, Integer> map = new LinkedHashMap<>();
         String req = "SELECT m.nom, COUNT(r.id) as total " +
                 "FROM materiel m LEFT JOIN reservation r ON m.id = r.materiel_id " +
                 "GROUP BY m.id, m.nom ORDER BY total DESC";
         try {
             Statement stm = MyDataBase.getInstance().getCnx().createStatement();
             ResultSet rs = stm.executeQuery(req);
-            System.out.println("\n--- Réservations par matériel ---");
             while (rs.next()) {
-                System.out.println("📦 " + rs.getString("nom") + " → " + rs.getInt("total") + " réservation(s)");
+                String nom = rs.getString("nom");
+                if (nom.length() > 12) nom = nom.substring(0, 12) + "...";
+                map.put(nom, rs.getInt("total"));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+        return map;
+    }
+
+    public Map<String, Integer> getMaterielsParEtat() {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String req = "SELECT etat, COUNT(*) as total FROM materiel GROUP BY etat";
+        try {
+            Statement stm = MyDataBase.getInstance().getCnx().createStatement();
+            ResultSet rs = stm.executeQuery(req);
+            while (rs.next()) {
+                map.put(rs.getString("etat"), rs.getInt("total"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return map;
+    }
+
+    public Map<String, Integer> getReservationsParStatut() {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String req = "SELECT statut, COUNT(*) as total FROM reservation GROUP BY statut";
+        try {
+            Statement stm = MyDataBase.getInstance().getCnx().createStatement();
+            ResultSet rs = stm.executeQuery(req);
+            while (rs.next()) {
+                map.put(rs.getString("statut"), rs.getInt("total"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return map;
+    }
+
+    public Map<String, Integer> getQuantiteParMateriel() {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String req = "SELECT nom, quantite FROM materiel ORDER BY nom";
+        try {
+            Statement stm = MyDataBase.getInstance().getCnx().createStatement();
+            ResultSet rs = stm.executeQuery(req);
+            while (rs.next()) {
+                String nom = rs.getString("nom");
+                if (nom.length() > 12) nom = nom.substring(0, 12) + "...";
+                map.put(nom, rs.getInt("quantite"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return map;
+    }
+
+    public void reservationsParMateriel() {
+        Map<String, Integer> map = getReservationsParMateriel();
+        System.out.println("\n--- Reservations par materiel ---");
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.println("📦 " + entry.getKey() + " → " + entry.getValue() + " reservation(s)");
         }
     }
 
@@ -28,11 +88,11 @@ public class Statistiques {
         try {
             Statement stm = MyDataBase.getInstance().getCnx().createStatement();
             ResultSet rs = stm.executeQuery(req);
-            System.out.println("\n--- Matériel le plus demandé ---");
+            System.out.println("\n--- Materiel le plus demande ---");
             if (rs.next()) {
-                System.out.println("🏆 " + rs.getString("nom") + " avec " + rs.getInt("total") + " réservation(s)");
+                System.out.println("🏆 " + rs.getString("nom") + " avec " + rs.getInt("total") + " reservation(s)");
             } else {
-                System.out.println("Aucune réservation trouvée.");
+                System.out.println("Aucune reservation trouvee.");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -48,29 +108,23 @@ public class Statistiques {
         try {
             Statement stm = MyDataBase.getInstance().getCnx().createStatement();
             ResultSet rs = stm.executeQuery(req);
-            System.out.println("\n--- Taux d'occupation (8h/jour) ---");
+            System.out.println("\n--- Taux d'occupation ---");
             boolean found = false;
             while (rs.next()) {
                 found = true;
                 System.out.println("📊 " + rs.getString("nom") + " → " + rs.getDouble("taux") + "%");
             }
-            if (!found) System.out.println("Aucune réservation confirmée trouvée.");
+            if (!found) System.out.println("Aucune reservation confirmee.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
     public void materielsParEtat() {
-        String req = "SELECT etat, COUNT(*) as total FROM materiel GROUP BY etat";
-        try {
-            Statement stm = MyDataBase.getInstance().getCnx().createStatement();
-            ResultSet rs = stm.executeQuery(req);
-            System.out.println("\n--- Matériels par état ---");
-            while (rs.next()) {
-                System.out.println("🔹 " + rs.getString("etat") + " : " + rs.getInt("total"));
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        Map<String, Integer> map = getMaterielsParEtat();
+        System.out.println("\n--- Materiels par etat ---");
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.println("🔹 " + entry.getKey() + " : " + entry.getValue());
         }
     }
 
@@ -80,12 +134,12 @@ public class Statistiques {
         try {
             Statement stm = MyDataBase.getInstance().getCnx().createStatement();
             ResultSet rs = stm.executeQuery(req);
-            System.out.println("\n--- Réservations ce mois-ci ---");
+            System.out.println("\n--- Reservations ce mois ---");
             if (rs.next()) {
-                System.out.println("📅 Total : " + rs.getInt("total") + " réservation(s)");
+                System.out.println("📅 Total : " + rs.getInt("total") + " reservation(s)");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
-}
+}{}
