@@ -10,7 +10,6 @@ import java.util.List;
 
 public class ServiceMateriel implements IService<Materiel> {
 
-    // Vérifier si le code existe déjà (validation doublon)
     public boolean codeExiste(String code) {
         String req = "SELECT COUNT(*) FROM materiel WHERE code = ?";
         try {
@@ -24,19 +23,53 @@ public class ServiceMateriel implements IService<Materiel> {
         return false;
     }
 
+    // Récupérer tous les départements
+    public List<String> getDepartements() {
+        List<String> departements = new ArrayList<>();
+        String req = "SELECT id, nom FROM departement";
+        try {
+            Statement stm = MyDataBase.getInstance().getCnx().createStatement();
+            ResultSet rs = stm.executeQuery(req);
+            while (rs.next()) {
+                departements.add(rs.getInt("id") + " - " + rs.getString("nom"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return departements;
+    }
+
+    // Récupérer salles par département
+    public List<String> getSallesParDepartement(int departementId) {
+        List<String> salles = new ArrayList<>();
+        String req = "SELECT id, nom FROM salle WHERE departement_id = ?";
+        try {
+            PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
+            ps.setInt(1, departementId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                salles.add(rs.getInt("id") + " - " + rs.getString("nom"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return salles;
+    }
+
+    public int getIdFromString(String str) {
+        return Integer.parseInt(str.split(" - ")[0]);
+    }
     @Override
     public void add(Materiel m) {
-        // Validation code unique
         if (codeExiste(m.getCode())) {
-            System.out.println("❌ Erreur : un matériel avec ce code existe déjà !");
+            System.out.println("❌ Code existe deja !");
             return;
         }
-        // Validation quantité
         if (m.getQuantite() <= 0) {
-            System.out.println("❌ Erreur : la quantité doit être positive !");
+            System.out.println("❌ Quantite doit etre positive !");
             return;
         }
-        String req = "INSERT INTO materiel (nom, code, description, quantite, etat) VALUES (?, ?, ?, ?, ?)";
+        String req = "INSERT INTO materiel (nom, code, description, quantite, etat, salle_id) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
             ps.setString(1, m.getNom());
@@ -44,8 +77,9 @@ public class ServiceMateriel implements IService<Materiel> {
             ps.setString(3, m.getDescription());
             ps.setInt(4, m.getQuantite());
             ps.setString(5, m.getEtat());
+            ps.setInt(6, m.getSalleId());
             ps.executeUpdate();
-            System.out.println("✅ Matériel ajouté avec succès !");
+            System.out.println("✅ Materiel ajoute !");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -54,7 +88,10 @@ public class ServiceMateriel implements IService<Materiel> {
     @Override
     public List<Materiel> getAll() {
         List<Materiel> liste = new ArrayList<>();
-        String req = "SELECT * FROM materiel";
+        String req = "SELECT m.*, s.nom as salle_nom, s.latitude, s.longitude, d.nom as dept_nom " +
+                "FROM materiel m " +
+                "LEFT JOIN salle s ON m.salle_id = s.id " +
+                "LEFT JOIN departement d ON s.departement_id = d.id";
         try {
             Statement stm = MyDataBase.getInstance().getCnx().createStatement();
             ResultSet rs = stm.executeQuery(req);
@@ -66,6 +103,11 @@ public class ServiceMateriel implements IService<Materiel> {
                 m.setDescription(rs.getString("description"));
                 m.setQuantite(rs.getInt("quantite"));
                 m.setEtat(rs.getString("etat"));
+                m.setSalleId(rs.getInt("salle_id"));
+                m.setSalleNom(rs.getString("salle_nom"));
+                m.setDepartementNom(rs.getString("dept_nom"));
+                m.setLatitude(rs.getDouble("latitude"));
+                m.setLongitude(rs.getDouble("longitude"));
                 Timestamp ts = rs.getTimestamp("date_creation");
                 if (ts != null) m.setDateCreation(ts.toLocalDateTime());
                 liste.add(m);
@@ -79,10 +121,10 @@ public class ServiceMateriel implements IService<Materiel> {
     @Override
     public void update(Materiel m) {
         if (m.getQuantite() <= 0) {
-            System.out.println("❌ Erreur : la quantité doit être positive !");
+            System.out.println("❌ Quantite doit etre positive !");
             return;
         }
-        String req = "UPDATE materiel SET nom=?, code=?, description=?, quantite=?, etat=? WHERE id=?";
+        String req = "UPDATE materiel SET nom=?, code=?, description=?, quantite=?, etat=?, salle_id=? WHERE id=?";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
             ps.setString(1, m.getNom());
@@ -90,9 +132,10 @@ public class ServiceMateriel implements IService<Materiel> {
             ps.setString(3, m.getDescription());
             ps.setInt(4, m.getQuantite());
             ps.setString(5, m.getEtat());
-            ps.setInt(6, m.getId());
+            ps.setInt(6, m.getSalleId());
+            ps.setInt(7, m.getId());
             ps.executeUpdate();
-            System.out.println("✅ Matériel mis à jour !");
+            System.out.println("✅ Materiel mis a jour !");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -105,13 +148,12 @@ public class ServiceMateriel implements IService<Materiel> {
             PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
             ps.setInt(1, m.getId());
             ps.executeUpdate();
-            System.out.println("✅ Matériel supprimé !");
+            System.out.println("✅ Materiel supprime !");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    // Changer état matériel automatiquement
     public void changerEtat(int materielId, String etat) {
         String req = "UPDATE materiel SET etat=? WHERE id=?";
         try {
@@ -123,4 +165,4 @@ public class ServiceMateriel implements IService<Materiel> {
             System.out.println(e.getMessage());
         }
     }
-}
+}{}
