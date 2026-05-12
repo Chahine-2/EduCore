@@ -39,6 +39,10 @@
                         onAction="#onNavEvaluations" text="Evaluation Management" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic><Label styleClass="teacher-nav-icon" text="📝"/></graphic>
                 </Button>
+                <Button fx:id="btnNavReservationMateriel" styleClass="teacher-nav-button"
+                        onAction="#onNavReservationMateriel" text="Réservation matériel" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="teacher-nav-icon" text="📦"/></graphic>
+                </Button>
                 <Button fx:id="btnNavAbsence" styleClass="teacher-nav-button"
                         onAction="#onNavAbsence" text="Absence Management" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic><Label styleClass="teacher-nav-icon" text="📋"/></graphic>
@@ -166,6 +170,14 @@
                                 <Label text="Build question banks, schedule assessments, and review submissions." styleClass="teacher-section-hint"/>
                             </VBox>
                             <BorderPane fx:id="evalMgmtShell" minHeight="520" maxWidth="1.7976931348623157E308" minWidth="0.0" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+
+                        <VBox fx:id="paneReservationMateriel" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
+                            <VBox spacing="4">
+                                <Label text="Réservation matériel" styleClass="teacher-section-title"/>
+                                <Label text="Manage equipment reservations and availability." styleClass="teacher-section-hint"/>
+                            </VBox>
+                            <VBox fx:id="reservationMaterielShell" spacing="0" VBox.vgrow="ALWAYS"/>
                         </VBox>
 
                         <VBox fx:id="paneAbsence" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">

@@ -180,6 +180,40 @@ public class AdminDashboardController implements Initializable {
     }
 
     @FXML
+    void handleGestionMateriel(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionMateriel.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Gestion du matériel");
+            stage.setScene(new Scene(root, 1100, 750));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            afficherAlerte("Erreur", "Impossible de charger l'interface de gestion du matériel.", Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    void handleStatMateriel(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Statistiques.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Statistiques du matériel");
+            stage.setScene(new Scene(root, 1100, 750));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            afficherAlerte("Erreur", "Impossible de charger les statistiques du matériel.", Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
     void handleStatHackathon(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));

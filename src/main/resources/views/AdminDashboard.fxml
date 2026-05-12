@@ -36,6 +36,8 @@
                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleHistorique" prefHeight="35.0" style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="6. 🕒 Historique de Connexion" />
                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAjouterProf" prefHeight="35.0" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="7. 👨‍🏫 Ajouter Enseignant" />
                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleGestionClasses" prefHeight="35.0" style="-fx-background-color: #16a085; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="8. 🏫 Ajouter une Classe" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleGestionMateriel" prefHeight="35.0" style="-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="8bis. 🛠 Gestion matériel" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleStatMateriel" prefHeight="35.0" style="-fx-background-color: #2d98da; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="9bis. 📈 Stat matériel" />
                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleGestionHackathonSection" prefHeight="35.0" style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-cursor: hand; -fx-alignment: BASELINE_LEFT;" text="10. 🎯 Gestion Hackathon" />
 
                 <VBox VBox.vgrow="ALWAYS">

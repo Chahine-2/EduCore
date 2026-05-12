@@ -62,6 +62,8 @@ public class TeacherDashboardController {
     @FXML private BorderPane courseMgmtShell;
     @FXML private VBox paneEvalMgmt;
     @FXML private BorderPane evalMgmtShell;
+    @FXML private VBox paneReservationMateriel;
+    @FXML private VBox reservationMaterielShell;
     @FXML private VBox paneAbsence;
     @FXML private VBox paneStudents;
     @FXML private VBox paneFraud;
@@ -71,6 +73,7 @@ public class TeacherDashboardController {
     @FXML private Button btnNavDashboard;
     @FXML private Button btnNavCourses;
     @FXML private Button btnNavEvaluations;
+    @FXML private Button btnNavReservationMateriel;
     @FXML private Button btnNavAbsence;
     @FXML private Button btnNavStudents;
     @FXML private Button btnNavFraud;
@@ -93,6 +96,7 @@ public class TeacherDashboardController {
 
     private boolean evaluationsEmbeddedLoaded;
     private boolean coursesEmbeddedLoaded;
+    private boolean reservationMaterielEmbeddedLoaded;
     private boolean statisticsEmbeddedLoaded;
 
     @FXML
@@ -100,6 +104,7 @@ public class TeacherDashboardController {
         navButtons.add(btnNavDashboard);
         navButtons.add(btnNavCourses);
         navButtons.add(btnNavEvaluations);
+        navButtons.add(btnNavReservationMateriel);
         navButtons.add(btnNavAbsence);
         navButtons.add(btnNavStudents);
         navButtons.add(btnNavFraud);
@@ -200,7 +205,7 @@ public class TeacherDashboardController {
     }
 
     private void showPane(VBox pane) {
-        for (VBox p : List.of(paneDashboard, paneCourseMgmt, paneEvalMgmt, paneAbsence,
+        for (VBox p : List.of(paneDashboard, paneCourseMgmt, paneEvalMgmt, paneReservationMateriel, paneAbsence,
                 paneStudents, paneFraud, paneStatistics, paneProfile)) {
             boolean on = p == pane;
             p.setVisible(on);
@@ -263,6 +268,13 @@ public class TeacherDashboardController {
         selectNav(btnNavEvaluations);
     }
 
+    @FXML
+    void onNavReservationMateriel(ActionEvent event) {
+        ensureReservationMaterielEmbedded();
+        showPane(paneReservationMateriel);
+        selectNav(btnNavReservationMateriel);
+    }
+
     private void ensureEvaluationsEmbedded() {
         if (evaluationsEmbeddedLoaded || evalMgmtShell == null) {
             return;
@@ -282,6 +294,23 @@ public class TeacherDashboardController {
             evaluationsEmbeddedLoaded = false;
             new Alert(Alert.AlertType.ERROR,
                     "Could not load evaluation module: " + ex.getMessage()).showAndWait();
+        }
+    }
+
+    private void ensureReservationMaterielEmbedded() {
+        if (reservationMaterielEmbeddedLoaded || reservationMaterielShell == null) {
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
+                    getClass().getResource("/GestionReservationMatriel.fxml")));
+            Parent reservationRoot = loader.load();
+            reservationMaterielShell.getChildren().setAll(reservationRoot);
+            reservationMaterielEmbeddedLoaded = true;
+        } catch (IOException ex) {
+            reservationMaterielEmbeddedLoaded = false;
+            new Alert(Alert.AlertType.ERROR,
+                    "Could not load reservation management: " + ex.getMessage()).showAndWait();
         }
     }
 
