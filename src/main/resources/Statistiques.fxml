@@ -1,31 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-
-<VBox spacing="15"
+<?import javafx.scene.chart.*?>
+<VBox spacing="0"
       xmlns="http://javafx.com/javafx/22"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.StatistiquesController"
-      style="-fx-padding: 20; -fx-background-color: #f4f6f9;">
+      style="-fx-background-color: #f0f2f5;">
 
-    <Label text="Statistiques"
-           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-
-    <HBox spacing="10">
-        <Button text="Reservations par materiel" onAction="#afficherReservationsParMateriel"
-                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"/>
-        <Button text="Materiel le plus demande"  onAction="#afficherMaterielPlusDemande"
-                style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold;"/>
-        <Button text="Materiels par etat"        onAction="#afficherMaterielsParEtat"
-                style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-weight: bold;"/>
-        <Button text="Reservations ce mois"      onAction="#afficherReservationsMois"
-                style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold;"/>
+    <HBox alignment="CENTER_LEFT"
+          style="-fx-background-color: #1a73e8; -fx-padding: 25 30 25 30;">
+        <VBox>
+            <Label text="Tableau de Bord"
+                   style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Suivi en temps reel des materiels et reservations"
+                   style="-fx-font-size: 15px; -fx-text-fill: #e8f0fe;"/>
+        </VBox>
     </HBox>
 
-    <TextArea fx:id="taResultat" prefHeight="400" prefWidth="760"
-              editable="false"
-              style="-fx-font-size: 14px; -fx-font-family: monospace;"/>
+    <HBox spacing="15" style="-fx-padding: 25;" alignment="CENTER">
+        <VBox prefWidth="175" prefHeight="110" spacing="6" alignment="CENTER"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-border-color: #dadce0; -fx-border-radius: 12; -fx-border-width: 1;">
+            <Label text="MATERIELS" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #5f6368;"/>
+            <Label fx:id="lblTotalMateriels" text="0" style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: #1a73e8;"/>
+            <Label text="Total enregistres" style="-fx-font-size: 13px; -fx-text-fill: #5f6368;"/>
+        </VBox>
+        <VBox prefWidth="175" prefHeight="110" spacing="6" alignment="CENTER"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-border-color: #dadce0; -fx-border-radius: 12; -fx-border-width: 1;">
+            <Label text="DISPONIBLES" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #5f6368;"/>
+            <Label fx:id="lblDisponibles" text="0" style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: #34a853;"/>
+            <Label text="Prets a reserver" style="-fx-font-size: 13px; -fx-text-fill: #5f6368;"/>
+        </VBox>
+        <VBox prefWidth="175" prefHeight="110" spacing="6" alignment="CENTER"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-border-color: #dadce0; -fx-border-radius: 12; -fx-border-width: 1;">
+            <Label text="MAINTENANCE" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #5f6368;"/>
+            <Label fx:id="lblMaintenance" text="0" style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: #fa7b17;"/>
+            <Label text="En reparation" style="-fx-font-size: 13px; -fx-text-fill: #5f6368;"/>
+        </VBox>
+        <VBox prefWidth="175" prefHeight="110" spacing="6" alignment="CENTER"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-border-color: #dadce0; -fx-border-radius: 12; -fx-border-width: 1;">
+            <Label text="RESERVATIONS" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #5f6368;"/>
+            <Label fx:id="lblTotalReservations" text="0" style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: #9334e6;"/>
+            <Label text="Total reservations" style="-fx-font-size: 13px; -fx-text-fill: #5f6368;"/>
+        </VBox>
+        <VBox prefWidth="175" prefHeight="110" spacing="6" alignment="CENTER"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-border-color: #dadce0; -fx-border-radius: 12; -fx-border-width: 1;">
+            <Label text="CE MOIS" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #5f6368;"/>
+            <Label fx:id="lblReservationsMois" text="0" style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: #e52592;"/>
+            <Label text="Reservations du mois" style="-fx-font-size: 13px; -fx-text-fill: #5f6368;"/>
+        </VBox>
+        <VBox prefWidth="175" prefHeight="110" spacing="6" alignment="CENTER"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-border-color: #dadce0; -fx-border-radius: 12; -fx-border-width: 1;">
+            <Label text="CONFIRMEES" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #5f6368;"/>
+            <Label fx:id="lblConfirmees" text="0" style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: #34a853;"/>
+            <Label text="Reservations confirmees" style="-fx-font-size: 13px; -fx-text-fill: #5f6368;"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="15" style="-fx-padding: 0 25 15 25;">
+        <VBox prefWidth="400" prefHeight="370" spacing="8"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 20; -fx-border-color: #dadce0; -fx-border-radius: 12; -fx-border-width: 1;">
+            <Label text="Etat des Materiels" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #202124;"/>
+            <Label text="Repartition par etat" style="-fx-font-size: 13px; -fx-text-fill: #5f6368;"/>
+            <PieChart fx:id="pieEtat" prefHeight="300" labelsVisible="true" legendVisible="true"
+                      style="-fx-background-color: transparent;"/>
+        </VBox>
+        <VBox prefWidth="400" prefHeight="370" spacing="8"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 20; -fx-border-color: #dadce0; -fx-border-radius: 12; -fx-border-width: 1;">
+            <Label text="Statut des Reservations" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #202124;"/>
+            <Label text="Repartition des statuts" style="-fx-font-size: 13px; -fx-text-fill: #5f6368;"/>
+            <PieChart fx:id="pieStatut" prefHeight="300" labelsVisible="true" legendVisible="true"
+                      style="-fx-background-color: transparent;"/>
+        </VBox>
+        <VBox prefWidth="400" prefHeight="370" spacing="8"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 20; -fx-border-color: #dadce0; -fx-border-radius: 12; -fx-border-width: 1;">
+            <Label text="Reservations par Materiel" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #202124;"/>
+            <Label text="Nombre de reservations par materiel" style="-fx-font-size: 13px; -fx-text-fill: #5f6368;"/>
+            <BarChart fx:id="barReservations" prefHeight="300" animated="false"
+                      legendVisible="false" categoryGap="15"
+                      style="-fx-background-color: transparent;">
+                <xAxis><CategoryAxis tickLabelRotation="90" style="-fx-font-size: 11px;"/></xAxis>
+                <yAxis><NumberAxis/></yAxis>
+            </BarChart>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="15" style="-fx-padding: 0 25 25 25;">
+        <VBox prefWidth="1240" prefHeight="420" spacing="8"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 20; -fx-border-color: #dadce0; -fx-border-radius: 12; -fx-border-width: 1;">
+            <Label text="Stock par Materiel" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #202124;"/>
+            <Label text="Quantite disponible en stock pour chaque materiel" style="-fx-font-size: 13px; -fx-text-fill: #5f6368;"/>
+            <BarChart fx:id="barQuantite" prefHeight="360" animated="false"
+                      legendVisible="false" categoryGap="20"
+                      style="-fx-background-color: transparent;">
+                <xAxis><CategoryAxis tickLabelRotation="90" style="-fx-font-size: 11px;"/></xAxis>
+                <yAxis><NumberAxis/></yAxis>
+            </BarChart>
+        </VBox>
+    </HBox>
 
 </VBox>
