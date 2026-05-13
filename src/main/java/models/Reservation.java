@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class Reservation {
     private int id;
     private int materielId;
+    private String materielNom;
     private String motif;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
@@ -26,6 +27,8 @@ public class Reservation {
     public void setId(int id) { this.id = id; }
     public int getMaterielId() { return materielId; }
     public void setMaterielId(int materielId) { this.materielId = materielId; }
+    public String getMaterielNom() { return materielNom; }
+    public void setMaterielNom(String materielNom) { this.materielNom = materielNom; }
     public String getMotif() { return motif; }
     public void setMotif(String motif) { this.motif = motif; }
     public LocalDateTime getDateDebut() { return dateDebut; }
