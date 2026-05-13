@@ -33,9 +33,6 @@
                 <Button fx:id="btnNavEvaluations" styleClass="nav-button" onAction="#onNavEvaluations" text="Évaluations" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic><Label styleClass="nav-icon" text="📝"/></graphic>
                 </Button>
-                <Button fx:id="btnNavResults" styleClass="nav-button" onAction="#onNavResults" text="Résultats" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="nav-icon" text="📈"/></graphic>
-                </Button>
                 <Button fx:id="btnNavReservations" styleClass="nav-button" onAction="#onNavReservations" text="Réservations" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic><Label styleClass="nav-icon" text="📅"/></graphic>
                 </Button>
@@ -135,12 +132,17 @@
                             <BorderPane fx:id="reservationsShell" minHeight="520" VBox.vgrow="ALWAYS"/>
                         </VBox>
 
+                        <!-- Paiement (embedded, no separate window) -->
+                        <VBox fx:id="panePaiement" visible="false" managed="false" spacing="14" styleClass="content-body" maxWidth="1.7976931348623157E308">
+                            <VBox spacing="4">
+                                <Label text="Paiement" styleClass="section-title"/>
+                                <Label text="Finalisez votre paiement sécurisé." styleClass="section-hint"/>
+                            </VBox>
+                            <BorderPane fx:id="paiementShell" minHeight="520" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+
                         <!-- Évaluations — portail étudiant intégré -->
                         <VBox fx:id="paneEvaluations" visible="false" managed="false" spacing="14" styleClass="content-body content-evaluations">
-                            <VBox spacing="4">
-                                <Label text="Évaluations" styleClass="section-title"/>
-                                <Label text="Quiz et examens ouverts : tentatives, suivi et résultats liés à votre compte." styleClass="section-hint"/>
-                            </VBox>
                             <BorderPane fx:id="evalPortalShell" styleClass="eval-portal-shell" minHeight="520" VBox.vgrow="ALWAYS"/>
                         </VBox>
 

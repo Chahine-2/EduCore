@@ -36,6 +36,12 @@ public class GestionReservationController {
 
     private ObservableList<Reservation> toutesLesReservations = FXCollections.observableArrayList();
     private final ServiceReservation sr = new ServiceReservation();
+    private Runnable onAllerPaiement;
+
+    /** Called by the dashboard to wire in-shell navigation to the payment pane. */
+    public void setOnAllerPaiement(Runnable callback) {
+        this.onAllerPaiement = callback;
+    }
 
     private static final String OK   = "-fx-border-color:#0f9d58;-fx-border-radius:6;-fx-background-radius:6;-fx-border-width:2;";
     private static final String ERR  = "-fx-border-color:#d93025;-fx-border-radius:6;-fx-background-radius:6;-fx-border-width:2;";
@@ -284,8 +290,13 @@ public class GestionReservationController {
         catch (IOException ex) { System.out.println(ex.getMessage()); }
     }
     @FXML public void allerPaiement(ActionEvent e) {
-        try { tfTitre.getScene().setRoot(FXMLLoader.load(getClass().getResource("/Paiement.fxml"))); }
-        catch (IOException ex) { System.out.println(ex.getMessage()); }
+        if (onAllerPaiement != null) {
+            onAllerPaiement.run();
+        } else {
+            // fallback: standalone mode (not embedded in dashboard)
+            try { tfTitre.getScene().setRoot(FXMLLoader.load(getClass().getResource("/Paiement.fxml"))); }
+            catch (IOException ex) { System.out.println(ex.getMessage()); }
+        }
     }
 
     private void erreur(String m)        { lbMessage.setStyle("-fx-text-fill:#d93025;-fx-font-weight:bold;"); lbMessage.setText(m); }

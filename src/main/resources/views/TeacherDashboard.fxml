@@ -55,6 +55,10 @@
                         onAction="#onNavStatHackathon" text="Stat Hackathon" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
                 </Button>
+                <Button fx:id="btnNavReservationMateriel" styleClass="teacher-nav-button"
+                        onAction="#onNavReservationMateriel" text="Réservation Matériel" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
+                </Button>
                 <Button fx:id="btnNavProfile" styleClass="teacher-nav-button"
                         onAction="#onNavProfile" text="Profil" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
@@ -165,10 +169,6 @@
                         </VBox>
 
                         <VBox fx:id="paneEvalMgmt" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
-                            <VBox spacing="4">
-                                <Label text="Gestion des évaluations" styleClass="teacher-section-title"/>
-                                <Label text="Créez des banques de questions, planifiez des évaluations et examinez les soumissions." styleClass="teacher-section-hint"/>
-                            </VBox>
                             <BorderPane fx:id="evalMgmtShell" minHeight="520" maxWidth="1.7976931348623157E308" minWidth="0.0" VBox.vgrow="ALWAYS"/>
                         </VBox>
 
@@ -253,6 +253,14 @@
                                 <Label text="Espace d'analyse intégré pour le tableau de bord du hackathon." styleClass="teacher-section-hint"/>
                             </VBox>
                             <BorderPane fx:id="hackathonShell" minHeight="520" maxWidth="1.7976931348623157E308" minWidth="0.0" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+
+                        <VBox fx:id="paneReservationMateriel" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
+                            <VBox spacing="4">
+                                <Label text="Réservation Matériel" styleClass="teacher-section-title"/>
+                                <Label text="Gérez les réservations de matériel pédagogique." styleClass="teacher-section-hint"/>
+                            </VBox>
+                            <BorderPane fx:id="reservationMaterielShell" minHeight="520" maxWidth="1.7976931348623157E308" minWidth="0.0" VBox.vgrow="ALWAYS"/>
                         </VBox>
 
                         <VBox fx:id="paneProfile" visible="false" managed="false" spacing="16" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">

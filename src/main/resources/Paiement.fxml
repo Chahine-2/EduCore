@@ -25,13 +25,6 @@
                        style="-fx-text-fill: white;">
                     <font><Font name="Arial Bold" size="20"/></font>
                 </Label>
-                <Button layoutX="760" layoutY="14" text="📊  Dashboard" onAction="#allerDashboard"
-                        prefWidth="110" prefHeight="34"
-                        style="-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white;
-                               -fx-background-radius: 6; -fx-border-color: rgba(255,255,255,0.4);
-                               -fx-border-radius: 6; -fx-cursor: hand;">
-                    <font><Font name="Arial Bold" size="11"/></font>
-                </Button>
                 <Button layoutX="878" layoutY="14" text="◀  Retour" onAction="#allerReservation"
                         prefWidth="100" prefHeight="34"
                         style="-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white;

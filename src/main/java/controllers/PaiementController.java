@@ -44,6 +44,12 @@ public class PaiementController {
     private List<Reservation>        reservations;
     private ObservableList<Paiement> tousLesPaiements = FXCollections.observableArrayList();
     private boolean reservationDejaPayee = false;
+    private Runnable onRetour;
+
+    /** Called by the dashboard to wire the Retour button back to the reservation pane. */
+    public void setOnRetour(Runnable callback) {
+        this.onRetour = callback;
+    }
 
     private static final String OK   = "-fx-border-color:#0f9d58;-fx-border-radius:6;-fx-background-radius:6;-fx-border-width:2;";
     private static final String ERR  = "-fx-border-color:#d93025;-fx-border-radius:6;-fx-background-radius:6;-fx-border-width:2;";
@@ -312,8 +318,17 @@ public class PaiementController {
         } catch (Exception e) { erreur("⚠ Erreur : " + e.getMessage()); }
     }
 
-    @FXML public void allerReservation(ActionEvent e) { naviguer("/GestionReservation.fxml"); }
-    @FXML public void allerDashboard(ActionEvent e)   { naviguer("/Dashboard.fxml"); }
+    @FXML public void allerReservation(ActionEvent e) {
+        if (onRetour != null) {
+            onRetour.run();
+        } else {
+            // fallback: standalone mode
+            naviguer("/GestionReservation.fxml");
+        }
+    }
+
+    // allerDashboard kept for standalone/legacy use only — not shown in embedded mode
+    @FXML public void allerDashboard(ActionEvent e) { naviguer("/Dashboard.fxml"); }
 
     private void naviguer(String fxml) {
         try { lbMessage.getScene().setRoot(FXMLLoader.load(getClass().getResource(fxml))); }

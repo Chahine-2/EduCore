@@ -63,11 +63,12 @@ public class StudentDashboardController {
     @FXML private BorderPane evalPortalShell;
     @FXML private BorderPane coursesAccueilShell;
     @FXML private BorderPane reservationsShell;
+    @FXML private VBox panePaiement;
+    @FXML private BorderPane paiementShell;
 
     @FXML private Button btnNavDashboard;
     @FXML private Button btnNavCourses;
     @FXML private Button btnNavEvaluations;
-    @FXML private Button btnNavResults;
     @FXML private Button btnNavStatHackathon;
     @FXML private Button btnNavReservations;
     @FXML private Button btnNavProfile;
@@ -81,6 +82,7 @@ public class StudentDashboardController {
     private boolean statisticsEmbeddedLoaded;
 
     private boolean reservationsLoaded;
+    private boolean paiementLoaded;
 
     private boolean coursesAccueilLoaded;
     private Parent accueilCourseRoot;
@@ -93,7 +95,6 @@ public class StudentDashboardController {
         navButtons.add(btnNavDashboard);
         navButtons.add(btnNavCourses);
         navButtons.add(btnNavEvaluations);
-        navButtons.add(btnNavResults);
         navButtons.add(btnNavStatHackathon);
         navButtons.add(btnNavReservations);
         navButtons.add(btnNavProfile);
@@ -221,7 +222,7 @@ public class StudentDashboardController {
     }
 
     private void showPane(VBox pane) {
-        for (VBox p : List.of(paneDashboard, paneCourses, paneReservations, paneEvaluations, paneResults, paneProfile)) {
+        for (VBox p : List.of(paneDashboard, paneCourses, paneReservations, panePaiement, paneEvaluations, paneResults, paneProfile)) {
             boolean on = p == pane;
             p.setVisible(on);
             p.setManaged(on);
@@ -335,7 +336,6 @@ public class StudentDashboardController {
     @FXML
     void onNavResults(ActionEvent event) {
         showPane(paneResults);
-        selectNav(btnNavResults);
     }
 
     @FXML
@@ -353,6 +353,8 @@ public class StudentDashboardController {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
                     getClass().getResource("/GestionReservation.fxml")));
             Parent reservationsRoot = loader.load();
+            GestionReservationController resaCtrl = loader.getController();
+            resaCtrl.setOnAllerPaiement(this::showPaiement);
             reservationsShell.setCenter(reservationsRoot);
             reservationsLoaded = true;
         } catch (IOException ex) {
@@ -360,6 +362,30 @@ public class StudentDashboardController {
             new Alert(Alert.AlertType.ERROR,
                     "Impossible de charger la vue des réservations : " + ex.getMessage()).showAndWait();
         }
+    }
+
+    private void showPaiement() {
+        if (paiementShell == null) return;
+        if (!paiementLoaded) {
+            try {
+                FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
+                        getClass().getResource("/Paiement.fxml")));
+                Parent paiementRoot = loader.load();
+                PaiementController paiementCtrl = loader.getController();
+                paiementCtrl.setOnRetour(() -> {
+                    showPane(paneReservations);
+                    selectNav(btnNavReservations);
+                });
+                paiementShell.setCenter(paiementRoot);
+                paiementLoaded = true;
+            } catch (IOException ex) {
+                new Alert(Alert.AlertType.ERROR,
+                        "Impossible de charger le paiement : " + ex.getMessage()).showAndWait();
+                return;
+            }
+        }
+        showPane(panePaiement);
+        selectNav(btnNavReservations);
     }
 
     @FXML

@@ -81,6 +81,8 @@ public class TeacherDashboardController {
     @FXML private VBox paneStatistics;
     @FXML private VBox paneHackathon;
     @FXML private BorderPane hackathonShell;
+    @FXML private VBox paneReservationMateriel;
+    @FXML private BorderPane reservationMaterielShell;
     @FXML private VBox paneProfile;
 
     @FXML private Button btnNavDashboard;
@@ -90,6 +92,7 @@ public class TeacherDashboardController {
     @FXML private Button btnNavFraud;
     @FXML private Button btnNavStatistics;
     @FXML private Button btnNavStatHackathon;
+    @FXML private Button btnNavReservationMateriel;
     @FXML private Button btnNavProfile;
     @FXML private Button btnNavLogout;
 
@@ -132,6 +135,7 @@ public class TeacherDashboardController {
     private boolean evaluationsEmbeddedLoaded;
     private boolean coursesEmbeddedLoaded;
     private boolean hackathonEmbeddedLoaded;
+    private boolean reservationMaterielEmbeddedLoaded;
 
     @FXML
     void initialize() {
@@ -142,6 +146,7 @@ public class TeacherDashboardController {
         navButtons.add(btnNavFraud);
         navButtons.add(btnNavStatistics);
         navButtons.add(btnNavStatHackathon);
+        navButtons.add(btnNavReservationMateriel);
         navButtons.add(btnNavProfile);
 
         colMatricule.setCellValueFactory(new PropertyValueFactory<>("numeroEtudiant"));
@@ -230,7 +235,7 @@ public class TeacherDashboardController {
 
     private void showPane(VBox pane) {
         for (VBox p : List.of(paneDashboard, paneFraud, paneCourseMgmt, paneEvalMgmt, paneAbsence,
-                paneStatistics, paneHackathon, paneProfile)) {
+                paneStatistics, paneHackathon, paneReservationMateriel, paneProfile)) {
             boolean on = p == pane;
             p.setVisible(on);
             p.setManaged(on);
@@ -367,6 +372,30 @@ public class TeacherDashboardController {
     void onNavProfile(ActionEvent event) {
         showPane(paneProfile);
         selectNav(btnNavProfile);
+    }
+
+    @FXML
+    void onNavReservationMateriel(ActionEvent event) {
+        ensureReservationMaterielEmbedded();
+        showPane(paneReservationMateriel);
+        selectNav(btnNavReservationMateriel);
+    }
+
+    private void ensureReservationMaterielEmbedded() {
+        if (reservationMaterielEmbeddedLoaded || reservationMaterielShell == null) {
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
+                    getClass().getResource("/GestionReservationMatriel.fxml")));
+            Parent root = loader.load();
+            reservationMaterielShell.setCenter(root);
+            reservationMaterielEmbeddedLoaded = true;
+        } catch (IOException ex) {
+            reservationMaterielEmbeddedLoaded = false;
+            new Alert(Alert.AlertType.ERROR,
+                    "Impossible de charger la réservation matériel : " + ex.getMessage()).showAndWait();
+        }
     }
 
     @FXML
