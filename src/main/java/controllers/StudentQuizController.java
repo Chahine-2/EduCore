@@ -31,6 +31,7 @@ import services.QuestionDAOImpl;
 import services.ReponseDAOImpl;
 import services.ReponseEtudiantDAOImpl;
 import services.ResultatDAOImpl;
+import utils.AppStageLayout;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,7 +47,7 @@ import java.util.Map;
 public class StudentQuizController {
 
     private static final DateTimeFormatter SUBMITTED_FMT =
-            DateTimeFormatter.ofPattern("MMM d, yyyy HH:mm", Locale.ENGLISH);
+            DateTimeFormatter.ofPattern("MMM d, yyyy HH:mm", Locale.FRENCH);
 
     @FXML private BorderPane root;
     @FXML private Label titleLabel;
@@ -103,11 +104,11 @@ public class StudentQuizController {
         initQuestionsAndUi();
         subtitleLabel.setText(evaluation.getDescription() != null && !evaluation.getDescription().isBlank()
                 ? evaluation.getDescription()
-                : "Answer all parts to the best of your ability.");
+                : "Répondez à toutes les questions au mieux de vos capacités.");
         if (!questions.isEmpty()) {
             remainingSeconds = Math.max(60, evaluation.getDureeMinutes() * 60);
             if (timerCaptionLabel != null) {
-                timerCaptionLabel.setText("TIME LEFT");
+                timerCaptionLabel.setText("TEMPS RESTANT");
             }
             updateTimerDisplay();
             startCountdown();
@@ -141,20 +142,20 @@ public class StudentQuizController {
 
         titleLabel.setText(evaluation.getTitre());
         String scorePart = submittedResultat.getScore() == null
-                ? "Score pending"
+                ? "Score en attente"
                 : "Score: " + formatScore(submittedResultat.getScore());
         String when = submittedResultat.getDatePassage() != null
                 ? "Submitted " + submittedResultat.getDatePassage().format(SUBMITTED_FMT)
                 : "Submitted";
-        subtitleLabel.setText("View only · " + when + " · " + scorePart);
+        subtitleLabel.setText("Lecture seule · " + when + " · " + scorePart);
 
         if (timerCaptionLabel != null) {
-            timerCaptionLabel.setText("REVIEW");
+            timerCaptionLabel.setText("RÉVISION");
         }
         timerLabel.getStyleClass().removeAll("quiz-timer-warn", "quiz-timer-critical");
         timerLabel.setText("—");
 
-        submitBtn.setText("Close");
+        submitBtn.setText("Fermer");
         submitBtn.setOnAction(e -> closeQuizWindow());
 
         if (!questions.isEmpty()) {
@@ -188,7 +189,7 @@ public class StudentQuizController {
 
         if (questions.isEmpty()) {
             questionHost.getChildren().clear();
-            Label empty = new Label("This evaluation has no questions yet.");
+            Label empty = new Label("Cette évaluation n'a pas encore de questions.");
             empty.setStyle("-fx-text-fill: #64748b; -fx-font-size: 14px; -fx-padding: 24;");
             questionHost.getChildren().add(empty);
             prevBtn.setDisable(true);
@@ -196,7 +197,7 @@ public class StudentQuizController {
             submitBtn.setDisable(true);
             timerLabel.setText("—");
             progressBar.setProgress(0);
-            progressLabel.setText("No questions");
+            progressLabel.setText("Pas de questions");
             return;
         }
 
@@ -204,7 +205,7 @@ public class StudentQuizController {
             return;
         }
 
-        submitBtn.setText("Submit quiz");
+        submitBtn.setText("Soumettre le quiz");
         submitBtn.setOnAction(e -> handleSubmitClick());
     }
 
@@ -310,9 +311,9 @@ public class StudentQuizController {
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.initOwner(root.getScene().getWindow());
-        confirm.setTitle("Submit quiz");
-        confirm.setHeaderText("Submit your answers?");
-        confirm.setContentText("You will not be able to change responses after submitting.");
+        confirm.setTitle("Soumettre le quiz");
+        confirm.setHeaderText("Soumettre vos réponses ?");
+        confirm.setContentText("Vous ne pourrez plus modifier vos réponses après la soumission.");
 
         ButtonType choice = confirm.showAndWait().orElse(ButtonType.CANCEL);
         if (choice == ButtonType.OK) {
@@ -332,10 +333,10 @@ public class StudentQuizController {
             if (stage != null) {
                 stage.setScene(new Scene(homeRoot));
                 stage.setTitle("EDUCORE");
-                stage.centerOnScreen();
+                AppStageLayout.maximizeWorkArea(stage);
             }
         } catch (Exception e) {
-            alertError("Could not open home page: " + e.getMessage());
+            alertError("Impossible d'ouvrir la page d'accueil : " + e.getMessage());
         }
     }
 
@@ -409,7 +410,7 @@ public class StudentQuizController {
         qText.setWrapText(true);
 
         if (viewMode) {
-            Label reviewBadge = new Label(answeredCorrectly ? "Correct" : hasChosenAnswer ? "Incorrect" : "Not answered");
+            Label reviewBadge = new Label(answeredCorrectly ? "Correct" : hasChosenAnswer ? "Incorrect" : "Pas de réponse");
             reviewBadge.getStyleClass().add(answeredCorrectly ? "quiz-review-badge-correct"
                     : hasChosenAnswer ? "quiz-review-badge-wrong" : "quiz-review-badge-neutral");
             HBox reviewHeader = new HBox(8, reviewBadge);
@@ -428,7 +429,7 @@ public class StudentQuizController {
                     TextArea ta = new TextArea();
                     ta.getStyleClass().add("quiz-textarea");
                     ta.setWrapText(true);
-                    ta.setPromptText("Type your answer here…");
+                    ta.setPromptText("Tapez votre réponse ici…");
                     ta.setText(texteLibreByQuestion.getOrDefault(q.getId(), ""));
                     ta.setEditable(!viewMode);
                     ta.setFocusTraversable(!viewMode);
@@ -443,7 +444,7 @@ public class StudentQuizController {
                     buildChoiceAnswers(q, ordered, answers, false);
                 } else {
                     Label warn = new Label(
-                            "This Vrai/Faux question has no choices in the database. Open question management, edit the question, and save so “Vrai” and “Faux” are created.");
+                            "Cette question Vrai/Faux n'a pas de choix dans la base de données. Ouvrez la gestion des questions, modifiez la question et enregistrez pour que « Vrai » et « Faux » soient créés.");
                     warn.setWrapText(true);
                     warn.setStyle("-fx-text-fill: #b45309;");
                     answers.getChildren().add(warn);
@@ -475,10 +476,10 @@ public class StudentQuizController {
         progressLabel.setText("Question " + (currentIndex + 1) + " / " + questions.size());
 
         if (viewMode) {
-            navHintLabel.setText("Green = correct answers · red = your incorrect answer · explanation shown below");
+            navHintLabel.setText("Vert = bonnes réponses · rouge = votre réponse incorrecte · explication affichée ci-dessous");
         } else {
             int unanswered = countUnanswered();
-            navHintLabel.setText(unanswered > 0 ? unanswered + " question(s) without an answer" : "All questions visited");
+            navHintLabel.setText(unanswered > 0 ? unanswered + " question(s) sans réponse" : "Toutes les questions visitées");
         }
     }
 
@@ -601,15 +602,15 @@ public class StudentQuizController {
         VBox box = new VBox(10);
         box.getStyleClass().add("quiz-review-panel");
 
-        Label heading = new Label("Your answer");
+        Label heading = new Label("Votre réponse");
         heading.getStyleClass().add("quiz-review-panel-title");
 
         String studentAnswer = texteLibreByQuestion.getOrDefault(q.getId(), "");
-        Label your = new Label(studentAnswer.isBlank() ? "No answer submitted." : studentAnswer);
+        Label your = new Label(studentAnswer.isBlank() ? "Aucune réponse soumise." : studentAnswer);
         your.setWrapText(true);
         your.getStyleClass().add("quiz-review-answer-text");
 
-        Label correctLabel = new Label("Correct answer: open response review");
+        Label correctLabel = new Label("Bonne réponse : révision de réponse ouverte");
         correctLabel.getStyleClass().add("quiz-review-meta");
 
         box.getChildren().addAll(heading, your, correctLabel);
@@ -623,23 +624,23 @@ public class StudentQuizController {
 
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
-        Label title = new Label("Explanation");
+        Label title = new Label("Explication");
         title.getStyleClass().add("quiz-review-panel-title");
-        Label badge = new Label(answeredCorrectly ? "Correct" : hasChosenAnswer ? "Incorrect" : "No answer");
+        Label badge = new Label(answeredCorrectly ? "Correct" : hasChosenAnswer ? "Incorrect" : "Pas de réponse");
         badge.getStyleClass().add(answeredCorrectly ? "quiz-review-badge-correct"
                 : hasChosenAnswer ? "quiz-review-badge-wrong" : "quiz-review-badge-neutral");
         header.getChildren().addAll(title, badge);
 
-        Label yourAnswer = new Label("Your answer: " + (selected != null ? selected.getTexte() : "No answer submitted."));
+        Label yourAnswer = new Label("Votre réponse : " + (selected != null ? selected.getTexte() : "Aucune réponse soumise."));
         yourAnswer.setWrapText(true);
         yourAnswer.getStyleClass().add("quiz-review-meta");
 
-        Label correctAnswer = new Label("Correct answer: " + (correct != null ? correct.getTexte() : "Not available"));
+        Label correctAnswer = new Label("Bonne réponse : " + (correct != null ? correct.getTexte() : "Non disponible"));
         correctAnswer.setWrapText(true);
         correctAnswer.getStyleClass().add("quiz-review-meta");
 
         String explanation = resolveExplanation(q, reps, correct);
-        Label explanationTitle = new Label("Teacher / AI explanation");
+        Label explanationTitle = new Label("Explication Enseignant / IA");
         explanationTitle.getStyleClass().add("quiz-review-subtitle");
         Label explanationText = new Label(explanation);
         explanationText.setWrapText(true);
@@ -736,7 +737,7 @@ public class StudentQuizController {
 
         int resultatId = ensureResultatRow();
         if (resultatId <= 0) {
-            alertError("Could not save your attempt. Please try again.");
+            alertError("Impossible d'enregistrer votre tentative. Veuillez réessayer.");
             return;
         }
 
@@ -761,9 +762,9 @@ public class StudentQuizController {
 
         Alert done = new Alert(Alert.AlertType.INFORMATION);
         done.initOwner(root.getScene().getWindow());
-        done.setTitle(timeUp ? "Time is up" : "Submitted");
-        done.setHeaderText(timeUp ? "The quiz closed automatically." : "Your responses were submitted.");
-        done.setContentText("Your attempt has been recorded.");
+        done.setTitle(timeUp ? "Temps écoulé" : "Soumis");
+        done.setHeaderText(timeUp ? "Le quiz s'est fermé automatiquement." : "Vos réponses ont été soumises.");
+        done.setContentText("Votre tentative a été enregistrée.");
         done.showAndWait();
 
         closeQuizWindow();
@@ -790,7 +791,7 @@ public class StudentQuizController {
      * not on a single SSD frame.
      */
     private void detectFraude(String type) {
-        detectFraude(type, "Suspicious behavior detected by anti-cheat module.");
+        detectFraude(type, "Comportement suspect détecté par le module anti-triche.");
     }
 
     private void detectFraude(String type, String description) {

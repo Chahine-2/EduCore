@@ -18,19 +18,19 @@
                 <Insets top="28" right="32" bottom="16" left="32"/>
             </padding>
             <Label text="EDUCORE" style="-fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #4f46e5;"/>
-            <Label text="Choose interface" style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
-            <Label text="Select where you want to enter." wrapText="true"
+            <Label text="Choisir l'interface" style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
+            <Label text="Sélectionnez l'espace où vous souhaitez entrer." wrapText="true"
                    style="-fx-font-size: 14px; -fx-text-fill: #475569;"/>
         </VBox>
     </top>
 
     <center>
         <VBox spacing="14" alignment="CENTER" BorderPane.alignment="CENTER">
-            <Button text="Student Interface" onAction="#handleOpenStudent" prefWidth="320"
+            <Button text="Interface Étudiant" onAction="#handleOpenStudent" prefWidth="320"
                     style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 10; -fx-padding: 12 18;"/>
-            <Button text="Administration Interface" onAction="#handleOpenAdmin" prefWidth="320"
+            <Button text="Interface Administration" onAction="#handleOpenAdmin" prefWidth="320"
                     style="-fx-background-color: white; -fx-text-fill: #1e3a8a; -fx-font-weight: 700; -fx-border-color: #93c5fd; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 12 18;"/>
-            <Button text="Exit" onAction="#handleExit" prefWidth="320"
+            <Button text="Quitter" onAction="#handleExit" prefWidth="320"
                     style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 10; -fx-padding: 12 18;"/>
         </VBox>
     </center>
@@ -40,7 +40,7 @@
             <padding>
                 <Insets top="12" right="32" bottom="24" left="32"/>
             </padding>
-            <Label fx:id="statusLabel" text="Ready" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+            <Label fx:id="statusLabel" text="Prêt" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
             <Region HBox.hgrow="ALWAYS"/>
         </HBox>
     </bottom>

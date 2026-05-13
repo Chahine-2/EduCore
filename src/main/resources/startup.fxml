@@ -19,8 +19,8 @@
                 <Insets top="28" right="32" bottom="16" left="32"/>
             </padding>
             <Label text="EDUCORE" style="-fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #4f46e5;"/>
-            <Label text="Choose Start Page" style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
-            <Label text="Pick which page to enter first." style="-fx-font-size: 14px; -fx-text-fill: #475569;"/>
+            <Label text="Choisir la page de démarrage" style="-fx-font-size: 28px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
+            <Label text="Choisissez la page par laquelle vous souhaitez commencer." style="-fx-font-size: 14px; -fx-text-fill: #475569;"/>
         </VBox>
     </top>
 
@@ -38,7 +38,7 @@
             <padding>
                 <Insets top="12" right="32" bottom="24" left="32"/>
             </padding>
-            <Label fx:id="statusLabel" text="Ready" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+            <Label fx:id="statusLabel" text="Prêt" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
             <Region HBox.hgrow="ALWAYS"/>
         </HBox>
     </bottom>

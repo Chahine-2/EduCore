@@ -26,24 +26,24 @@
     <top>
         <VBox spacing="0">
             <VBox spacing="4" style="-fx-padding: 16 18; -fx-background-color: rgba(255,255,255,0.94); -fx-border-color: #dbeafe; -fx-border-width: 0 0 1 0;">
-                <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Administration / Evaluations" />
-                <Label style="-fx-font-size: 25px; -fx-font-weight: 800; -fx-text-fill: #0f172a;" text="Evaluation Management" />
-                <Label style="-fx-text-fill: #64748b; -fx-font-size: 13px;" text="Define assessment windows, scoring rules, and manage related questions." wrapText="true" />
+                <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Administration / Évaluations" />
+                <Label style="-fx-font-size: 25px; -fx-font-weight: 800; -fx-text-fill: #0f172a;" text="Gestion des évaluations" />
+                <Label style="-fx-text-fill: #64748b; -fx-font-size: 13px;" text="Définissez les périodes d'évaluation, les règles de notation et gérez les questions associées." wrapText="true" />
             </VBox>
 
             <HBox alignment="CENTER_LEFT" spacing="14" style="-fx-padding: 10 18; -fx-background-color: rgba(255,255,255,0.88);">
-                <Label style="-fx-font-weight: 700; -fx-text-fill: #334155;" text="Filter" />
-                <TextField fx:id="searchField" onKeyReleased="#handleSearchKey" prefWidth="250" promptText="Search by title" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #cbd5e1; -fx-border-radius: 10;" />
-                <Button onAction="#handleSearch" style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 10;" text="Apply" />
-                <Button onAction="#handleShowAll" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 10; -fx-background-radius: 10;" text="Clear" />
+                <Label style="-fx-font-weight: 700; -fx-text-fill: #334155;" text="Filtrer" />
+                <TextField fx:id="searchField" onKeyReleased="#handleSearchKey" prefWidth="250" promptText="Rechercher par titre" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #cbd5e1; -fx-border-radius: 10;" />
+                <Button onAction="#handleSearch" style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 10;" text="Appliquer" />
+                <Button onAction="#handleShowAll" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 10; -fx-background-radius: 10;" text="Effacer" />
                 <Separator orientation="VERTICAL" />
-                <Label style="-fx-font-weight: 700; -fx-text-fill: #334155;" text="Sort" />
+                <Label style="-fx-font-weight: 700; -fx-text-fill: #334155;" text="Trier" />
                 <ComboBox fx:id="sortCombo" prefWidth="232" />
                 <Separator orientation="VERTICAL" />
-                <Label style="-fx-font-weight: 700; -fx-text-fill: #334155;" text="Page size" />
+                <Label style="-fx-font-weight: 700; -fx-text-fill: #334155;" text="Taille de page" />
                 <ComboBox fx:id="pageSizeCombo" prefWidth="72" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Label style="-fx-font-weight: 700; -fx-text-fill: #334155;" text="Results" />
+                <Label style="-fx-font-weight: 700; -fx-text-fill: #334155;" text="Résultats" />
                 <Label fx:id="totalLabel" style="-fx-background-color: #eff6ff; -fx-text-fill: #1e40af; -fx-padding: 4 10; -fx-background-radius: 999; -fx-font-weight: 700;" text="0" />
             </HBox>
         </VBox>
@@ -53,39 +53,39 @@
         <SplitPane dividerPositions="0.37" style="-fx-padding: 14;">
             <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                 <VBox maxWidth="Infinity" spacing="12" style="-fx-background-color: rgba(255,255,255,0.96); -fx-background-radius: 12; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-padding: 14;">
-                    <Label style="-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #0f172a;" text="Evaluation record" />
-                    <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Required fields for creation. Select a table row to update or delete." wrapText="true" />
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #0f172a;" text="Enregistrement de l'évaluation" />
+                    <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Champs obligatoires pour la création. Sélectionnez une ligne pour modifier ou supprimer." wrapText="true" />
 
-                    <Label style="-fx-font-weight: 800; -fx-text-fill: #334155;" text="Content" />
+                    <Label style="-fx-font-weight: 800; -fx-text-fill: #334155;" text="Contenu" />
                     <VBox spacing="6">
-                        <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Title" />
-                        <TextField fx:id="titreField" promptText="Assessment title" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;" />
+                        <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Titre" />
+                        <TextField fx:id="titreField" promptText="Titre de l'évaluation" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;" />
                     </VBox>
                     <VBox spacing="6">
                         <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Description" />
-                        <TextArea fx:id="descriptionField" prefRowCount="4" promptText="Instructions shown to students" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;" wrapText="true" />
+                        <TextArea fx:id="descriptionField" prefRowCount="4" promptText="Instructions affichées aux étudiants" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;" wrapText="true" />
                     </VBox>
 
-                    <Label style="-fx-font-weight: 800; -fx-text-fill: #334155;" text="Scoring" />
+                    <Label style="-fx-font-weight: 800; -fx-text-fill: #334155;" text="Notation" />
                     <GridPane hgap="12" vgap="10">
                         <columnConstraints>
                             <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
                             <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
                         </columnConstraints>
                         <VBox spacing="6" GridPane.columnIndex="0">
-                            <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Duration (minutes)" />
+                            <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Durée (minutes)" />
                             <TextField fx:id="dureeField" promptText="60" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;" />
                         </VBox>
                         <VBox spacing="6" GridPane.columnIndex="1">
-                            <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Maximum score" />
+                            <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Score maximum" />
                             <TextField fx:id="noteMaxField" promptText="100" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;" />
                         </VBox>
                         <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                            <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Passing grade" />
+                            <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Note de passage" />
                             <TextField fx:id="notePassageField" promptText="50" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cbd5e1;" />
                         </VBox>
                         <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Created" />
+                            <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Créé le" />
                             <HBox alignment="CENTER_LEFT" style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10;">
                                 <Label fx:id="dateCreationLabel" style="-fx-text-fill: #475569;" text="—" wrapText="true" />
                             </HBox>
@@ -96,12 +96,12 @@
                   </rowConstraints>
                     </GridPane>
 
-                    <Label style="-fx-font-weight: 800; -fx-text-fill: #334155;" text="Availability" />
+                    <Label style="-fx-font-weight: 800; -fx-text-fill: #334155;" text="Disponibilité" />
                     <VBox spacing="10">
-                        <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Start" />
+                        <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Début" />
                         <DatePicker fx:id="dateDebutPicker" maxWidth="Infinity" />
                         <HBox alignment="CENTER_LEFT" spacing="8">
-                            <Label style="-fx-text-fill: #64748b;" text="Time (24h)" />
+                            <Label style="-fx-text-fill: #64748b;" text="Heure (24h)" />
                             <Spinner fx:id="debutHourSpinner" editable="true" prefHeight="23.0" prefWidth="104.0" />
                             <Label text=":" />
                             <Spinner fx:id="debutMinuteSpinner" editable="true" prefHeight="23.0" prefWidth="102.0" />
@@ -110,10 +110,10 @@
                         </HBox>
                     </VBox>
                     <VBox spacing="10">
-                        <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="End" />
+                        <Label style="-fx-font-weight: 700; -fx-text-fill: #475569;" text="Fin" />
                         <DatePicker fx:id="dateFinPicker" maxWidth="Infinity" />
                         <HBox alignment="CENTER_LEFT" spacing="8">
-                            <Label style="-fx-text-fill: #64748b;" text="Time (24h)" />
+                            <Label style="-fx-text-fill: #64748b;" text="Heure (24h)" />
                             <Spinner fx:id="finHourSpinner" editable="true" prefHeight="23.0" prefWidth="105.0" />
                             <Label text=":" />
                             <Spinner fx:id="finMinuteSpinner" editable="true" prefHeight="23.0" prefWidth="105.0" />
@@ -127,10 +127,10 @@
                             <ColumnConstraints hgrow="ALWAYS" minWidth="0" percentWidth="50" />
                             <ColumnConstraints hgrow="ALWAYS" minWidth="0" percentWidth="50" />
                         </columnConstraints>
-                        <Button maxWidth="Infinity" onAction="#handleAdd" style="-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;" text="Create" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <Button maxWidth="Infinity" onAction="#handleUpdate" style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;" text="Save changes" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Button maxWidth="Infinity" onAction="#handleClear" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;" text="Reset form" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <Button maxWidth="Infinity" onAction="#handleDelete" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;" text="Delete" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button maxWidth="Infinity" onAction="#handleAdd" style="-fx-background-color: #0ea5e9; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;" text="Créer" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Button maxWidth="Infinity" onAction="#handleUpdate" style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;" text="Enregistrer" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Button maxWidth="Infinity" onAction="#handleClear" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;" text="Réinitialiser" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Button maxWidth="Infinity" onAction="#handleDelete" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;" text="Supprimer" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <rowConstraints>
                      <RowConstraints />
                      <RowConstraints />
@@ -141,34 +141,34 @@
 
             <VBox spacing="10" style="-fx-padding: 0 0 0 14;">
                 <VBox spacing="2" style="-fx-background-color: rgba(255,255,255,0.96); -fx-background-radius: 12; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-padding: 12;">
-                    <Label style="-fx-font-size: 16px; -fx-font-weight: 800; -fx-text-fill: #0f172a;" text="Published evaluations" />
-                    <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Sort and paginate below. Select a row to load it into the form." />
+                    <Label style="-fx-font-size: 16px; -fx-font-weight: 800; -fx-text-fill: #0f172a;" text="Évaluations publiées" />
+                    <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Triez et paginez ci-dessous. Sélectionnez une ligne pour charger le formulaire." />
                 </VBox>
 
                 <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: rgba(255,255,255,0.92); -fx-padding: 10 12; -fx-background-radius: 10; -fx-border-color: #dbeafe; -fx-border-radius: 10;">
-                    <Button fx:id="prevPageBtn" onAction="#handlePrevPage" text="Previous" />
+                    <Button fx:id="prevPageBtn" onAction="#handlePrevPage" text="Précédent" />
                     <Label fx:id="pageInfoLabel" style="-fx-text-fill: #475569; -fx-font-weight: 700;" text="Page 1 / 1" />
-                    <Button fx:id="nextPageBtn" onAction="#handleNextPage" text="Next" />
+                    <Button fx:id="nextPageBtn" onAction="#handleNextPage" text="Suivant" />
                     <Region HBox.hgrow="ALWAYS" />
-                    <Label style="-fx-text-fill: #64748b;" text="Select a row to edit fields on the left." />
+                    <Label style="-fx-text-fill: #64748b;" text="Sélectionnez une ligne pour modifier les champs à gauche." />
                 </HBox>
 
                 <StackPane style="-fx-background-color: rgba(255,255,255,0.96); -fx-background-radius: 12; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-padding: 10;" VBox.vgrow="ALWAYS">
                     <TableView fx:id="evaluationTable" style="-fx-background-radius: 8;">
                         <columns>
-                            <TableColumn minWidth="100" prefWidth="148" text="Title" />
+                            <TableColumn minWidth="100" prefWidth="148" text="Titre" />
                             <TableColumn minWidth="80" prefWidth="168" text="Description" />
-                            <TableColumn minWidth="56" prefWidth="72" text="Duration" />
-                            <TableColumn minWidth="44" prefWidth="52" text="Pass" />
+                            <TableColumn minWidth="56" prefWidth="72" text="Durée" />
+                            <TableColumn minWidth="44" prefWidth="52" text="Passage" />
                             <TableColumn minWidth="40" prefWidth="48" text="Max" />
-                            <TableColumn minWidth="100" prefWidth="128" text="Start" />
-                            <TableColumn minWidth="100" prefWidth="128" text="End" />
-                            <TableColumn minWidth="90" prefWidth="118" text="Created" />
-                            <TableColumn minWidth="72" prefWidth="92" text="Status" />
+                            <TableColumn minWidth="100" prefWidth="128" text="Début" />
+                            <TableColumn minWidth="100" prefWidth="128" text="Fin" />
+                            <TableColumn minWidth="90" prefWidth="118" text="Créé le" />
+                            <TableColumn minWidth="72" prefWidth="92" text="Statut" />
                             <TableColumn minWidth="500" prefWidth="600" text="Actions" />
                         </columns>
                     </TableView>
-                    <Label fx:id="emptyLabel" alignment="CENTER" style="-fx-background-color: rgba(255,255,255,0.96); -fx-padding: 12; -fx-text-fill: #64748b;" text="No evaluations match the current filter. Clear the filter or create a new evaluation." visible="false" wrapText="true" StackPane.alignment="CENTER" />
+                    <Label fx:id="emptyLabel" alignment="CENTER" style="-fx-background-color: rgba(255,255,255,0.96); -fx-padding: 12; -fx-text-fill: #64748b;" text="Aucune évaluation ne correspond au filtre. Effacez le filtre ou créez une nouvelle évaluation." visible="false" wrapText="true" StackPane.alignment="CENTER" />
                 </StackPane>
             </VBox>
         </SplitPane>
@@ -176,7 +176,7 @@
 
     <bottom>
         <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: rgba(255,255,255,0.94); -fx-padding: 10 16; -fx-border-color: #dbeafe; -fx-border-width: 1 0 0 0;">
-            <Label fx:id="statusLabel" style="-fx-text-fill: #0f766e; -fx-font-weight: 600;" text="Ready" HBox.hgrow="ALWAYS" />
+            <Label fx:id="statusLabel" style="-fx-text-fill: #0f766e; -fx-font-weight: 600;" text="Prêt" HBox.hgrow="ALWAYS" />
             <Label style="-fx-text-fill: #64748b;" text="EDUCORE Learning Platform" />
         </HBox>
     </bottom>

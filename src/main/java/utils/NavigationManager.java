@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 
 /**
@@ -82,6 +83,7 @@ public class NavigationManager {
             Stage stage = new Stage();
             stage.setTitle(title);
             stage.setScene(new Scene(root));
+            AppStageLayout.maximizeWorkArea(stage);
             stage.show();
             
             System.out.println("✅ Nouvelle fenêtre ouverte : " + title);

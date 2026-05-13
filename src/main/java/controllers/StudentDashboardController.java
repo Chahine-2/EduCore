@@ -24,6 +24,7 @@ import models.Utilisateur;
 import services.EvaluationDAOImpl;
 import services.ResultatDAOImpl;
 import services.ServiceCours;
+import utils.AppStageLayout;
 import utils.NavigationManager;
 import utils.UserSession;
 
@@ -101,8 +102,8 @@ public class StudentDashboardController {
         if (user != null) {
             String prenom = safe(user.getPrenom());
             String nom = safe(user.getNom());
-            String display = (prenom.isEmpty() && nom.isEmpty() ? "Student" : (prenom + " " + nom).trim());
-            String welcomeLine = "Welcome back, " + display;
+            String display = (prenom.isEmpty() && nom.isEmpty() ? "Étudiant" : (prenom + " " + nom).trim());
+            String welcomeLine = "Bienvenue, " + display;
             lblWelcome.setText(welcomeLine);
             if (lblWelcomeSub != null) {
                 lblWelcomeSub.setText("Voici un aperçu de votre progression et de vos prochaines échéances.");
@@ -112,7 +113,7 @@ public class StudentDashboardController {
             lblProfileNom.setText(nom.isEmpty() ? "—" : nom);
             lblProfileEmail.setText(safe(user.getEmail()).isEmpty() ? "—" : user.getEmail());
         } else {
-            lblWelcome.setText("Welcome back, Student");
+            lblWelcome.setText("Bienvenue, Étudiant");
             if (lblWelcomeSub != null) {
                 lblWelcomeSub.setText("Voici un aperçu de votre progression et de vos prochaines échéances.");
             }
@@ -134,6 +135,7 @@ public class StudentDashboardController {
                 Stage st = (Stage) scene.getWindow();
                 st.setMinWidth(1024);
                 st.setMinHeight(640);
+                AppStageLayout.maximizeWorkArea(st);
             }
         });
     }
@@ -192,7 +194,7 @@ public class StudentDashboardController {
     }
 
     private void updateClock() {
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEE, d MMM yyyy · HH:mm", Locale.ENGLISH);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEE d MMM yyyy · HH:mm", Locale.FRENCH);
         lblDateTime.setText(fmt.format(LocalDateTime.now()));
     }
 
@@ -356,7 +358,7 @@ public class StudentDashboardController {
         } catch (IOException ex) {
             reservationsLoaded = false;
             new Alert(Alert.AlertType.ERROR,
-                    "Could not load reservations view: " + ex.getMessage()).showAndWait();
+                    "Impossible de charger la vue des réservations : " + ex.getMessage()).showAndWait();
         }
     }
 
@@ -380,7 +382,7 @@ public class StudentDashboardController {
         } catch (IOException ex) {
             statisticsEmbeddedLoaded = false;
             new Alert(Alert.AlertType.ERROR,
-                    "Could not load hackathon statistics: " + ex.getMessage()).showAndWait();
+                    "Impossible de charger les statistiques : " + ex.getMessage()).showAndWait();
         }
     }
 
@@ -413,7 +415,7 @@ public class StudentDashboardController {
     @FXML
     void onNotifications(ActionEvent event) {
         new Alert(Alert.AlertType.INFORMATION,
-                "No new notifications.\n(Evaluation reminders and anti-cheat alerts will appear here.)").showAndWait();
+                "Aucune nouvelle notification.\n(Les rappels d'évaluation et les alertes anti-triche apparaîtront ici.)").showAndWait();
     }
 
     @FXML
@@ -426,11 +428,11 @@ public class StudentDashboardController {
             Parent root = FXMLLoader.load(Objects.requireNonNull(
                     getClass().getResource("/views/Login.fxml")));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 520));
+            stage.setScene(new Scene(root));
             stage.setTitle("EduCore - Connexion");
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
         } catch (IOException ex) {
-            new Alert(Alert.AlertType.ERROR, "Could not load login: " + ex.getMessage()).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Impossible de charger la connexion : " + ex.getMessage()).showAndWait();
         }
     }
 }

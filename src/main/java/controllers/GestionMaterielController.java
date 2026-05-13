@@ -12,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import models.Materiel;
 import services.ServiceMateriel;
+import utils.AppStageLayout;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -160,6 +161,7 @@ public class GestionMaterielController {
             Stage stage = new Stage();
             stage.setTitle("Localisation : " + materielSelectionne.getNom());
             stage.setScene(new Scene(root));
+            AppStageLayout.maximizeWorkArea(stage);
             stage.show();
         } catch (IOException ex) {
             System.out.println("Erreur : " + ex.getMessage());

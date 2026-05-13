@@ -20,13 +20,13 @@
         <VBox spacing="0">
             <VBox spacing="4" styleClass="q-header">
                 <Label text="Administration / Questions" styleClass="q-breadcrumb"/>
-                <Label text="Questions Management" styleClass="q-title"/>
-                <Label fx:id="evaluationTitleLabel" text="Evaluation" styleClass="q-eval-name"/>
-                <Label text="Build your questionnaire: QCM options and vrai/faux only."
+                <Label text="Gestion des questions" styleClass="q-title"/>
+                <Label fx:id="evaluationTitleLabel" text="Évaluation" styleClass="q-eval-name"/>
+                <Label text="Construisez votre questionnaire : options QCM et vrai/faux uniquement."
                        wrapText="true" styleClass="q-sub"/>
             </VBox>
             <HBox alignment="CENTER_LEFT" spacing="14" styleClass="q-toolbar">
-                <Button fx:id="addQuestionBtn" text="+ Add question" onAction="#handleAddQuestion" styleClass="btn-q-accent"/>
+                <Button fx:id="addQuestionBtn" text="+ Ajouter une question" onAction="#handleAddQuestion" styleClass="btn-q-accent"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="questionCountLabel" text="0 questions" styleClass="q-count"/>
             </HBox>
@@ -43,7 +43,7 @@
                 </VBox>
             </ScrollPane>
             <Label fx:id="emptyLabel"
-                   text="No questions yet. Use Add question to create your first item."
+                   text="Pas encore de questions. Utilisez Ajouter une question pour créer votre premier élément."
                    styleClass="empty-questions"
                    visible="true"
                    StackPane.alignment="CENTER"/>
@@ -52,7 +52,7 @@
 
     <bottom>
         <HBox alignment="CENTER_LEFT" styleClass="q-footer">
-            <Label fx:id="statusLabel" text="Ready" styleClass="q-status-ok"/>
+            <Label fx:id="statusLabel" text="Prêt" styleClass="q-status-ok"/>
         </HBox>
     </bottom>
 </BorderPane>

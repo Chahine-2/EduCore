@@ -29,6 +29,7 @@ import models.Hackathon;
 import models.Utilisateur;
 import services.ServiceHackathon;
 import services.UtilisateurService;
+import utils.AppStageLayout;
 import utils.UserSession;
 
 import java.io.IOException;
@@ -103,6 +104,7 @@ public class AdminDashboardController implements Initializable {
                 Stage st = (Stage) lblWelcome.getScene().getWindow();
                 st.setMinWidth(1050);
                 st.setMinHeight(640);
+                AppStageLayout.maximizeWorkArea(st);
             }
         });
     }
@@ -150,6 +152,7 @@ public class AdminDashboardController implements Initializable {
             stage.setScene(new Scene(root));
             stage.setTitle("Ajouter un Étudiant");
             stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
             stage.showAndWait();
             chargerUtilisateurs();
         } catch (IOException e) {
@@ -167,6 +170,7 @@ public class AdminDashboardController implements Initializable {
             stage.setScene(new Scene(root));
             stage.setTitle("Ajouter un Enseignant");
             stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
             stage.showAndWait();
             chargerUtilisateurs();
         } catch (IOException e) {
@@ -210,8 +214,9 @@ public class AdminDashboardController implements Initializable {
 
             Stage stage = new Stage();
             stage.setTitle("Gestion du matériel");
-            stage.setScene(new Scene(root, 1100, 750));
+            stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
@@ -227,8 +232,9 @@ public class AdminDashboardController implements Initializable {
 
             Stage stage = new Stage();
             stage.setTitle("Statistiques du matériel");
-            stage.setScene(new Scene(root, 1100, 750));
+            stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
@@ -243,9 +249,10 @@ public class AdminDashboardController implements Initializable {
             Parent root = loader.load();
 
             Stage stage = new Stage();
-            stage.setScene(new Scene(root, 1000, 840));
+            stage.setScene(new Scene(root));
             stage.setTitle("Statistiques Hackathon");
             stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -261,8 +268,9 @@ public class AdminDashboardController implements Initializable {
 
             Stage stage = new Stage();
             stage.setTitle("Gestion Hackathon");
-            stage.setScene(new Scene(root, 1000, 700));
+            stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
@@ -279,9 +287,9 @@ public class AdminDashboardController implements Initializable {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/views/Login.fxml")));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 500));
+            stage.setScene(new Scene(root));
             stage.setTitle("EduCore - Connexion");
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -315,6 +323,7 @@ public class AdminDashboardController implements Initializable {
             stage.setScene(new Scene(root));
             stage.setTitle("Modifier Utilisateur");
             stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
             stage.showAndWait();
             chargerUtilisateurs();
         } catch (IOException e) {
@@ -384,6 +393,7 @@ public class AdminDashboardController implements Initializable {
             stage.setScene(new Scene(root));
             stage.setTitle("Sécurité - Journal des connexions");
             stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

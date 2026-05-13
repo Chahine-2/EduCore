@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import utils.AppStageLayout;
 
 public class HomeController {
 
@@ -13,7 +14,7 @@ public class HomeController {
 
     @FXML
     private void handleOpenStudent() {
-        openInSameWindow("/student-portal.fxml", "EDUCORE · Student");
+        openInSameWindow("/student-portal.fxml", "EDUCORE · Étudiant");
     }
 
     @FXML
@@ -39,9 +40,9 @@ public class HomeController {
             }
             stage.setScene(new Scene(root));
             stage.setTitle(title);
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
         } catch (Exception e) {
-            statusLabel.setText("Could not open interface: " + e.getMessage());
+            statusLabel.setText("Impossible d'ouvrir l'interface : " + e.getMessage());
         }
     }
 

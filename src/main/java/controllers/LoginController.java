@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import models.Utilisateur;
 import services.UtilisateurService;
+import utils.AppStageLayout;
 import utils.UserSession;
 
 import java.io.IOException;
@@ -90,9 +91,9 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 1100, 720));
+            stage.setScene(new Scene(root));
             stage.setTitle("EduCore - Tableau de bord " + roleNom);
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
             stage.show();
 
         } catch (IOException e) {
@@ -107,9 +108,9 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 450, 650));
+            stage.setScene(new Scene(root));
             stage.setTitle("EduCore - Inscription Étudiant");
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
 
         } catch (IOException e) {
             e.printStackTrace();

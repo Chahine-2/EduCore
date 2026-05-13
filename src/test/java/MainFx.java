@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import utils.AppStageLayout;
+
 import java.io.IOException;
 
 public class MainFx extends Application {
@@ -58,7 +60,7 @@ public class MainFx extends Application {
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setTitle("EduCore - Plateforme d'apprentissage");
-            primaryStage.setMaximized(true);
+            AppStageLayout.maximizeWorkArea(primaryStage);
             primaryStage.show();
 
             System.out.println("✅ Application démarrée avec succès");

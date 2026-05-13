@@ -12,6 +12,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import utils.AppStageLayout;
 import utils.NavigationManager;
 
 import java.io.IOException;
@@ -187,11 +188,12 @@ public class AccueilController {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Etudiant.fxml")));
         Stage stage = new Stage();
         stage.setTitle("EduCore — Catalogue de cours");
-        stage.setScene(new Scene(root, 1000, 720));
+        stage.setScene(new Scene(root));
         Node src = event != null && event.getSource() instanceof Node n ? n : btnContinuer;
         if (src.getScene() != null && src.getScene().getWindow() != null) {
             stage.initOwner(src.getScene().getWindow());
         }
+        AppStageLayout.maximizeWorkArea(stage);
         stage.show();
     }
 

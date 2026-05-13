@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import utils.AppStageLayout;
 
 import java.io.IOException;
 
@@ -22,6 +23,7 @@ public class MainFx extends Application {
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Site Éducatif — Gestion des Réservations");
+            AppStageLayout.maximizeWorkArea(primaryStage);
             primaryStage.show();
         } catch (IOException e) {
             System.out.println(e.getMessage());

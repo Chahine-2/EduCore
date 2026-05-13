@@ -18,6 +18,7 @@ import models.Enseignant;
 import models.Etudiant;
 import models.Role;
 import services.UtilisateurService;
+import utils.AppStageLayout;
 
 import java.io.IOException;
 
@@ -139,9 +140,9 @@ public class InscriptionController {
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 500));
+            stage.setScene(new Scene(root));
             stage.setTitle("EduCore - Connexion");
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }

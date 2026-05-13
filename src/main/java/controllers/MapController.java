@@ -50,8 +50,8 @@ public class MapController {
                 "<b>Code:</b> " + m.getCode() + "<br>" +
                 "<b>Etat:</b> " + m.getEtat() + "<br>" +
                 "<b>Salle:</b> " + m.getSalleNom() + "<br>" +
-                "<b>Departement:</b> " + m.getDepartementNom() + "<br>" +
-                "<b>Quantite:</b> " + m.getQuantite() + "" +
+                "<b>Département:</b> " + m.getDepartementNom() + "<br>" +
+                "<b>Quantité:</b> " + m.getQuantite() + "" +
                 "</div>'" +
                 ").openPopup();" +
                 "L.circle([" + lat + "," + lon + "], {" +

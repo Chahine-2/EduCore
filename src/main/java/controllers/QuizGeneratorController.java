@@ -20,6 +20,7 @@ import models.QuestionType;
 import services.QuizGenerationService;
 import services.QuestionDAOImpl;
 import services.ReponseDAOImpl;
+import utils.AppStageLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -324,6 +325,7 @@ public class QuizGeneratorController {
             stage.setTitle("Générateur de quiz AI");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
@@ -344,6 +346,7 @@ public class QuizGeneratorController {
             stage.setTitle("Générateur de quiz AI — " + (evaluation != null ? evaluation.getTitre() : ""));
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();

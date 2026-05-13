@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
 import models.Evaluation;
 import services.EvaluationDAOImpl;
+import utils.AppStageLayout;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ import java.util.Locale;
 public class EvaluationController {
 
     private static final DateTimeFormatter DATE_DISPLAY_FORMATTER = DateTimeFormatter.ofPattern("MMM d, yyyy · HH:mm")
-            .withLocale(Locale.ENGLISH);
+            .withLocale(Locale.FRENCH);
 
     @FXML private TextField titreField;
     @FXML private TextArea descriptionField;
@@ -74,15 +75,15 @@ public class EvaluationController {
         initAvailabilityControls();
 
         sortCombo.setItems(FXCollections.observableArrayList(
-                "Start date · newest first",
-                "Start date · oldest first",
-                "End date · latest first",
-                "End date · earliest first",
-                "Created · newest first",
-                "Created · oldest first",
-                "Title · A to Z",
-                "Title · Z to A",
-                "Status · Upcoming → Active → Closed"
+                "Date de début · plus récent",
+                "Date de début · plus ancien",
+                "Date de fin · plus récent",
+                "Date de fin · plus ancien",
+                "Créé le · plus récent",
+                "Créé le · plus ancien",
+                "Titre · A à Z",
+                "Titre · Z à A",
+                "Statut · À venir → Actif → Fermé"
         ));
         sortCombo.getSelectionModel().selectFirst();
 
@@ -107,8 +108,8 @@ public class EvaluationController {
     }
 
     private void initAvailabilityControls() {
-        dateDebutPicker.setPromptText("Select date");
-        dateFinPicker.setPromptText("Select date");
+        dateDebutPicker.setPromptText("Choisir une date");
+        dateFinPicker.setPromptText("Choisir une date");
         wireTimeSpinner(debutHourSpinner, 0, 23, 8);
         wireTimeSpinner(debutMinuteSpinner, 0, 59, 0);
         wireTimeSpinner(debutSecondSpinner, 0, 59, 0);
@@ -170,7 +171,7 @@ public class EvaluationController {
             if (cur != null) {
                 populateFormFromEvaluation(cur);
                 selectedEvaluation = cur;
-                setStatus("Loaded: " + cur.getTitre(), false);
+                setStatus("Chargé : " + cur.getTitre(), false);
             }
         });
     }
@@ -241,9 +242,9 @@ public class EvaluationController {
                 Label badge = new Label(item);
                 badge.getStyleClass().setAll("status-pill");
                 switch (item) {
-                    case "Active" -> badge.getStyleClass().add("status-pill-active");
-                    case "Upcoming" -> badge.getStyleClass().add("status-pill-upcoming");
-                    case "Closed" -> badge.getStyleClass().add("status-pill-closed");
+                    case "Active" -> badge.getStyleClass().add("status-pill-active"); // CSS uses English class names usually
+                    case "À venir" -> badge.getStyleClass().add("status-pill-upcoming");
+                    case "Fermé" -> badge.getStyleClass().add("status-pill-closed");
                     default -> badge.getStyleClass().add("status-pill-unknown");
                 }
                 setGraphic(badge);
@@ -279,15 +280,15 @@ public class EvaluationController {
         actionBox.setAlignment(Pos.CENTER_LEFT);
         actionBox.setPadding(new Insets(4, 6, 4, 6));
 
-        Button btnView = new Button("View");
+        Button btnView = new Button("Voir");
         btnView.getStyleClass().addAll("btn-row", "btn-row-view");
         btnView.setOnAction(e -> handleViewDetails(evaluation));
 
-        Button btnEdit = new Button("Edit");
+        Button btnEdit = new Button("Modifier");
         btnEdit.getStyleClass().addAll("btn-row", "btn-row-edit");
         btnEdit.setOnAction(e -> handleEditEvaluation(evaluation));
 
-        Button btnDelete = new Button("Delete");
+        Button btnDelete = new Button("Supprimer");
         btnDelete.getStyleClass().addAll("btn-row", "btn-row-delete");
         btnDelete.setOnAction(e -> handleDeleteEvaluation(evaluation));
 
@@ -295,7 +296,7 @@ public class EvaluationController {
         btnQuestions.getStyleClass().addAll("btn-row", "btn-row-questions");
         btnQuestions.setOnAction(e -> handleManageQuestions(evaluation));
 
-        Button btnAI = new Button("Generate AI");
+        Button btnAI = new Button("Générer par IA");
         // Reuse existing 'questions' pill style so the new button matches the UI
         btnAI.getStyleClass().addAll("btn-row", "btn-row-questions");
         btnAI.setOnAction(e -> {
@@ -320,10 +321,10 @@ public class EvaluationController {
 
         if (start != null && end != null) {
             if (now.isBefore(start)) {
-                return "Upcoming";
+                return "À venir";
             }
             if (now.isAfter(end)) {
-                return "Closed";
+                return "Fermé";
             }
             return "Active";
         }
@@ -332,9 +333,9 @@ public class EvaluationController {
 
     private int statusSortKey(Evaluation e) {
         return switch (computeStatusLabel(e)) {
-            case "Upcoming" -> 0;
+            case "À venir" -> 0;
             case "Active" -> 1;
-            case "Closed" -> 2;
+            case "Fermé" -> 2;
             default -> 3;
         };
     }
@@ -357,7 +358,7 @@ public class EvaluationController {
     @FXML
     private void handleNewEvaluation() {
         handleClear();
-        setStatus("New evaluation — fill the form and click Save (create).", false);
+        setStatus("Nouvelle évaluation — remplissez le formulaire et cliquez sur Créer.", false);
     }
 
     @FXML
@@ -376,18 +377,18 @@ public class EvaluationController {
             LocalDateTime dateFin = combineDateAndTime(dateFinPicker, finHourSpinner, finMinuteSpinner, finSecondSpinner);
 
             if (notePassage > noteMax) {
-                showError("Passing grade cannot exceed max score.");
+                showError("La note de passage ne peut pas dépasser le score maximum.");
                 return;
             }
 
             Evaluation evaluation = new Evaluation(titre, description, duree, noteMax, notePassage, dateDebut, dateFin);
             evaluationDAO.add(evaluation);
 
-            setStatus("Evaluation created.", true);
+            setStatus("Évaluation créée.", true);
             clearForm();
             loadAllEvaluations();
         } catch (Exception e) {
-            showError("Could not create evaluation: " + e.getMessage());
+            showError("Impossible de créer l'évaluation : " + e.getMessage());
         }
     }
 
@@ -395,7 +396,7 @@ public class EvaluationController {
     private void handleUpdate() {
         try {
             if (selectedEvaluation == null) {
-                showError("Select an evaluation in the table (or use Edit on a row).");
+                showError("Sélectionnez une évaluation dans le tableau.");
                 return;
             }
             if (!validateForm()) {
@@ -411,7 +412,7 @@ public class EvaluationController {
             LocalDateTime dateFin = combineDateAndTime(dateFinPicker, finHourSpinner, finMinuteSpinner, finSecondSpinner);
 
             if (notePassage > noteMax) {
-                showError("Passing grade cannot exceed max score.");
+                showError("La note de passage ne peut pas dépasser le score maximum.");
                 return;
             }
 
@@ -419,11 +420,11 @@ public class EvaluationController {
                     notePassage, dateDebut, dateFin, selectedEvaluation.getDateCreation());
             evaluationDAO.update(updated);
 
-            setStatus("Evaluation updated.", true);
+            setStatus("Évaluation mise à jour.", true);
             clearForm();
             loadAllEvaluations();
         } catch (Exception e) {
-            showError("Could not update evaluation: " + e.getMessage());
+            showError("Impossible de mettre à jour l'évaluation : " + e.getMessage());
         }
     }
 
@@ -431,23 +432,23 @@ public class EvaluationController {
     private void handleDelete() {
         try {
             if (selectedEvaluation == null) {
-                showError("Select an evaluation to delete.");
+                showError("Sélectionnez une évaluation à supprimer.");
                 return;
             }
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm delete");
-            alert.setHeaderText("Delete this evaluation?");
+            alert.setTitle("Confirmer la suppression");
+            alert.setHeaderText("Supprimer cette évaluation ?");
             alert.setContentText(selectedEvaluation.getTitre());
 
             if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
                 evaluationDAO.delete(selectedEvaluation.getId());
-                setStatus("Evaluation deleted.", true);
+                setStatus("Évaluation supprimée.", true);
                 clearForm();
                 loadAllEvaluations();
             }
         } catch (Exception e) {
-            showError("Could not delete: " + e.getMessage());
+            showError("Impossible de supprimer : " + e.getMessage());
         }
     }
 
@@ -455,7 +456,7 @@ public class EvaluationController {
     private void handleSearch() {
         currentPageIndex = 0;
         applyViewPipeline();
-        setStatus("Filtered list updated.", false);
+        setStatus("Liste filtrée mise à jour.", false);
     }
 
     @FXML
@@ -469,7 +470,7 @@ public class EvaluationController {
         searchField.clear();
         currentPageIndex = 0;
         applyViewPipeline();
-        setStatus("Showing all evaluations.", false);
+        setStatus("Affichage de toutes les évaluations.", false);
     }
 
     @FXML
@@ -492,17 +493,17 @@ public class EvaluationController {
 
     private void handleViewDetails(Evaluation evaluation) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Evaluation details");
+        alert.setTitle("Détails de l'évaluation");
         alert.setHeaderText(evaluation.getTitre());
         alert.setContentText(
                 "Description:\n" + (evaluation.getDescription() == null ? "—" : evaluation.getDescription()) + "\n\n"
-                        + "Duration: " + evaluation.getDureeMinutes() + " min\n"
-                        + "Passing grade: " + evaluation.getNotePassage() + "\n"
-                        + "Max score: " + evaluation.getNoteMax() + "\n"
-                        + "Start: " + formatDateTime(evaluation.getDateDebut()) + "\n"
-                        + "End: " + formatDateTime(evaluation.getDateFin()) + "\n"
-                        + "Created: " + formatDateTime(evaluation.getDateCreation()) + "\n"
-                        + "Status: " + computeStatusLabel(evaluation)
+                        + "Durée : " + evaluation.getDureeMinutes() + " min\n"
+                        + "Note de passage : " + evaluation.getNotePassage() + "\n"
+                        + "Score maximum : " + evaluation.getNoteMax() + "\n"
+                        + "Début : " + formatDateTime(evaluation.getDateDebut()) + "\n"
+                        + "Fin : " + formatDateTime(evaluation.getDateFin()) + "\n"
+                        + "Créé le : " + formatDateTime(evaluation.getDateCreation()) + "\n"
+                        + "Statut : " + computeStatusLabel(evaluation)
         );
         alert.showAndWait();
     }
@@ -511,13 +512,13 @@ public class EvaluationController {
         evaluationTable.getSelectionModel().select(evaluation);
         populateFormFromEvaluation(evaluation);
         selectedEvaluation = evaluation;
-        setStatus("Editing: " + evaluation.getTitre(), false);
+        setStatus("Modification : " + evaluation.getTitre(), false);
     }
 
     private void handleDeleteEvaluation(Evaluation evaluation) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete evaluation");
-        alert.setHeaderText("Permanently delete?");
+        alert.setTitle("Supprimer l'évaluation");
+        alert.setHeaderText("Supprimer définitivement ?");
         alert.setContentText(evaluation.getTitre());
 
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
@@ -525,7 +526,7 @@ public class EvaluationController {
             if (selectedEvaluation != null && selectedEvaluation.getId() == evaluation.getId()) {
                 clearForm();
             }
-            setStatus("Evaluation deleted.", true);
+            setStatus("Évaluation supprimée.", true);
             loadAllEvaluations();
         }
     }
@@ -538,18 +539,16 @@ public class EvaluationController {
             controller.setEvaluation(evaluation);
             Stage stage = new Stage();
             stage.setTitle("Questions — " + evaluation.getTitre());
-            stage.setScene(new Scene(root, 980, 760));
-            stage.setMinWidth(720);
-            stage.setMinHeight(520);
+            stage.setScene(new Scene(root));
             if (evaluationTable.getScene() != null && evaluationTable.getScene().getWindow() != null) {
                 stage.initOwner(evaluationTable.getScene().getWindow());
                 stage.initModality(Modality.WINDOW_MODAL);
             }
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Could not open questions: " + e.getMessage());
+            showError("Impossible d'ouvrir les questions : " + e.getMessage());
         }
     }
 
@@ -558,9 +557,9 @@ public class EvaluationController {
             List<Evaluation> evaluations = evaluationDAO.getAll();
             masterEvaluations.setAll(evaluations);
             applyViewPipeline();
-            setStatus("Ready", true);
+            setStatus("Prêt", true);
         } catch (RuntimeException e) {
-            setStatus("Unable to load evaluations.", false, true);
+            setStatus("Impossible de charger les évaluations.", false, true);
             masterEvaluations.clear();
             evaluationTable.setItems(FXCollections.observableArrayList());
             emptyLabel.setVisible(true);
@@ -597,7 +596,7 @@ public class EvaluationController {
         emptyLabel.setVisible(total == 0);
         evaluationTable.setVisible(total > 0);
 
-        pageInfoLabel.setText(String.format("Page %d of %d · %d item(s)",
+        pageInfoLabel.setText(String.format("Page %d sur %d · %d élément(s)",
                 currentPageIndex + 1, pageCount, total));
 
         prevPageBtn.setDisable(currentPageIndex <= 0);
@@ -610,25 +609,25 @@ public class EvaluationController {
             return Comparator.comparing(Evaluation::getDateDebut, Comparator.nullsLast(Comparator.reverseOrder()));
         }
         return switch (mode) {
-            case "Start date · newest first" ->
+            case "Date de début · plus récent" ->
                     Comparator.comparing(Evaluation::getDateDebut, Comparator.nullsLast(Comparator.reverseOrder()));
-            case "Start date · oldest first" ->
+            case "Date de début · plus ancien" ->
                     Comparator.comparing(Evaluation::getDateDebut, Comparator.nullsLast(Comparator.naturalOrder()));
-            case "End date · latest first" ->
+            case "Date de fin · plus récent" ->
                     Comparator.comparing(Evaluation::getDateFin, Comparator.nullsLast(Comparator.reverseOrder()));
-            case "End date · earliest first" ->
+            case "Date de fin · plus ancien" ->
                     Comparator.comparing(Evaluation::getDateFin, Comparator.nullsLast(Comparator.naturalOrder()));
-            case "Created · newest first" ->
+            case "Créé le · plus récent" ->
                     Comparator.comparing(Evaluation::getDateCreation, Comparator.nullsLast(Comparator.reverseOrder()));
-            case "Created · oldest first" ->
+            case "Créé le · plus ancien" ->
                     Comparator.comparing(Evaluation::getDateCreation, Comparator.nullsLast(Comparator.naturalOrder()));
-            case "Title · A to Z" ->
+            case "Titre · A à Z" ->
                     Comparator.comparing(e -> e.getTitre() != null ? e.getTitre().toLowerCase(Locale.ROOT) : "",
                             Comparator.naturalOrder());
-            case "Title · Z to A" ->
+            case "Titre · Z à A" ->
                     Comparator.comparing(e -> e.getTitre() != null ? e.getTitre().toLowerCase(Locale.ROOT) : "",
                             Comparator.reverseOrder());
-            case "Status · Upcoming → Active → Closed" ->
+            case "Statut · À venir → Actif → Fermé" ->
                     Comparator.comparing(this::statusSortKey).thenComparing(Evaluation::getDateDebut,
                             Comparator.nullsLast(Comparator.naturalOrder()));
             default ->
@@ -663,7 +662,7 @@ public class EvaluationController {
 
     private boolean validateForm() {
         if (titreField.getText() == null || titreField.getText().trim().isEmpty()) {
-            showError("Title is required.");
+            showError("Le titre est obligatoire.");
             return false;
         }
         try {
@@ -671,22 +670,22 @@ public class EvaluationController {
             Float.parseFloat(noteMaxField.getText().trim());
             Float.parseFloat(notePassageField.getText().trim());
         } catch (NumberFormatException e) {
-            showError("Check duration and numeric score fields.");
+            showError("Vérifiez la durée et les champs de score numériques.");
             return false;
         }
 
         LocalDateTime start = combineDateAndTime(dateDebutPicker, debutHourSpinner, debutMinuteSpinner, debutSecondSpinner);
         LocalDateTime end = combineDateAndTime(dateFinPicker, finHourSpinner, finMinuteSpinner, finSecondSpinner);
         if (start == null) {
-            showError("Choose a start date from the calendar.");
+            showError("Choisissez une date de début dans le calendrier.");
             return false;
         }
         if (end == null) {
-            showError("Choose an end date from the calendar.");
+            showError("Choisissez une date de fin dans le calendrier.");
             return false;
         }
         if (!end.isAfter(start)) {
-            showError("End date and time must be after the start.");
+            showError("La date et l'heure de fin doivent être après le début.");
             return false;
         }
         return true;

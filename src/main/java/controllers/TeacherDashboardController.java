@@ -43,6 +43,7 @@ import services.EvaluationDAOImpl;
 import services.FraudeLogDAOImpl;
 import services.ResultatDAOImpl;
 import services.UtilisateurService;
+import utils.AppStageLayout;
 import utils.UserSession;
 
 import java.io.IOException;
@@ -158,13 +159,13 @@ public class TeacherDashboardController {
             String prenom = safe(user.getPrenom());
             String nom = safe(user.getNom());
             String display = (prenom + " " + nom).trim();
-            lblWelcome.setText(display.isEmpty() ? "Welcome, Professor" : "Welcome, Professor " + display);
+            lblWelcome.setText(display.isEmpty() ? "Bienvenue, Professeur" : "Bienvenue, Professeur " + display);
             lblAvatarInitials.setText(initials(prenom, nom));
             lblProfilePrenom.setText(prenom.isEmpty() ? "—" : prenom);
             lblProfileNom.setText(nom.isEmpty() ? "—" : nom);
             lblProfileEmail.setText(safe(user.getEmail()).isEmpty() ? "—" : user.getEmail());
         } else {
-            lblWelcome.setText("Welcome, Professor");
+            lblWelcome.setText("Bienvenue, Professeur");
             lblAvatarInitials.setText("?");
             lblProfilePrenom.setText("—");
             lblProfileNom.setText("—");
@@ -183,6 +184,7 @@ public class TeacherDashboardController {
                 Stage st = (Stage) scene.getWindow();
                 st.setMinWidth(1100);
                 st.setMinHeight(680);
+                AppStageLayout.maximizeWorkArea(st);
             }
         });
     }
@@ -200,7 +202,7 @@ public class TeacherDashboardController {
     }
 
     private void updateClock() {
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEE, d MMM yyyy ' - ' HH:mm", Locale.ENGLISH);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEE d MMM yyyy ' - ' HH:mm", Locale.FRENCH);
         lblDateTime.setText(fmt.format(LocalDateTime.now()));
     }
 
@@ -279,7 +281,7 @@ public class TeacherDashboardController {
         } catch (IOException ex) {
             coursesEmbeddedLoaded = false;
             new Alert(Alert.AlertType.ERROR,
-                    "Could not load course management: " + ex.getMessage()).showAndWait();
+                    "Impossible de charger la gestion des cours : " + ex.getMessage()).showAndWait();
         }
     }
 
@@ -303,7 +305,7 @@ public class TeacherDashboardController {
         } catch (IOException ex) {
             evaluationsEmbeddedLoaded = false;
             new Alert(Alert.AlertType.ERROR,
-                    "Could not load evaluation module: " + ex.getMessage()).showAndWait();
+                    "Impossible de charger le module d'évaluation : " + ex.getMessage()).showAndWait();
         }
     }
 
@@ -357,7 +359,7 @@ public class TeacherDashboardController {
         } catch (IOException ex) {
             hackathonEmbeddedLoaded = false;
             new Alert(Alert.AlertType.ERROR,
-                    "Could not load hackathon statistics: " + ex.getMessage()).showAndWait();
+                    "Impossible de charger les statistiques du hackathon : " + ex.getMessage()).showAndWait();
         }
     }
 
@@ -385,14 +387,14 @@ public class TeacherDashboardController {
     @FXML
     void onNotifications(ActionEvent event) {
         new Alert(Alert.AlertType.INFORMATION,
-                "No critical notifications.\n(Evaluation deadlines and integrity alerts will surface here.)").showAndWait();
+                "Aucune notification critique.\n(Les échéances d'évaluation et les alertes d'intégrité apparaîtront ici.)").showAndWait();
     }
 
     @FXML
     void chargerEtudiants(ActionEvent event) {
         String classeChoisie = comboClasse.getValue();
         if (classeChoisie == null || classeChoisie.isEmpty()) {
-            afficherAlerte("Selection required", "Please choose a class.");
+            afficherAlerte("Sélection requise", "Veuillez choisir une classe.");
             return;
         }
         listeEtudiants.clear();
@@ -414,7 +416,7 @@ public class TeacherDashboardController {
     private void enregistrerAppel(String statut) {
         Etudiant etudiantSelect = tableEtudiants.getSelectionModel().getSelectedItem();
         if (etudiantSelect == null) {
-            afficherAlerte("Selection required", "Select a student row in the table first.");
+            afficherAlerte("Sélection requise", "Sélectionnez d'abord un étudiant dans le tableau.");
             return;
         }
         if (service.enregistrerPresence(etudiantSelect.getId(), statut)) {
@@ -422,7 +424,7 @@ public class TeacherDashboardController {
             tableEtudiants.refresh();
             tableEtudiants.getSelectionModel().selectNext();
         } else {
-            afficherAlerte("Database error", "Could not save attendance.");
+            afficherAlerte("Erreur de base de données", "Impossible d'enregistrer la présence.");
         }
     }
 
@@ -436,11 +438,11 @@ public class TeacherDashboardController {
             Parent root = FXMLLoader.load(Objects.requireNonNull(
                     getClass().getResource("/views/Login.fxml")));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 520));
+            stage.setScene(new Scene(root));
             stage.setTitle("EduCore - Connexion");
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
         } catch (IOException ex) {
-            new Alert(Alert.AlertType.ERROR, "Could not load login: " + ex.getMessage()).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Impossible de charger la connexion : " + ex.getMessage()).showAndWait();
         }
     }
 
@@ -453,30 +455,30 @@ public class TeacherDashboardController {
     }
 
     private void wireTeacherAnalyticsUi() {
-        TableColumn<TeacherFraudAuditRow, String> cWhen = new TableColumn<>("Detected");
+        TableColumn<TeacherFraudAuditRow, String> cWhen = new TableColumn<>("Détecté le");
         cWhen.setPrefWidth(150);
         cWhen.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().detectedAt()));
 
-        TableColumn<TeacherFraudAuditRow, String> cStudent = new TableColumn<>("Student");
+        TableColumn<TeacherFraudAuditRow, String> cStudent = new TableColumn<>("Étudiant");
         cStudent.setPrefWidth(200);
         cStudent.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().student()));
 
-        TableColumn<TeacherFraudAuditRow, String> cEval = new TableColumn<>("Evaluation");
+        TableColumn<TeacherFraudAuditRow, String> cEval = new TableColumn<>("Évaluation");
         cEval.setPrefWidth(180);
         cEval.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().evaluation()));
 
-        TableColumn<TeacherFraudAuditRow, String> cType = new TableColumn<>("Event type");
+        TableColumn<TeacherFraudAuditRow, String> cType = new TableColumn<>("Type d'événement");
         cType.setPrefWidth(160);
         cType.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().fraudType()));
 
-        TableColumn<TeacherFraudAuditRow, String> cDesc = new TableColumn<>("Details");
+        TableColumn<TeacherFraudAuditRow, String> cDesc = new TableColumn<>("Détails");
         cDesc.setPrefWidth(360);
         cDesc.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().description()));
 
         tableFraudReports.getColumns().setAll(cWhen, cStudent, cEval, cType, cDesc);
         tableFraudReports.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
-        TableColumn<TeacherEvalAttemptRow, String> eStudent = new TableColumn<>("Student");
+        TableColumn<TeacherEvalAttemptRow, String> eStudent = new TableColumn<>("Étudiant");
         eStudent.setPrefWidth(200);
         eStudent.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().student()));
 
@@ -484,15 +486,15 @@ public class TeacherDashboardController {
         eScore.setPrefWidth(110);
         eScore.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().score()));
 
-        TableColumn<TeacherEvalAttemptRow, String> eOutcome = new TableColumn<>("Outcome");
+        TableColumn<TeacherEvalAttemptRow, String> eOutcome = new TableColumn<>("Résultat");
         eOutcome.setPrefWidth(120);
         eOutcome.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().outcome()));
 
-        TableColumn<TeacherEvalAttemptRow, String> eIntegrity = new TableColumn<>("Integrity");
+        TableColumn<TeacherEvalAttemptRow, String> eIntegrity = new TableColumn<>("Intégrité");
         eIntegrity.setPrefWidth(130);
         eIntegrity.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().integrity()));
 
-        TableColumn<TeacherEvalAttemptRow, String> eWhen = new TableColumn<>("Completed");
+        TableColumn<TeacherEvalAttemptRow, String> eWhen = new TableColumn<>("Terminé le");
         eWhen.setPrefWidth(160);
         eWhen.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().completedAt()));
 
@@ -524,8 +526,8 @@ public class TeacherDashboardController {
         lblFraudMetricStudents.setText(String.valueOf(distinctStudents));
         lblFraudMetricResults.setText(String.valueOf(flaggedResults));
         lblFraudHeadline.setText(rows.isEmpty()
-                ? "No anti-cheat events recorded yet. Events appear when the proctoring pipeline logs an incident."
-                : rows.size() + " logged event(s) — newest first.");
+                ? "Aucun événement anti-triche enregistré pour le moment. Les événements apparaissent lorsque le pipeline de surveillance journalise un incident."
+                : rows.size() + " événement(s) journalisé(s) — le plus récent en premier.");
     }
 
     private void loadEvaluationsIntoCombo() {
@@ -548,14 +550,14 @@ public class TeacherDashboardController {
     private void loadEvaluationStatsForSelection() {
         Evaluation ev = comboEvaluationStats.getSelectionModel().getSelectedItem();
         if (ev == null) {
-            afficherAlerte("Evaluation", "Please select an evaluation from the list.");
+            afficherAlerte("Évaluation", "Veuillez sélectionner une évaluation dans la liste.");
             return;
         }
         List<TeacherEvalAttemptRow> rows = resultatDAO.findAttemptsForTeacherEvaluation(ev.getId());
         tableEvalAttempts.setItems(FXCollections.observableArrayList(rows));
 
-        lblEvalStatsMeta.setText(String.format(Locale.US,
-                "Max score %.0f — Passing threshold %.0f", ev.getNoteMax(), ev.getNotePassage()));
+        lblEvalStatsMeta.setText(String.format(Locale.FRENCH,
+                "Score max %.0f — Seuil de réussite %.0f", ev.getNoteMax(), ev.getNotePassage()));
 
         int n = rows.size();
         lblEvalMetricAttempts.setText(String.valueOf(n));
@@ -575,14 +577,14 @@ public class TeacherDashboardController {
             }
         }
         if (scored > 0) {
-            lblEvalMetricAverage.setText(String.format(Locale.US, "%.1f / %.0f", sum / scored, ev.getNoteMax()));
+            lblEvalMetricAverage.setText(String.format(Locale.FRENCH, "%.1f / %.0f", sum / scored, ev.getNoteMax()));
         } else {
             lblEvalMetricAverage.setText("—");
         }
 
         long pass = rows.stream().filter(r -> "Pass".equals(r.outcome())).count();
         if (n > 0) {
-            lblEvalMetricPass.setText(String.format(Locale.US, "%.0f%% (%d/%d)",
+            lblEvalMetricPass.setText(String.format(Locale.FRENCH, "%.0f%% (%d/%d)",
                     100.0 * pass / n, pass, n));
         } else {
             lblEvalMetricPass.setText("—");
@@ -600,9 +602,9 @@ public class TeacherDashboardController {
         }
 
         CategoryAxis scoreX = new CategoryAxis();
-        scoreX.setLabel("Score band (% of max)");
+        scoreX.setLabel("Tranche de score (% du max)");
         NumberAxis scoreY = new NumberAxis();
-        scoreY.setLabel("Students");
+        scoreY.setLabel("Étudiants");
         scoreY.setForceZeroInRange(true);
         scoreY.setMinorTickVisible(false);
         scoreY.setAutoRanging(true);
@@ -693,7 +695,7 @@ public class TeacherDashboardController {
         }
 
         XYChart.Series<String, Number> scoreSeries = new XYChart.Series<>();
-        scoreSeries.setName("Students");
+        scoreSeries.setName("Étudiants");
         String[] bandLabels = {"0–20%", "20–40%", "40–60%", "60–80%", "80–100%"};
         for (int i = 0; i < 5; i++) {
             scoreSeries.getData().add(new XYChart.Data<>(bandLabels[i], (double) bins[i]));
@@ -708,13 +710,13 @@ public class TeacherDashboardController {
 
         ObservableList<PieChart.Data> outcomeSlices = FXCollections.observableArrayList();
         if (pass > 0) {
-            outcomeSlices.add(new PieChart.Data("Pass", pass));
+            outcomeSlices.add(new PieChart.Data("Réussite", pass));
         }
         if (below > 0) {
-            outcomeSlices.add(new PieChart.Data("Below threshold", below));
+            outcomeSlices.add(new PieChart.Data("Sous le seuil", below));
         }
         if (noscore > 0) {
-            outcomeSlices.add(new PieChart.Data("No score / pending", noscore));
+            outcomeSlices.add(new PieChart.Data("Aucun score / en attente", noscore));
         }
         chartOutcomePie.setData(outcomeSlices);
 
@@ -723,7 +725,7 @@ public class TeacherDashboardController {
             integritySlices.add(new PieChart.Data("OK", clean));
         }
         if (fraud > 0) {
-            integritySlices.add(new PieChart.Data("Fraud flagged", fraud));
+            integritySlices.add(new PieChart.Data("Fraude signalée", fraud));
         }
         chartIntegrityPie.setData(integritySlices);
     }

@@ -107,7 +107,7 @@
                     <Button fx:id="btnSupprimer" text="Supprimer"
                             onAction="#supprimerCours"
                             style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 8 15;"/>
-                    <Button fx:id="btnDetails" text="Details"
+                    <Button fx:id="btnDetails" text="Détails"
                             onAction="#afficherDetails"
                             style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 8 15;"/>
                 </HBox>

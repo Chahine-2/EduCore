@@ -16,13 +16,13 @@
         <VBox spacing="0">
             <HBox alignment="CENTER_LEFT" spacing="24" style="-fx-padding: 14 16; -fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0;">
                 <VBox spacing="4" HBox.hgrow="ALWAYS">
-                    <Label fx:id="titleLabel" text="Evaluation" style="-fx-font-size: 22px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
-                    <Label fx:id="subtitleLabel" text="Read each question carefully." style="-fx-font-size: 13px; -fx-text-fill: #64748b;" wrapText="true"/>
+                    <Label fx:id="titleLabel" text="Évaluation" style="-fx-font-size: 22px; -fx-font-weight: 800; -fx-text-fill: #0f172a;"/>
+                    <Label fx:id="subtitleLabel" text="Lisez attentivement chaque question." style="-fx-font-size: 13px; -fx-text-fill: #64748b;" wrapText="true"/>
                 </VBox>
                 <ImageView fx:id="webcamPreview" fitHeight="88" fitWidth="120" preserveRatio="true" smooth="true"
                            style="-fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-background-radius: 6;"/>
                 <VBox style="-fx-padding: 8 10; -fx-background-color: #eff6ff; -fx-background-radius: 8;">
-                    <Label fx:id="timerCaptionLabel" text="TIME LEFT" style="-fx-font-size: 11px; -fx-text-fill: #1e40af; -fx-font-weight: 700;"/>
+                    <Label fx:id="timerCaptionLabel" text="TEMPS RESTANT" style="-fx-font-size: 11px; -fx-text-fill: #1e40af; -fx-font-weight: 700;"/>
                     <Label fx:id="timerLabel" text="60:00" style="-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #1e3a8a;"/>
                 </VBox>
             </HBox>
@@ -46,15 +46,15 @@
 
     <bottom>
         <HBox alignment="CENTER" style="-fx-padding: 12 16; -fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1 0 0 0;">
-            <Button fx:id="prevBtn" text="Previous" onAction="#handlePrevious"
+            <Button fx:id="prevBtn" text="Précédent" onAction="#handlePrevious"
                     style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="navHintLabel" text="" style="-fx-text-fill: #64748b;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Button fx:id="nextBtn" text="Next" onAction="#handleNext"
+                <Button fx:id="nextBtn" text="Suivant" onAction="#handleNext"
                         style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8;"/>
-                <Button fx:id="submitBtn" text="Submit quiz" onAction="#handleSubmitClick"
+                <Button fx:id="submitBtn" text="Soumettre le quiz" onAction="#handleSubmitClick"
                         style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 8;"/>
             </HBox>
         </HBox>

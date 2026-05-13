@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import utils.AppStageLayout;
 
 public class StartupController {
 
@@ -31,9 +32,9 @@ public class StartupController {
             }
             stage.setScene(new Scene(root));
             stage.setTitle(title);
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
         } catch (Exception e) {
-            statusLabel.setText("Could not open page: " + e.getMessage());
+            statusLabel.setText("Impossible d'ouvrir la page : " + e.getMessage());
         }
     }
 

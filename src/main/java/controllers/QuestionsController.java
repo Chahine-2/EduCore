@@ -91,7 +91,7 @@ public class QuestionsController {
             if (budgetFull) {
                 addQuestionBtn.getStyleClass().add("btn-disabled-budget");
                 addQuestionBtn.setStyle("-fx-opacity: 0.5;");
-                addQuestionBtn.setTooltip(new Tooltip("Maximum score reached. No more questions can be added."));
+                addQuestionBtn.setTooltip(new Tooltip("Score maximum atteint. Plus aucune question ne peut être ajoutée."));
             } else {
                 addQuestionBtn.getStyleClass().remove("btn-disabled-budget");
                 addQuestionBtn.setStyle("");
@@ -104,11 +104,11 @@ public class QuestionsController {
         ft.setToValue(1);
         ft.play();
 
-        setFooterStatus(budgetFull ? "Maximum score reached." : "Ready", false);
+        setFooterStatus(budgetFull ? "Score maximum atteint." : "Prêt", false);
     }
 
     private VBox buildQuestionCard(Question q, List<Reponse> reponses) {
-        String titlePreview = q.getTexte() == null ? "(empty)" : q.getTexte();
+        String titlePreview = q.getTexte() == null ? "(vide)" : q.getTexte();
         if (titlePreview.length() > 72) {
             titlePreview = titlePreview.substring(0, 69) + "…";
         }
@@ -138,18 +138,18 @@ public class QuestionsController {
         HBox actions = new HBox(8);
         actions.setAlignment(Pos.CENTER_RIGHT);
 
-        Button editBtn = new Button("Edit");
+        Button editBtn = new Button("Modifier");
         editBtn.getStyleClass().add("btn-q-edit");
         editBtn.setOnAction(e -> showQuestionEditor(q));
 
-        Button delBtn = new Button("Delete");
+        Button delBtn = new Button("Supprimer");
         delBtn.getStyleClass().add("btn-q-delete");
         delBtn.setOnAction(e -> deleteQuestion(q));
 
         actions.getChildren().addAll(editBtn, delBtn);
 
         if (q.getType() == QuestionType.QCM) {
-            Button addAnsBtn = new Button("+ Answer");
+            Button addAnsBtn = new Button("+ Réponse");
             addAnsBtn.getStyleClass().add("btn-q-accent");
             addAnsBtn.setOnAction(e -> showQuickAddAnswer(q));
             actions.getChildren().add(addAnsBtn);
@@ -165,11 +165,11 @@ public class QuestionsController {
         body.getChildren().addAll(meta, fullText);
 
         if (q.getType() == QuestionType.QCM) {
-            Label sec = new Label("Answer choices");
+            Label sec = new Label("Choix de réponse");
             sec.getStyleClass().add("question-section-title");
             VBox list = new VBox(8);
             if (reponses.isEmpty()) {
-                Label emptyAns = new Label("No answers yet. Use Edit or + Answer to add options.");
+                Label emptyAns = new Label("Pas encore de réponses. Utilisez Modifier ou + Réponse pour ajouter des options.");
                 emptyAns.getStyleClass().add("question-empty-hint");
                 list.getChildren().add(emptyAns);
             }
@@ -198,7 +198,7 @@ public class QuestionsController {
             sec.getStyleClass().add("question-section-title");
             VBox list = new VBox(8);
             if (reponses.isEmpty() || reponses.size() < 2) {
-                Label emptyAns = new Label("Open Edit and save to create the “Vrai” and “Faux” options and mark the correct one.");
+                Label emptyAns = new Label("Ouvrez Modifier et enregistrez pour créer les options « Vrai » et « Faux » et marquer la correcte.");
                 emptyAns.getStyleClass().add("question-empty-hint");
                 emptyAns.setWrapText(true);
                 list.getChildren().add(emptyAns);
@@ -292,8 +292,8 @@ public class QuestionsController {
     private void deleteQuestion(Question q) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(root.getScene().getWindow());
-        alert.setTitle("Delete question");
-        alert.setHeaderText("Remove this question?");
+        alert.setTitle("Supprimer la question");
+        alert.setHeaderText("Retirer cette question ?");
         alert.setContentText(q.getTexte() != null && q.getTexte().length() > 120
                 ? q.getTexte().substring(0, 117) + "…" : q.getTexte());
 
@@ -301,7 +301,7 @@ public class QuestionsController {
             reponseDAO.deleteByQuestionId(q.getId());
             questionDAO.delete(q.getId());
             refreshQuestions();
-            setFooterStatus("Question deleted.", true);
+            setFooterStatus("Question supprimée.", true);
         }
     }
 
@@ -317,26 +317,26 @@ public class QuestionsController {
 
     private void showQuickAddAnswer(Question q) {
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Add answer option");
+        dialog.setTitle("Ajouter une option de réponse");
         dialog.initOwner(root.getScene().getWindow());
         dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
         attachDialogStyles(dialog);
 
         TextField textField = new TextField();
-        textField.setPromptText("Answer text");
+        textField.setPromptText("Texte de la réponse");
         textField.getStyleClass().add("qm-dialog-field");
 
-        CheckBox correct = new CheckBox("Mark as correct");
+        CheckBox correct = new CheckBox("Marquer comme correct");
 
         VBox vbox = new VBox(12,
-                labeledRow("Text", textField),
+                labeledRow("Texte", textField),
                 correct);
         dialog.getDialogPane().setContent(wrapDialogContent(vbox));
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         dialog.getDialogPane().lookupButton(ButtonType.OK).addEventFilter(javafx.event.ActionEvent.ACTION, ev -> {
             if (textField.getText() == null || textField.getText().trim().isEmpty()) {
                 ev.consume();
-                showAlert(Alert.AlertType.ERROR, "Answer text is required.");
+                showAlert(Alert.AlertType.ERROR, "Le texte de la réponse est obligatoire.");
             }
         });
 
@@ -344,20 +344,20 @@ public class QuestionsController {
         if (res.isPresent() && res.get() == ButtonType.OK) {
             reponseDAO.add(new Reponse(textField.getText().trim(), correct.isSelected(), q.getId()));
             refreshQuestions();
-            setFooterStatus("Answer added.", true);
+            setFooterStatus("Réponse ajoutée.", true);
         }
     }
 
     private void showQuestionEditor(Question existing) {
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle(existing == null ? "New question" : "Edit question");
+        dialog.setTitle(existing == null ? "Nouvelle question" : "Modifier la question");
         dialog.initOwner(root.getScene().getWindow());
         dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
         attachDialogStyles(dialog);
 
         TextArea textArea = new TextArea(existing != null ? existing.getTexte() : "");
         textArea.setWrapText(true);
-        textArea.setPromptText("Enter the question wording…");
+        textArea.setPromptText("Entrez l'énoncé de la question…");
         textArea.getStyleClass().add("qm-dialog-textarea");
         textArea.setPrefRowCount(5);
 
@@ -392,13 +392,13 @@ public class QuestionsController {
 
         // Optional professional explanation for the question (shown in review)
         TextArea explanationArea = new TextArea(existing != null ? existing.getExplication() : "");
-        explanationArea.setPromptText("Optional: teacher / model explanation for reviewers");
+        explanationArea.setPromptText("Optionnel : explication pour les réviseurs");
         explanationArea.setWrapText(true);
         explanationArea.setPrefRowCount(3);
         explanationArea.getStyleClass().add("qm-dialog-textarea");
 
         VBox answerSection = new VBox(10);
-        Label ansTitle = new Label("Answer options (QCM only)");
+        Label ansTitle = new Label("Options de réponse (QCM uniquement)");
         ansTitle.getStyleClass().add("qm-dialog-section");
         VBox answerList = new VBox(6);
         List<AnswerRow> answerRows = new ArrayList<>();
@@ -411,9 +411,9 @@ public class QuestionsController {
         HBox vfRow = new HBox(20, rbVrai, rbFaux);
         vfRow.setAlignment(Pos.CENTER_LEFT);
         VBox vfSection = new VBox(8);
-        Label vfTitle = new Label("Correct answer (Vrai / Faux)");
+        Label vfTitle = new Label("Réponse correcte (Vrai / Faux)");
         vfTitle.getStyleClass().add("qm-dialog-section");
-        Label vfHint = new Label("Answer options (vrai / faux only)");
+        Label vfHint = new Label("Options de réponse (vrai / faux uniquement)");
         vfHint.setWrapText(true);
         vfHint.getStyleClass().add("qm-dialog-hint");
         vfSection.getChildren().addAll(vfTitle, vfRow, vfHint);
@@ -439,7 +439,7 @@ public class QuestionsController {
             }
         };
 
-        Button addOptionBtn = new Button("+ Add option");
+        Button addOptionBtn = new Button("+ Ajouter une option");
         addOptionBtn.getStyleClass().add("qm-btn-add-option");
         addOptionBtn.setMaxWidth(Double.MAX_VALUE);
 
@@ -512,7 +512,7 @@ public class QuestionsController {
         grid.add(typeCombo, 1, 1);
         grid.add(lPoints, 0, 2);
         grid.add(pointsField, 1, 2);
-        Label lExp = new Label("Explanation");
+        Label lExp = new Label("Explication");
         lExp.getStyleClass().add("qm-form-label");
         grid.add(lExp, 0, 3);
         grid.add(explanationArea, 1, 3);
@@ -536,7 +536,7 @@ public class QuestionsController {
         });
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         Button ok = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-        ok.setText("Save");
+        ok.setText("Enregistrer");
         ok.addEventFilter(javafx.event.ActionEvent.ACTION, ev -> {
             if (!validateQuestionForm(textArea, pointsField, typeCombo.getValue(), answerRows, vfGroup)) {
                 ev.consume();
@@ -548,7 +548,7 @@ public class QuestionsController {
             persistQuestion(existing, textArea.getText(), typeCombo.getValue(), parsePoints(pointsField.getText()),
                     explanationArea.getText(), answerRows, vfGroup, rbVrai);
             refreshQuestions();
-            setFooterStatus(existing == null ? "Question created." : "Question updated.", true);
+            setFooterStatus(existing == null ? "Question créée." : "Question mise à jour.", true);
         }
     }
 
@@ -607,11 +607,12 @@ public class QuestionsController {
         HBox.setHgrow(tf, Priority.ALWAYS);
         CheckBox cb = new CheckBox("Correct");
         cb.setSelected(correct);
-        Button remove = new Button("Remove");
+        cb.setText("Correct");
+        Button remove = new Button("Supprimer");
         remove.getStyleClass().add("qm-btn-remove");
 
         // small button to edit per-answer explanation (optional)
-        Button explainBtn = new Button("Explain");
+        Button explainBtn = new Button("Expliquer");
         explainBtn.getStyleClass().add("qm-btn-explain");
 
         AnswerRow model = new AnswerRow(tf, cb);
@@ -629,7 +630,7 @@ public class QuestionsController {
 
         explainBtn.setOnAction(e -> {
             Dialog<ButtonType> d = new Dialog<>();
-            d.setTitle("Edit answer explanation");
+            d.setTitle("Modifier l'explication de la réponse");
             d.initOwner(root.getScene().getWindow());
             TextArea ta = new TextArea(model.explanation != null ? model.explanation : "");
             ta.setWrapText(true);
@@ -656,17 +657,17 @@ public class QuestionsController {
     private boolean validateQuestionForm(TextArea textArea, TextField pointsField, QuestionType type,
                                          List<AnswerRow> answerRows, ToggleGroup vfGroup) {
         if (textArea.getText() == null || textArea.getText().trim().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Question text is required.");
+            showAlert(Alert.AlertType.ERROR, "Le texte de la question est obligatoire.");
             return false;
         }
         try {
             float p = Float.parseFloat(pointsField.getText().trim());
             if (p <= 0) {
-                showAlert(Alert.AlertType.ERROR, "Points must be greater than zero.");
+                showAlert(Alert.AlertType.ERROR, "Les points doivent être supérieurs à zéro.");
                 return false;
             }
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Points must be a valid number.");
+            showAlert(Alert.AlertType.ERROR, "Les points doivent être un nombre valide.");
             return false;
         }
         if (type == QuestionType.QCM) {
@@ -682,16 +683,16 @@ public class QuestionsController {
                 }
             }
             if (filled < 2) {
-                showAlert(Alert.AlertType.ERROR, "QCM requires at least two non-empty answer options.");
+                showAlert(Alert.AlertType.ERROR, "Le QCM nécessite au moins deux options de réponse non vides.");
                 return false;
             }
             if (correctCount < 1) {
-                showAlert(Alert.AlertType.ERROR, "Mark at least one answer as correct.");
+                showAlert(Alert.AlertType.ERROR, "Marquez au moins une réponse comme correcte.");
                 return false;
             }
         }
         if (type == QuestionType.VRAI_FAUX && (vfGroup == null || vfGroup.getSelectedToggle() == null)) {
-            showAlert(Alert.AlertType.ERROR, "Select whether Vrai or Faux is the correct answer.");
+            showAlert(Alert.AlertType.ERROR, "Sélectionnez si Vrai ou Faux est la réponse correcte.");
             return false;
         }
         return true;
@@ -714,18 +715,18 @@ public class QuestionsController {
                     if (sum + requestedPoints > max) {
                         float remaining = max - sum;
                         // Use standard dialog with simple YES/NO/CANCEL buttons
-                        ButtonType adjust = new ButtonType("Adjust to remaining", ButtonBar.ButtonData.YES);
-                        ButtonType saveAnyway = new ButtonType("Save anyway (exceed)", ButtonBar.ButtonData.NO);
+                        ButtonType adjust = new ButtonType("Ajuster au restant", ButtonBar.ButtonData.YES);
+                        ButtonType saveAnyway = new ButtonType("Enregistrer quand même (dépasser)", ButtonBar.ButtonData.NO);
                         ButtonType cancel = ButtonType.CANCEL;
 
                         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
                         a.initOwner(root.getScene().getWindow());
-                        a.setTitle("Points budget exceeded");
-                        a.setHeaderText("This evaluation's maximum score would be exceeded.");
-                        a.setContentText("Evaluation max: " + formatPoints(max) + " pts\n"
-                                + "Current total of saved questions: " + formatPoints(sum) + " pts\n"
-                                + "Requested for this question: " + formatPoints(requestedPoints) + " pts\n\n"
-                                + (remaining > 0 ? "Remaining points if adjusted: " + formatPoints(remaining) + " pts." : "No remaining points. Choose 'Save anyway' to exceed or cancel to abort."));
+                        a.setTitle("Budget de points dépassé");
+                        a.setHeaderText("Le score maximum de cette évaluation serait dépassé.");
+                        a.setContentText("Score max évaluation : " + formatPoints(max) + " pts\n"
+                                + "Total actuel des questions enregistrées : " + formatPoints(sum) + " pts\n"
+                                + "Demandé pour cette question : " + formatPoints(requestedPoints) + " pts\n\n"
+                                + (remaining > 0 ? "Points restants si ajustés : " + formatPoints(remaining) + " pts." : "Aucun point restant. Choisissez 'Enregistrer quand même' pour dépasser ou annuler."));
                         a.getButtonTypes().setAll(adjust, saveAnyway, cancel);
 
                         Optional<ButtonType> choice = a.showAndWait();
@@ -739,7 +740,7 @@ public class QuestionsController {
                             return; // user cancelled
                         } else if (selected == adjust) {
                             if (remaining <= 0f) {
-                                showAlert(Alert.AlertType.ERROR, "No remaining points to assign. Increase the evaluation max score or choose 'Save anyway'.");
+                                showAlert(Alert.AlertType.ERROR, "Aucun point restant à attribuer. Augmentez le score max de l'évaluation ou choisissez 'Enregistrer quand même'.");
                                 return;
                             }
                             requestedPoints = remaining;
@@ -758,7 +759,7 @@ public class QuestionsController {
             if (type == QuestionType.QCM) {
                 int id = questionDAO.insertAndGetId(q);
                 if (id <= 0) {
-                    showAlert(Alert.AlertType.ERROR, "Could not save the question.");
+                    showAlert(Alert.AlertType.ERROR, "Impossible d'enregistrer la question.");
                     return;
                 }
                 for (AnswerRow row : rows) {
@@ -775,7 +776,7 @@ public class QuestionsController {
             } else if (type == QuestionType.VRAI_FAUX) {
                 int id = questionDAO.insertAndGetId(q);
                 if (id <= 0) {
-                    showAlert(Alert.AlertType.ERROR, "Could not save the question.");
+                    showAlert(Alert.AlertType.ERROR, "Impossible d'enregistrer la question.");
                     return;
                 }
                 addVraiFauxReponses(id, vfGroup, rbVrai);

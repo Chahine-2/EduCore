@@ -22,6 +22,7 @@ import models.Utilisateur;
 import services.EvaluationDAOImpl;
 import services.QuestionDAOImpl;
 import services.ResultatDAOImpl;
+import utils.AppStageLayout;
 import utils.UserSession;
 
 import java.time.LocalDateTime;
@@ -177,7 +178,7 @@ public class StudentPortalController {
             if (root.getScene() != null && root.getScene().getWindow() instanceof Stage stage) {
                 stage.setScene(new Scene(homeRoot));
                 stage.setTitle("EDUCORE");
-                stage.centerOnScreen();
+                AppStageLayout.maximizeWorkArea(stage);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -191,15 +192,11 @@ public class StudentPortalController {
             Parent adminRoot = loader.load();
             Stage stage = new Stage();
             stage.setTitle("EDUCORE · Administration");
-            stage.setMinWidth(880);
-            stage.setMinHeight(600);
-            stage.setWidth(1440);
-            stage.setHeight(920);
             stage.setScene(new Scene(adminRoot));
             if (root.getScene() != null && root.getScene().getWindow() != null) {
                 stage.initOwner(root.getScene().getWindow());
             }
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -385,14 +382,12 @@ public class StudentPortalController {
             }
             Stage stage = new Stage();
             stage.setTitle(existingResultat == null ? "Quiz — " + evaluation.getTitre() : "Relecture — " + evaluation.getTitre());
-            stage.setScene(new Scene(quizRoot, 920, 800));
-            stage.setMinWidth(640);
-            stage.setMinHeight(560);
+            stage.setScene(new Scene(quizRoot));
             if (root.getScene() != null && root.getScene().getWindow() != null) {
                 stage.initOwner(root.getScene().getWindow());
                 stage.initModality(Modality.WINDOW_MODAL);
             }
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
             stage.showAndWait();
             refreshCards();
         } catch (Exception ex) {

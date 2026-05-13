@@ -15,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import models.Etudiant;
 import services.UtilisateurService;
+import utils.AppStageLayout;
 
 import java.io.IOException;
 import java.net.URL;
@@ -88,9 +89,9 @@ public class EnseignantDashboardController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 500));
+            stage.setScene(new Scene(root));
             stage.setTitle("EduCore - Connexion");
-            stage.centerOnScreen();
+            AppStageLayout.maximizeWorkArea(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
