@@ -13,7 +13,7 @@ public class ServiceReservationMateriel implements IService<ReservationMateriel>
     private ServiceMateriel sm = new ServiceMateriel();
 
     public boolean conflitDates(int materielId, java.time.LocalDateTime debut, java.time.LocalDateTime fin) {
-        String req = "SELECT COUNT(*) FROM reservation WHERE materiel_id=? AND statut != 'annulee' " +
+        String req = "SELECT COUNT(*) FROM reservationmateriel WHERE materiel_id=? AND statut != 'annulee' " +
                 "AND date_debut < ? AND date_fin > ?";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
@@ -55,7 +55,7 @@ public class ServiceReservationMateriel implements IService<ReservationMateriel>
             System.out.println("❌ Ce materiel est deja reserve sur cette periode !");
             return;
         }
-        String req = "INSERT INTO reservation (materiel_id, motif, date_debut, date_fin, statut) VALUES (?, ?, ?, ?, ?)";
+        String req = "INSERT INTO reservationmateriel (materiel_id, motif, date_debut, date_fin, statut) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
             ps.setInt(1, r.getMaterielId());
@@ -76,7 +76,7 @@ public class ServiceReservationMateriel implements IService<ReservationMateriel>
     @Override
     public List<ReservationMateriel> getAll() {
         List<ReservationMateriel> liste = new ArrayList<>();
-        String req = "SELECT r.*, m.nom as materiel_nom FROM reservation r " +
+        String req = "SELECT r.*, m.nom as materiel_nom FROM reservationmateriel r " +
                 "LEFT JOIN materiel m ON r.materiel_id = m.id";
         try {
             Statement stm = MyDataBase.getInstance().getCnx().createStatement();
@@ -104,7 +104,7 @@ public class ServiceReservationMateriel implements IService<ReservationMateriel>
 
     @Override
     public ReservationMateriel getById(int id) {
-        String req = "SELECT r.*, m.nom as materiel_nom FROM reservation r " +
+        String req = "SELECT r.*, m.nom as materiel_nom FROM reservationmateriel r " +
                 "LEFT JOIN materiel m ON r.materiel_id = m.id WHERE r.id = ?";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
@@ -135,7 +135,7 @@ public class ServiceReservationMateriel implements IService<ReservationMateriel>
             System.out.println("❌ La date de fin doit etre apres la date de debut !");
             return;
         }
-        String req = "UPDATE reservation SET materiel_id=?, motif=?, date_debut=?, date_fin=?, statut=? WHERE id=?";
+        String req = "UPDATE reservationmateriel SET materiel_id=?, motif=?, date_debut=?, date_fin=?, statut=? WHERE id=?";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
             ps.setInt(1, r.getMaterielId());
@@ -158,14 +158,14 @@ public class ServiceReservationMateriel implements IService<ReservationMateriel>
 
     @Override
     public void delete(int id) {
-        String reqGet = "SELECT materiel_id FROM reservation WHERE id=?";
+        String reqGet = "SELECT materiel_id FROM reservationmateriel WHERE id=?";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(reqGet);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int materielId = rs.getInt("materiel_id");
-                String req = "DELETE FROM reservation WHERE id=?";
+                String req = "DELETE FROM reservationmateriel WHERE id=?";
                 PreparedStatement ps2 = MyDataBase.getInstance().getCnx().prepareStatement(req);
                 ps2.setInt(1, id);
                 ps2.executeUpdate();
