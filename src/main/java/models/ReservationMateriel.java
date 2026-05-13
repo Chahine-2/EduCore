@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class ReservationMateriel {
     private int id;
     private int materielId;
+    private String materielNom;
     private String motif;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
@@ -14,7 +15,7 @@ public class ReservationMateriel {
     public ReservationMateriel() {}
 
     public ReservationMateriel(int materielId, String motif, LocalDateTime dateDebut,
-                       LocalDateTime dateFin, String statut) {
+                               LocalDateTime dateFin, String statut) {
         this.materielId = materielId;
         this.motif = motif;
         this.dateDebut = dateDebut;
@@ -26,6 +27,8 @@ public class ReservationMateriel {
     public void setId(int id) { this.id = id; }
     public int getMaterielId() { return materielId; }
     public void setMaterielId(int materielId) { this.materielId = materielId; }
+    public String getMaterielNom() { return materielNom; }
+    public void setMaterielNom(String materielNom) { this.materielNom = materielNom; }
     public String getMotif() { return motif; }
     public void setMotif(String motif) { this.motif = motif; }
     public LocalDateTime getDateDebut() { return dateDebut; }
@@ -39,6 +42,6 @@ public class ReservationMateriel {
 
     @Override
     public String toString() {
-        return "Reservation{id=" + id + ", materielId=" + materielId + ", motif=" + motif + ", statut=" + statut + "}\n";
+        return "ReservationMateriel{id=" + id + ", materielId=" + materielId + ", motif=" + motif + ", statut=" + statut + "}\n";
     }
 }

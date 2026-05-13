@@ -7,8 +7,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import utils.AppStageLayout;
-
 import java.io.IOException;
 import java.net.URL;
 
@@ -25,8 +23,8 @@ public class MenuPrincipalController {
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle(titre);
-            stage.setScene(new Scene(root));
-            AppStageLayout.maximizeWorkArea(stage);
+            stage.setScene(new Scene(root, 1100, 750));
+            stage.setMaximized(true);
             stage.show();
         } catch (IOException e) {
             System.out.println("Erreur : " + e.getMessage());
@@ -40,7 +38,7 @@ public class MenuPrincipalController {
 
     @FXML
     public void ouvrirReservation(ActionEvent e) {
-        ouvrirFenetre("GestionReservationMatriel.fxml", "Gestion des Reservations");
+        ouvrirFenetre("GestionReservationMateriel.fxml", "Gestion des Reservations");
     }
 
     @FXML
