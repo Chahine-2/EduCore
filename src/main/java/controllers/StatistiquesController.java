@@ -96,7 +96,7 @@ public class StatistiquesController {
         barReservations.getData().clear();
         Map<String, Integer> map = stats.getReservationsParMateriel();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Réservations");
+        series.setName("Reservations");
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             series.getData().add(new XYChart.Data<>(
                     entry.getKey(), entry.getValue()
@@ -109,7 +109,7 @@ public class StatistiquesController {
         barQuantite.getData().clear();
         Map<String, Integer> map = stats.getQuantiteParMateriel();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Quantité");
+        series.setName("Quantite");
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             series.getData().add(new XYChart.Data<>(
                     entry.getKey(), entry.getValue()

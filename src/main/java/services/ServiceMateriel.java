@@ -23,7 +23,6 @@ public class ServiceMateriel implements IService<Materiel> {
         return false;
     }
 
-    // Récupérer tous les départements
     public List<String> getDepartements() {
         List<String> departements = new ArrayList<>();
         String req = "SELECT id, nom FROM departement";
@@ -39,7 +38,6 @@ public class ServiceMateriel implements IService<Materiel> {
         return departements;
     }
 
-    // Récupérer salles par département
     public List<String> getSallesParDepartement(int departementId) {
         List<String> salles = new ArrayList<>();
         String req = "SELECT id, nom FROM salle WHERE departement_id = ?";
@@ -59,6 +57,7 @@ public class ServiceMateriel implements IService<Materiel> {
     public int getIdFromString(String str) {
         return Integer.parseInt(str.split(" - ")[0]);
     }
+
     @Override
     public void add(Materiel m) {
         if (codeExiste(m.getCode())) {
@@ -123,7 +122,8 @@ public class ServiceMateriel implements IService<Materiel> {
         String req = "SELECT m.*, s.nom as salle_nom, s.latitude, s.longitude, d.nom as dept_nom " +
                 "FROM materiel m " +
                 "LEFT JOIN salle s ON m.salle_id = s.id " +
-                "LEFT JOIN departement d ON s.departement_id = d.id WHERE m.id=?";
+                "LEFT JOIN departement d ON s.departement_id = d.id " +
+                "WHERE m.id = ?";
         try {
             PreparedStatement ps = MyDataBase.getInstance().getCnx().prepareStatement(req);
             ps.setInt(1, id);
@@ -141,8 +141,6 @@ public class ServiceMateriel implements IService<Materiel> {
                 m.setDepartementNom(rs.getString("dept_nom"));
                 m.setLatitude(rs.getDouble("latitude"));
                 m.setLongitude(rs.getDouble("longitude"));
-                Timestamp ts = rs.getTimestamp("date_creation");
-                if (ts != null) m.setDateCreation(ts.toLocalDateTime());
                 return m;
             }
         } catch (SQLException e) {
