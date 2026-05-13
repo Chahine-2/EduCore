@@ -4,7 +4,6 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -98,22 +97,7 @@
                 </BarChart>
                 <Separator layoutX="0" layoutY="36" prefWidth="960" />
       
-              <!-- ══ NAVIGATION ══ -->
-              <Button layoutX="627.0" layoutY="55.0" onAction="#allerReservation" prefHeight="36.0" prefWidth="160.0" style="-fx-background-color: #1a73e8; -fx-text-fill: white;                        -fx-background-radius: 6; -fx-cursor: hand;" text="◀  Réservations">
-                  <font>
-                  <Font name="Arial Bold" size="12.0" />
-               </font>
-              </Button>
-              <Button layoutX="627.0" layoutY="127.0" onAction="#allerHackathon" prefHeight="36.0" prefWidth="160.0" style="-fx-background-color: #0f9d58; -fx-text-fill: white;                        -fx-background-radius: 6; -fx-cursor: hand;" text="💻  Hackathons">
-                  <font>
-                  <Font name="Arial Bold" size="12.0" />
-               </font>
-              </Button>
-              <Button layoutX="627.0" layoutY="197.0" onAction="#allerPaiement" prefHeight="36.0" prefWidth="160.0" style="-fx-background-color: #7c3aed; -fx-text-fill: white;                        -fx-background-radius: 6; -fx-cursor: hand;" text="💳  Paiements">
-                  <font>
-                  <Font name="Arial Bold" size="12.0" />
-               </font>
-              </Button>
+              <!-- Navigation buttons removed from statistics view. -->
             </children>
         </AnchorPane>
 

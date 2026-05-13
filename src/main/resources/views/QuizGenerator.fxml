@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/22"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.QuizGeneratorController"
+      prefWidth="980.0"
+      prefHeight="760.0"
+      spacing="16"
+      styleClass="quiz-generator-root"
+      stylesheets="@../styles/quiz-generator.css">
+
+    <VBox styleClass="qm-hero" spacing="10">
+        <HBox alignment="CENTER_LEFT" spacing="16">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="AI Quiz Generator" styleClass="qm-hero-title" />
+                <Label text="Generate multiple-choice quizzes with Gemini, review every draft, and save them directly into the selected evaluation."
+                       wrapText="true"
+                       styleClass="qm-hero-subtitle" />
+            </VBox>
+            <VBox alignment="CENTER_RIGHT" spacing="4">
+                <Label text="Teacher workspace" styleClass="qm-hero-badge" />
+                <Label text="Generate → review → save" styleClass="qm-hero-muted" />
+            </VBox>
+        </HBox>
+
+        <HBox spacing="8" styleClass="qm-chip-row">
+            <Label text="4 options per question" styleClass="qm-chip" />
+            <Label text="Editable drafts" styleClass="qm-chip" />
+            <Label text="Attached to evaluation" styleClass="qm-chip" />
+        </HBox>
+    </VBox>
+
+    <VBox styleClass="qm-form-card" spacing="14">
+        <HBox alignment="CENTER_LEFT" spacing="8">
+            <VBox spacing="2" HBox.hgrow="ALWAYS">
+                <Label text="Generation settings" styleClass="qm-section-title" />
+                <Label text="Describe the topic, pick a difficulty level, and choose how many questions you want."
+                       wrapText="true"
+                       styleClass="qm-section-subtitle" />
+            </VBox>
+        </HBox>
+
+        <GridPane hgap="14" vgap="12">
+            <columnConstraints>
+                <javafx.scene.layout.ColumnConstraints hgrow="ALWAYS" percentWidth="48" />
+                <javafx.scene.layout.ColumnConstraints hgrow="ALWAYS" percentWidth="20" />
+                <javafx.scene.layout.ColumnConstraints hgrow="ALWAYS" percentWidth="14" />
+                <javafx.scene.layout.ColumnConstraints hgrow="ALWAYS" percentWidth="18" />
+            </columnConstraints>
+
+            <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Topic" styleClass="qm-form-label" />
+                <TextField fx:id="tfTopic" promptText="e.g. Java inheritance" />
+            </VBox>
+
+            <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Difficulty" styleClass="qm-form-label" />
+                <ComboBox fx:id="cbDifficulty" prefWidth="160" />
+            </VBox>
+
+            <VBox spacing="6" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <Label text="# Questions" styleClass="qm-form-label" />
+                <Spinner fx:id="spCount" prefWidth="100" />
+            </VBox>
+
+            <VBox spacing="6" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                <Label text="Action" styleClass="qm-form-label" />
+                <Button fx:id="btnGenerate" text="Generate" onAction="#onGenerate" maxWidth="Infinity" />
+            </VBox>
+        </GridPane>
+    </VBox>
+
+    <VBox styleClass="qm-results-card" spacing="12" VBox.vgrow="ALWAYS">
+        <HBox alignment="CENTER_LEFT" spacing="8">
+            <VBox spacing="2" HBox.hgrow="ALWAYS">
+                <Label text="Generated questions" styleClass="qm-section-title" />
+                <Label text="Cards are fully editable. Review, tweak, then save them to the database."
+                       wrapText="true"
+                       styleClass="qm-section-subtitle" />
+            </VBox>
+            <ProgressIndicator fx:id="progress" visible="false" prefWidth="28" prefHeight="28" maxWidth="28" maxHeight="28" />
+        </HBox>
+
+        <StackPane styleClass="qm-results-stack" VBox.vgrow="ALWAYS">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="qm-results-scroll">
+                <VBox fx:id="vboxResults" spacing="14" styleClass="qm-results-list" />
+            </ScrollPane>
+
+            <Label fx:id="emptyResultsLabel"
+                   text="No AI questions generated yet. Choose a topic and click Generate."
+                   wrapText="true"
+                   visible="true"
+                   managed="true"
+                   styleClass="qm-empty-state" />
+        </StackPane>
+    </VBox>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="qm-footer">
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="btnSaveAll" text="Save all generated questions" onAction="#onSaveAll" />
+    </HBox>
+</VBox>
+

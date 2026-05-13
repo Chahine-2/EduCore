@@ -1,6 +1,7 @@
 package services;
 
 import interfaces.IService;
+import interfaces.IServiceHackatons;
 import models.Reservation;
 import utils.MyDataBase;
 
@@ -8,7 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceReservation implements IService<Reservation> {
+public class ServiceReservation implements IServiceHackatons<Reservation> {
 
     @Override
     public void add(Reservation r) {

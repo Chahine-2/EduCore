@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="15"
+      xmlns="http://javafx.com/javafx/22"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.GestionMaterielController"
+      style="-fx-padding: 20; -fx-background-color: #f4f6f9;">
+
+    <Label text="Gestion des Materiels"
+           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+
+        <Label text="Nom :"              GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="tfNom"         GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="200"/>
+
+        <Label text="Code :"             GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="tfCode"        GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Description :"      GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="tfDescription" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Quantite :"         GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="tfQuantite"    GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Etat :"             GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="cbEtat"         GridPane.rowIndex="4" GridPane.columnIndex="1" prefWidth="200"/>
+
+        <Label text="Departement :"      GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="cbDepartement"  GridPane.rowIndex="5" GridPane.columnIndex="1" prefWidth="200"/>
+
+        <Label text="Salle :"            GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="cbSalle"        GridPane.rowIndex="6" GridPane.columnIndex="1" prefWidth="200"/>
+
+    </GridPane>
+
+    <HBox spacing="10">
+        <Button text="Ajouter"           onAction="#ajouterMateriel"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 120;"/>
+        <Button text="Modifier"          onAction="#modifierMateriel"
+                style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 120;"/>
+        <Button text="Supprimer"         onAction="#supprimerMateriel"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 120;"/>
+        <Button text="Actualiser"        onAction="#afficherMateriels"
+                style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 120;"/>
+        <Button text="Voir sur la carte" onAction="#voirSurCarte"
+                style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 150;"/>
+    </HBox>
+
+    <TableView fx:id="tvMateriels" prefHeight="300" prefWidth="800">
+        <columns>
+            <TableColumn fx:id="colNom"         text="Nom"         prefWidth="120"/>
+            <TableColumn fx:id="colCode"        text="Code"        prefWidth="80"/>
+            <TableColumn fx:id="colQuantite"    text="Quantite"    prefWidth="70"/>
+            <TableColumn fx:id="colEtat"        text="Etat"        prefWidth="100"/>
+            <TableColumn fx:id="colSalle"       text="Salle"       prefWidth="120"/>
+            <TableColumn fx:id="colDepartement" text="Departement" prefWidth="120"/>
+        </columns>
+    </TableView>
+
+</VBox>

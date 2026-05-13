@@ -1,0 +1,6 @@
+# Example config for Gemini API integration
+# Copy this file to src/main/resources/config.properties or set environment variables GEMINI_API_KEY and GEMINI_API_URL
+
+# gemini.api.key=AIzaSyDOMEkSF-NEVcYnu56vnyy6F2a4-L0Byqc
+# gemini.api.url=https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generate
+

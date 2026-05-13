@@ -19,9 +19,7 @@
                 <Label layoutX="30.0" layoutY="16.0" style="-fx-text-fill: white;" text="🎓  Site Éducatif — Gestion des Réservations">
                     <font><Font name="Arial Bold" size="20.0" /></font>
                 </Label>
-                <Button layoutX="800.0" layoutY="14.0" onAction="#allerDashboard" prefHeight="34.0" prefWidth="150.0" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white;                                -fx-background-radius: 6; -fx-cursor: hand;                                -fx-border-color: rgba(255,255,255,0.5); -fx-border-radius: 6;" text="📊  Dashboard">
-                    <font><Font name="Arial Bold" size="12.0" /></font>
-                </Button>
+                <!-- Dashboard button removed from reservation page header. -->
             </children>
         </AnchorPane>
 
@@ -110,9 +108,7 @@
         </AnchorPane>
 
         <!-- ══ NAVIGATION ══ -->
-        <Button layoutX="30.0" layoutY="708.0" onAction="#allerAcaton" prefHeight="36.0" prefWidth="200.0" style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;" text="➜  Gérer les Hackathons">
-            <font><Font name="Arial Bold" size="12.0" /></font>
-        </Button>
+        <!-- Hackathon navigation button removed from reservation page. -->
         <Button layoutX="240.0" layoutY="708.0" onAction="#allerPaiement" prefHeight="36.0" prefWidth="200.0" style="-fx-background-color: #1a1a2e; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;" text="💳  Paiement">
             <font><Font name="Arial Bold" size="12.0" /></font>
         </Button>

@@ -1,6 +1,6 @@
 package services;
 
-import interfaces.IService;
+import interfaces.IServiceHackatons;
 import models.Paiement;
 import models.Reservation;
 import utils.MyDataBase;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServicePaiement implements IService<Paiement> {
+public class ServicePaiement implements IServiceHackatons<Paiement> {
 
     private final ServiceReservation sr = new ServiceReservation();
 

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.EtudiantController"
+            maxWidth="1.7976931348623157E308"
+            minWidth="0.0"
+            style="-fx-background-color: #f8f9fa;">
+
+    <!-- HAUT - EN-TÊTE ET FILTRES -->
+    <top>
+        <VBox style="-fx-background-color: #ffffff; -fx-border-color: #e9ecef; -fx-border-width: 0 0 1 0;">
+            <!-- Titre principal -->
+            <HBox alignment="CENTER_LEFT" style="-fx-padding: 20 30;">
+                <Label text="Cours" style="-fx-font-size: 28; -fx-text-fill: #343a40;"/>
+            </HBox>
+
+            <!-- Barre d'outils de filtre -->
+            <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10 30 20 30;">
+                <!-- Recherche -->
+                <HBox alignment="CENTER_LEFT" spacing="10"
+                      style="-fx-border-color: #ced4da; -fx-border-radius: 4; -fx-padding: 0 10; -fx-background-color: #ffffff;">
+                    <Label text="🔍" style="-fx-text-fill: #adb5bd;"/>
+                    <TextField fx:id="tfRecherche" promptText="Rechercher vos cours"
+                               onKeyReleased="#rechercherCours"
+                               style="-fx-background-color: transparent; -fx-pref-width: 250; -fx-padding: 8 0;"/>
+                </HBox>
+
+                <!-- Filtre Catégorie -->
+                <VBox spacing="4">
+                    <Label text="Catégories" style="-fx-font-size: 10; -fx-text-fill: #6c757d; -fx-padding: 0 0 -5 5;"/>
+                    <ComboBox fx:id="cbFiltreCategorie" promptText="Toutes les catégories"
+                              onAction="#filtrerParCategorie"
+                              style="-fx-background-color: #ffffff; -fx-border-color: #ced4da; -fx-border-radius: 4; -fx-pref-width: 200;"/>
+                </VBox>
+
+                <!-- Filtre Niveau -->
+                <VBox spacing="4">
+                    <Label text="Niveaux" style="-fx-font-size: 10; -fx-text-fill: #6c757d; -fx-padding: 0 0 -5 5;"/>
+                    <ComboBox fx:id="cbFiltreNiveau" promptText="Tous les niveaux"
+                              onAction="#filtrerParNiveau"
+                              style="-fx-background-color: #ffffff; -fx-border-color: #ced4da; -fx-border-radius: 4; -fx-pref-width: 200;"/>
+                </VBox>
+                
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Bouton Reset -->
+                <Button text="Réinitialiser les filtres" onAction="#resetFiltres"
+                        style="-fx-background-color: #f8f9fa; -fx-border-color: #ced4da; -fx-border-radius: 4; -fx-text-fill: #495057; -fx-padding: 8 16; -fx-cursor: hand;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- CENTRE - GRILLE DE COURS -->
+    <center>
+        <ScrollPane fitToWidth="true" maxWidth="1.7976931348623157E308" minWidth="0.0"
+                    style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <VBox spacing="20" maxWidth="1.7976931348623157E308" minWidth="0.0" style="-fx-padding: 24 28 28 28;">
+                
+                <!-- Résultats compte -->
+                <Label fx:id="lblCompteur" text="0 résultats" style="-fx-text-fill: #6c757d; -fx-font-size: 14;"/>
+                
+                <!-- Conteneur des cartes de cours -->
+                <FlowPane fx:id="flowPaneCours" hgap="25" vgap="25" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minWidth="0.0"/>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <!-- BAS -->
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="15"
+              style="-fx-background-color: #ffffff; -fx-padding: 15 30; -fx-border-color: #e9ecef; -fx-border-width: 1 0 0 0;">
+            <Button text="← Retour à l'accueil"
+                    onAction="#retour"
+                    style="-fx-background-color: transparent; -fx-text-fill: #0d6efd; -fx-font-weight: bold; -fx-cursor: hand;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Mode Étudiant" style="-fx-text-fill: #adb5bd;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
