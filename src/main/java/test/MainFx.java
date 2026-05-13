@@ -2,31 +2,33 @@ package test;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import utils.AppStageLayout;
 
-import java.io.IOException;
-
-public class MainFx extends Application {
-
+public class MainFX extends Application {
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
+    public void start(Stage stage) throws Exception {
         try {
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("Site Éducatif — Gestion des Réservations");
-            AppStageLayout.maximizeWorkArea(primaryStage);
-            primaryStage.show();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
+            var scene = new Scene(loader.load());
+
+            stage.setTitle("EDUCORE");
+            stage.setMinWidth(760);
+            stage.setMinHeight(520);
+            stage.setWidth(980);
+            stage.setHeight(680);
+            stage.centerOnScreen();
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            System.err.println("Failed to load FXML: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
     }
+
 }
