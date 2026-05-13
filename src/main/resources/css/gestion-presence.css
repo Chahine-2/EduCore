@@ -1,0 +1,170 @@
+/* Gestion Présence Styles */
+
+.gestion-container {
+    -fx-font-family: "Segoe UI", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 13px;
+}
+
+.header-section {
+    -fx-background-color: linear-gradient(to right, #1e3a8a, #3b82f6);
+    -fx-padding: 20;
+    -fx-spacing: 15;
+}
+
+.title-label {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.subtitle-label {
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-font-size: 13px;
+}
+
+.controls-section {
+    -fx-spacing: 15;
+    -fx-padding: 15;
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 8;
+}
+
+.label-field {
+    -fx-text-fill: #1a202c;
+    -fx-font-weight: bold;
+    -fx-min-width: 100;
+}
+
+.combobox, .date-picker {
+    -fx-font-size: 12px;
+    -fx-padding: 8;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-border-color: #cbd5e1;
+}
+
+.combobox:focused, .date-picker:focused {
+    -fx-border-color: #3b82f6;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.3), 8, 0.2, 0, 2);
+}
+
+.btn-charger, .btn-sauvegarder {
+    -fx-padding: 8 16;
+    -fx-font-weight: bold;
+    -fx-border-radius: 6;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.btn-charger {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}
+
+.btn-charger:hover {
+    -fx-background-color: #2563eb;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.4), 8, 0.2, 0, 2);
+}
+
+.btn-charger:pressed {
+    -fx-background-color: #1d4ed8;
+}
+
+.btn-sauvegarder {
+    -fx-background-color: #10b981;
+    -fx-text-fill: white;
+}
+
+.btn-sauvegarder:hover {
+    -fx-background-color: #059669;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.4), 8, 0.2, 0, 2);
+}
+
+.btn-sauvegarder:pressed {
+    -fx-background-color: #047857;
+}
+
+.stats-label {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 10;
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-background-radius: 6;
+}
+
+.table-presence {
+    -fx-font-size: 12px;
+    -fx-padding: 0;
+}
+
+.table-presence .table-view {
+    -fx-background-color: white;
+}
+
+.table-presence .table-column {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-presence .table-row-cell {
+    -fx-padding: 8;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-presence .table-row-cell:hover {
+    -fx-background-color: #f0f9ff;
+}
+
+.table-presence .table-row-cell:selected {
+    -fx-background-color: #bfdbfe;
+}
+
+.table-presence .column-header {
+    -fx-background-color: #f8fafc;
+    -fx-text-fill: #1a202c;
+    -fx-font-weight: bold;
+}
+
+.table-presence .column-header-background {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 0 0 2 0;
+}
+
+.table-view:focused .table-row-cell:focused {
+    -fx-text-fill: #1a202c;
+}
+
+/* Checkbox styling in table */
+.check-box {
+    -fx-padding: 5;
+}
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #3b82f6;
+    -fx-border-width: 2;
+    -fx-border-radius: 4;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #3b82f6;
+}
+
+.check-box .mark {
+    -fx-text-fill: white;
+}
+
+/* Text field styling in table */
+.text-field {
+    -fx-padding: 5;
+    -fx-border-radius: 4;
+    -fx-border-color: #cbd5e1;
+}
+
+.text-field:focused {
+    -fx-border-color: #3b82f6;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.3), 6, 0.2, 0, 1);
+}
+
