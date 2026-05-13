@@ -75,6 +75,10 @@
                         styleClass="teacher-nav-button" text="Stat Hackathon">
                     <graphic><Label styleClass="teacher-nav-icon" text="📊"/></graphic>
                 </Button>
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleGestionPresence"
+                        styleClass="teacher-nav-button" text="Gestion Présence">
+                    <graphic><Label styleClass="teacher-nav-icon" text="✅"/></graphic>
+                </Button>
             </VBox>
 
             <Region styleClass="teacher-sidebar-spacer" VBox.vgrow="ALWAYS"/>

@@ -400,4 +400,22 @@ public class AdminDashboardController implements Initializable {
             afficherAlerte("Erreur", "Impossible de charger l'interface d'historique.", Alert.AlertType.ERROR);
         }
     }
+
+    @FXML
+    void handleGestionPresence(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/GestionPresence.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Gestion de la Présence des Étudiants");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            AppStageLayout.maximizeWorkArea(stage);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            afficherAlerte("Erreur", "Impossible de charger l'interface de gestion des présences.", Alert.AlertType.ERROR);
+        }
+    }
 }
