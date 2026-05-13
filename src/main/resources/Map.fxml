@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.web.*?>
+
+<VBox spacing="10"
+      xmlns="http://javafx.com/javafx/22"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.MapController"
+      style="-fx-padding: 20; -fx-background-color: #f4f6f9;">
+
+    <Label fx:id="lblTitre"
+           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+    <Label fx:id="lblSalle"
+           style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+
+    <WebView fx:id="mapView" prefHeight="500" prefWidth="800"/>
+
+</VBox>

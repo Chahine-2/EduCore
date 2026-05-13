@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.StudentDashboardController"
+            styleClass="root-dashboard"
+            stylesheets="@../css/student-dashboard.css">
+
+    <left>
+        <VBox styleClass="sidebar" alignment="TOP_CENTER">
+            <VBox styleClass="brand-block">
+                <Label text="EduCore" styleClass="brand-title"/>
+                <Label text="Espace étudiant" styleClass="brand-sub"/>
+            </VBox>
+
+            <VBox styleClass="sidebar-nav" fx:id="sidebarNav">
+                <Button fx:id="btnNavDashboard" styleClass="nav-button nav-button-active" onAction="#onNavDashboard" text="Tableau de bord" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="nav-icon" text="📊"/></graphic>
+                </Button>
+                <Button fx:id="btnNavCourses" styleClass="nav-button" onAction="#onNavCourses" text="Mes cours" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="nav-icon" text="📚"/></graphic>
+                </Button>
+                <Button fx:id="btnNavEvaluations" styleClass="nav-button" onAction="#onNavEvaluations" text="Évaluations" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="nav-icon" text="📝"/></graphic>
+                </Button>
+                <Button fx:id="btnNavResults" styleClass="nav-button" onAction="#onNavResults" text="Résultats" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="nav-icon" text="📈"/></graphic>
+                </Button>
+                <Button fx:id="btnNavReservations" styleClass="nav-button" onAction="#onNavReservations" text="Réservations" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="nav-icon" text="📅"/></graphic>
+                </Button>
+                <Button fx:id="btnNavStatHackathon" styleClass="nav-button" onAction="#onNavStatHackathon" text="Stat Hackathon" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="nav-icon" text="🎯"/></graphic>
+                </Button>
+                <Button fx:id="btnNavProfile" styleClass="nav-button" onAction="#onNavProfile" text="Profil" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="nav-icon" text="👤"/></graphic>
+                </Button>
+            </VBox>
+
+            <Region styleClass="sidebar-spacer" VBox.vgrow="ALWAYS"/>
+
+            <VBox styleClass="sidebar-footer" spacing="0">
+                <Region styleClass="sidebar-footer-line"/>
+                <Button fx:id="btnNavLogout" styleClass="nav-button nav-logout" onAction="#onLogout" text="Déconnexion" defaultButton="false" cancelButton="false" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
+                    <graphic><Label styleClass="nav-icon nav-icon-logout" text="🚪"/></graphic>
+                </Button>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <BorderPane styleClass="main-region">
+            <center>
+                <ScrollPane fitToWidth="true" styleClass="content-scroll" hbarPolicy="NEVER">
+                    <StackPane fx:id="contentStack" minHeight="400" maxWidth="1.7976931348623157E308" minWidth="0.0">
+                        <!-- Dashboard (welcome header only on this tab) -->
+                        <VBox fx:id="paneDashboard" spacing="16" styleClass="content-body">
+                            <HBox styleClass="header-bar dashboard-header-embed" alignment="CENTER_LEFT" spacing="20">
+                                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="lblWelcome" styleClass="welcome-title" text="Bienvenue, Étudiant"/>
+                                    <Label fx:id="lblWelcomeSub" styleClass="welcome-sub"
+                                           text="Voici un aperçu de votre progression et de vos prochaines échéances."/>
+                                </VBox>
+                                <Label fx:id="lblDateTime" styleClass="header-datetime" text="—"/>
+                                <HBox spacing="6" alignment="CENTER">
+                                    <Button fx:id="btnNotifications" styleClass="icon-button" onAction="#onNotifications" text="🔔" mnemonicParsing="false"/>
+                                    <Label text="3" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 8;"/>
+                                </HBox>
+                                <StackPane>
+                                    <Circle radius="22" styleClass="avatar-circle"/>
+                                    <Label fx:id="lblAvatarInitials" styleClass="avatar-initials" text="?"/>
+                                </StackPane>
+                            </HBox>
+                            <VBox styleClass="dashboard-hero" spacing="10">
+                                <Label text="Vue d'ensemble" styleClass="section-title section-title-inline"/>
+                                <Label text="Cours, évaluations, résultats et vigilance anti-triche." styleClass="section-hint"/>
+                            </VBox>
+                            <FlowPane styleClass="cards-flow" hgap="20" vgap="20">
+                                <VBox styleClass="stat-card" spacing="10" onMouseClicked="#onCardCourses">
+                                    <Region styleClass="stat-card-accent-bar, accent-courses"/>
+                                    <Label styleClass="stat-icon" text="📚"/>
+                                    <Label text="Cours au total" styleClass="stat-label"/>
+                                    <Label fx:id="lblStatCourses" styleClass="stat-value" text="0"/>
+                                    <Label text="Inscriptions actives" styleClass="stat-foot"/>
+                                </VBox>
+                                <VBox styleClass="stat-card" spacing="10" onMouseClicked="#onCardEvaluations">
+                                    <Region styleClass="stat-card-accent-bar, accent-upcoming"/>
+                                    <Label styleClass="stat-icon" text="📝"/>
+                                    <Label text="Évaluations à venir" styleClass="stat-label"/>
+                                    <Label fx:id="lblStatUpcoming" styleClass="stat-value" text="0"/>
+                                    <Label text="Quiz &amp; examens planifiés" styleClass="stat-foot"/>
+                                </VBox>
+                                <VBox styleClass="stat-card" spacing="10" onMouseClicked="#onCardResults">
+                                    <Region styleClass="stat-card-accent-bar, accent-passed"/>
+                                    <Label styleClass="stat-icon" text="✓"/>
+                                    <Label text="Évaluations réussies" styleClass="stat-label"/>
+                                    <Label fx:id="lblStatPassed" styleClass="stat-value" text="0"/>
+                                    <Label text="Validations &amp; mentions" styleClass="stat-foot"/>
+                                </VBox>
+                                <VBox styleClass="stat-card" spacing="10" onMouseClicked="#onCardFraud">
+                                    <Region styleClass="stat-card-accent-bar, accent-fraud"/>
+                                    <Label styleClass="stat-icon" text="⚠"/>
+                                    <Label text="Alertes anti-triche" styleClass="stat-label"/>
+                                    <Label fx:id="lblStatFraud" styleClass="stat-value" text="0"/>
+                                    <Label text="Incidents détectés (proctoring)" styleClass="stat-foot"/>
+                                </VBox>
+                            </FlowPane>
+                        </VBox>
+
+                        <!-- Mes cours — Accueil.fxml intégré -->
+                        <VBox fx:id="paneCourses" visible="false" managed="false" spacing="14" styleClass="content-body content-courses courses-pane-fullbleed" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minWidth="0.0">
+                            <VBox spacing="4" styleClass="courses-tab-header">
+                                <Label text="Mes cours" styleClass="section-title"/>
+                                <Label text="Choisissez catégorie et niveau, puis ouvrez le catalogue filtré (écran Accueil)." styleClass="section-hint"/>
+                            </VBox>
+                            <BorderPane fx:id="coursesAccueilShell" styleClass="eval-portal-shell courses-shell-fullbleed" minHeight="520" maxWidth="1.7976931348623157E308" minWidth="0.0" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+
+                        <!-- Reservations -->
+                        <VBox fx:id="paneReservations" visible="false" managed="false" spacing="14" styleClass="content-body" maxWidth="1.7976931348623157E308">
+                            <VBox spacing="4">
+                                <Label text="Réservations" styleClass="section-title"/>
+                                <Label text="Gérez vos réservations et inscriptions." styleClass="section-hint"/>
+                            </VBox>
+                            <BorderPane fx:id="reservationsShell" minHeight="520" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+
+                        <!-- Évaluations — portail étudiant intégré -->
+                        <VBox fx:id="paneEvaluations" visible="false" managed="false" spacing="14" styleClass="content-body content-evaluations">
+                            <VBox spacing="4">
+                                <Label text="Évaluations" styleClass="section-title"/>
+                                <Label text="Quiz et examens ouverts : tentatives, suivi et résultats liés à votre compte." styleClass="section-hint"/>
+                            </VBox>
+                            <BorderPane fx:id="evalPortalShell" styleClass="eval-portal-shell" minHeight="520" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+
+                        <!-- Résultats -->
+                        <VBox fx:id="paneResults" visible="false" managed="false" spacing="16" styleClass="content-body">
+                            <Label text="Résultats" styleClass="section-title"/>
+                            <VBox styleClass="placeholder-pane" maxWidth="Infinity" alignment="CENTER">
+                                <Label text="Suivi des performances" styleClass="placeholder-title"/>
+                                <Label text="Historique des notes, tentatives et feedback — branchez vos services DAO sur ce panneau." styleClass="placeholder-text"/>
+                            </VBox>
+                        </VBox>
+
+                        <!-- Profil -->
+                        <VBox fx:id="paneProfile" visible="false" managed="false" spacing="16" styleClass="content-body">
+                            <Label text="Profil" styleClass="section-title"/>
+                            <VBox spacing="16" styleClass="placeholder-pane" alignment="TOP_LEFT" maxWidth="Infinity">
+                                <HBox spacing="32" styleClass="profile-grid">
+                                    <VBox spacing="4">
+                                        <Label text="Prénom" styleClass="profile-field-label"/>
+                                        <Label fx:id="lblProfilePrenom" styleClass="profile-field-value" text="—"/>
+                                    </VBox>
+                                    <VBox spacing="4">
+                                        <Label text="Nom" styleClass="profile-field-label"/>
+                                        <Label fx:id="lblProfileNom" styleClass="profile-field-value" text="—"/>
+                                    </VBox>
+                                </HBox>
+                                <VBox spacing="4">
+                                    <Label text="Email" styleClass="profile-field-label"/>
+                                    <Label fx:id="lblProfileEmail" styleClass="profile-field-value" text="—"/>
+                                </VBox>
+                            </VBox>
+                        </VBox>
+                    </StackPane>
+                </ScrollPane>
+            </center>
+        </BorderPane>
+    </center>
+</BorderPane>

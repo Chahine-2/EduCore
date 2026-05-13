@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.LectureChapitreController"
+            style="-fx-background-color: #f8f9fa;">
+
+    <!-- ══════════════════════════════════════════════════════════════
+         HAUT — BARRE DE NAVIGATION PREMIUM
+    ══════════════════════════════════════════════════════════════ -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="0"
+              style="-fx-background-color: #ffffff;
+                 -fx-border-color: #e2e8f0;
+                 -fx-border-width: 0 0 1 0;
+                 -fx-padding: 0 20 0 0;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+
+            <!-- Bouton retour -->
+            <Button text="← Retour aux cours"
+                    onAction="#retour"
+                    style="-fx-background-color: transparent;
+                       -fx-text-fill: #64748b;
+                       -fx-font-size: 13;
+                       -fx-font-weight: bold;
+                       -fx-padding: 18 20;
+                       -fx-cursor: hand;
+                       -fx-border-color: transparent;"/>
+
+            <!-- Séparateur vertical -->
+            <Separator orientation="VERTICAL"
+                       style="-fx-background-color: #e2e8f0; -fx-pref-height: 30;"/>
+
+            <!-- Fil d'ariane -->
+            <HBox alignment="CENTER_LEFT" spacing="6" style="-fx-padding: 0 0 0 20;">
+                <Label fx:id="lblNomCours"
+                       style="-fx-text-fill: #64748b; -fx-font-size: 14;"/>
+                <Label text="›"
+                       style="-fx-text-fill: #cbd5e1; -fx-font-size: 15;"/>
+                <Label fx:id="lblTitreNavbar"
+                       style="-fx-text-fill: #1e293b; -fx-font-size: 14; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Progression -->
+            <HBox alignment="CENTER" spacing="12">
+                <Label fx:id="lblProgression"
+                       style="-fx-text-fill: #64748b; -fx-font-size: 13; -fx-font-weight: bold;"/>
+                <ProgressBar fx:id="progressBar"
+                             prefWidth="150" prefHeight="8"
+                             style="-fx-accent: #3b82f6;
+                                -fx-control-inner-background: #e2e8f0;
+                                -fx-background-radius: 4;"/>
+            </HBox>
+
+            <Separator orientation="VERTICAL"
+                       style="-fx-background-color: #e2e8f0; -fx-pref-height: 30; -fx-padding: 0 15 0 15;"/>
+
+            <!-- ✅ Bouton Assistant IA ajouté ici -->
+            <Button text="🤖 Assistant IA"
+                    onAction="#ouvrirChatBot"
+                    style="-fx-background-color: #8e44ad;
+                       -fx-text-fill: white;
+                       -fx-font-weight: bold;
+                       -fx-padding: 10 18;
+                       -fx-background-radius: 8;
+                       -fx-cursor: hand;
+                       -fx-margin: 0 10 0 10;"/>
+
+            <Separator orientation="VERTICAL"
+                       style="-fx-background-color: #e2e8f0; -fx-pref-height: 30;"/>
+
+            <!-- Navigation Précédent / Suivant -->
+            <Button fx:id="btnPrecedent" text="◀ Précédent"
+                    onAction="#chapitrePrec"
+                    style="-fx-background-color: transparent;
+                       -fx-text-fill: #64748b;
+                       -fx-font-size: 13;
+                       -fx-padding: 10 15;
+                       -fx-cursor: hand;"/>
+
+            <Button fx:id="btnSuivant" text="Suivant ▶"
+                    onAction="#chapitreNext"
+                    style="-fx-background-color: transparent;
+                       -fx-text-fill: #64748b;
+                       -fx-font-size: 13;
+                       -fx-padding: 10 15;
+                       -fx-cursor: hand;"/>
+
+            <Button text=""
+                    onAction="#imprimerApercuPdf"
+                    prefWidth="38" prefHeight="38"
+                    contentDisplay="GRAPHIC_ONLY"
+                    style="-fx-background-color: #ffffff;
+                       -fx-border-color: #cbd5e1;
+                       -fx-border-radius: 6;
+                       -fx-background-radius: 6;
+                       -fx-padding: 0;
+                       -fx-cursor: hand;">
+                <graphic>
+                    <SVGPath content="M6 2h12v5H6V2zm12 7h2a2 2 0 012 2v5h-4v4H6v-4H2v-5a2 2 0 012-2h2m2 9h8v-5H8v5z"
+                             style="-fx-fill: #334155;"/>
+                </graphic>
+            </Button>
+
+        </HBox>
+    </top>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CENTER — SIDEBAR + CONTENU PRINCIPAL
+    ══════════════════════════════════════════════════════════════ -->
+    <center>
+        <SplitPane dividerPositions="0.22"
+                   style="-fx-background-color: #f8f9fa; -fx-border-color: transparent;">
+
+            <!-- ─── SIDEBAR GAUCHE — SOMMAIRE ─── -->
+            <VBox spacing="0"
+                  style="-fx-background-color: #ffffff;
+                         -fx-border-color: #e2e8f0;
+                         -fx-border-width: 0 1 0 0;
+                         -fx-min-width: 260;">
+
+                <!-- En-tête Sommaire -->
+                <VBox style="-fx-background-color: #f8fafc; -fx-padding: 20; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0;">
+                    <Label text="SOMMAIRE DU COURS"
+                           style="-fx-text-fill: #3b82f6;
+                                  -fx-font-size: 11;
+                                  -fx-font-weight: 800;
+                                  -fx-letter-spacing: 1.5;"/>
+                    <Label fx:id="lblSommaireTotal"
+                           style="-fx-text-fill: #64748b; -fx-font-size: 12; -fx-padding: 6 0 0 0;"/>
+                </VBox>
+
+                <!-- Liste des chapitres -->
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                            style="-fx-background: #ffffff;
+                                   -fx-background-color: #ffffff;
+                                   -fx-border-color: transparent;">
+                    <ListView fx:id="listViewSommaire"
+                              VBox.vgrow="ALWAYS"
+                              onMouseClicked="#selectionnerDepuisSommaire"
+                              style="-fx-background-color: #ffffff;
+                                     -fx-background: #ffffff;
+                                     -fx-border-color: transparent;
+                                     -fx-padding: 8;"/>
+                </ScrollPane>
+            </VBox>
+
+            <!-- ─── ZONE PRINCIPALE — CONTENU DU CHAPITRE ─── -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background: #f8f9fa;
+                               -fx-background-color: #f8f9fa;
+                               -fx-border-color: transparent;">
+                 <VBox spacing="0" alignment="TOP_CENTER"
+                       style="-fx-background-color: #f8f9fa; -fx-padding: 40 40 80 40;">
+
+                    <!-- En-tête du chapitre -->
+                    <VBox alignment="CENTER" spacing="10" style="-fx-padding: 0 0 40 0;">
+                        <!-- Badge type de contenu & Durée -->
+                        <HBox alignment="CENTER" spacing="12">
+                            <Label fx:id="lblBadgeType"
+                                   style="-fx-background-color: #e0e7ff;
+                                          -fx-text-fill: #4338ca;
+                                          -fx-font-size: 12;
+                                          -fx-font-weight: bold;
+                                          -fx-padding: 6 12;
+                                          -fx-background-radius: 20;"/>
+                            <Label fx:id="lblDureeEstimee"
+                                   style="-fx-text-fill: #64748b; -fx-font-size: 13; -fx-font-weight: bold;"/>
+                        </HBox>
+
+                        <!-- Numéro de chapitre -->
+                        <Label fx:id="lblNumero"
+                               style="-fx-text-fill: #10b981;
+                                      -fx-font-size: 14;
+                                      -fx-font-weight: 800;
+                                      -fx-padding: 10 0 0 0;
+                                      -fx-letter-spacing: 1;"/>
+
+                        <!-- Titre principal du chapitre -->
+                        <Label fx:id="lblTitreChapitre"
+                               wrapText="true" textAlignment="CENTER"
+                               style="-fx-text-fill: #1e293b;
+                                      -fx-font-size: 36;
+                                      -fx-font-weight: 800;"/>
+
+                        <!-- Ligne séparatrice décorative -->
+                        <Region prefWidth="80" prefHeight="4" maxWidth="80"
+                                style="-fx-background-color: #3b82f6; -fx-background-radius: 2; -fx-margin: 10 0 0 0;"/>
+                    </VBox>
+
+                     <!-- CARTE DE CONTENU PRINCIPAL -->
+                     <VBox spacing="25"
+                           style="-fx-background-color: transparent;
+                                  -fx-padding: 0;">
+
+                         <!-- Cadre Aperçu du chapitre -->
+                         <VBox spacing="15" fx:id="boxApercuChapitre"
+                               style="-fx-background-color: #f8fafc;
+                                      -fx-border-color: #e2e8f0;
+                                      -fx-border-radius: 8;
+                                      -fx-background-radius: 8;
+                                      -fx-padding: 20;">
+                             <HBox alignment="CENTER_LEFT" spacing="10">
+                                 <Label text="Aperçu du chapitre"
+                                        style="-fx-text-fill: #64748b;
+                                               -fx-font-size: 13;
+                                               -fx-font-weight: bold;
+                                               -fx-letter-spacing: 0.5;"/>
+                                 <Region HBox.hgrow="ALWAYS"/>
+                                 <ComboBox fx:id="cbLangueLecture" prefWidth="170"
+                                           promptText="Langue de lecture"
+                                           style="-fx-background-color: #ffffff;
+                                                  -fx-border-color: #cbd5e1;
+                                                  -fx-border-radius: 6;
+                                                  -fx-background-radius: 6;
+                                                  -fx-font-size: 12;"/>
+                                 <Button text="🔊 Lire" onAction="#lireApercu"
+                                         fx:id="btnLireApercu"
+                                         style="-fx-background-color: #ffffff;
+                                                -fx-text-fill: #3b82f6;
+                                                -fx-border-color: #cbd5e1;
+                                                -fx-border-radius: 6;
+                                                -fx-background-radius: 6;
+                                                -fx-font-weight: bold;
+                                                -fx-cursor: hand;
+                                                -fx-padding: 6 12;"/>
+                                 <Button text="⏹ Arrêter" onAction="#arreterLecture"
+                                         fx:id="btnStopLecture"
+                                         style="-fx-background-color: #ffffff;
+                                                -fx-text-fill: #ef4444;
+                                                -fx-border-color: #fecaca;
+                                                -fx-border-radius: 6;
+                                                -fx-background-radius: 6;
+                                                -fx-font-weight: bold;
+                                                -fx-cursor: hand;
+                                                -fx-padding: 6 12;"/>
+                             </HBox>
+                             <Label fx:id="lblLectureEtat"
+                                    text="⏸ Arrêté"
+                                    style="-fx-text-fill: #64748b;
+                                           -fx-font-size: 12;
+                                           -fx-font-weight: bold;
+                                           -fx-background-color: #f1f5f9;
+                                           -fx-padding: 6 10;
+                                           -fx-background-radius: 999;"/>
+                             <Label fx:id="lblDescription"
+                                    wrapText="true"
+                                    style="-fx-text-fill: #334155;
+                                           -fx-font-size: 15;
+                                           -fx-line-spacing: 6;"/>
+                         </VBox>
+
+                         <!-- Cadre Support de cours -->
+                         <VBox spacing="15" fx:id="boxSupport"
+                               style="-fx-background-color: #f8fafc;
+                                      -fx-border-color: #e2e8f0;
+                                      -fx-border-radius: 8;
+                                      -fx-background-radius: 8;
+                                      -fx-padding: 20;">
+                             <Label text="Support de cours"
+                                    style="-fx-text-fill: #64748b;
+                                           -fx-font-size: 13;
+                                           -fx-font-weight: bold;
+                                           -fx-letter-spacing: 0.5;"/>
+
+                             <!-- Barre d'actions -->
+                             <HBox spacing="12" alignment="CENTER_LEFT"
+                                   style="-fx-background-color: transparent;
+                                          -fx-border-color: transparent;
+                                          -fx-border-radius: 0;
+                                          -fx-background-radius: 0;
+                                          -fx-padding: 0;">
+                                 <Label text="📁" style="-fx-font-size: 24;"/>
+                                 <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                     <Label text="Ressource associée à ce chapitre"
+                                            style="-fx-text-fill: #1e293b; -fx-font-size: 14; -fx-font-weight: bold;"/>
+                                     <Label fx:id="lblUrl"
+                                            text="Lien/Fichier..."
+                                            style="-fx-text-fill: #64748b; -fx-font-size: 12;"/>
+                                 </VBox>
+                                 <Button text="Ouvrir le support" onAction="#ouvrirSupport"
+                                         style="-fx-background-color: #ffffff;
+                                                -fx-text-fill: #3b82f6;
+                                                -fx-border-color: #cbd5e1;
+                                                -fx-border-radius: 6;
+                                                -fx-background-radius: 6;
+                                                -fx-font-weight: bold;
+                                                -fx-cursor: hand;
+                                                -fx-padding: 8 16;"/>
+                                 <Button text="Télécharger" onAction="#telechargerSupport"
+                                         style="-fx-background-color: #3b82f6;
+                                                -fx-text-fill: #ffffff;
+                                                -fx-border-radius: 6;
+                                                -fx-background-radius: 6;
+                                                -fx-font-weight: bold;
+                                                -fx-cursor: hand;
+                                                -fx-padding: 8 16;
+                                                -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.3), 6, 0, 0, 2);"/>
+                             </HBox>
+
+
+                         </VBox>
+                     </VBox>
+
+                    <!-- Feedback anonyme étudiant -->
+                    <VBox spacing="10"
+                          style="-fx-padding: 36 0 20 0; -fx-background-color: transparent;">
+                        <Label text="Votre feedback anonyme sur ce chapitre"
+                               style="-fx-text-fill: #334155; -fx-font-size: 14; -fx-font-weight: bold;"/>
+                        <TextArea fx:id="taFeedback"
+                                  promptText="Partagez votre avis, vos difficultés, ou vos suggestions..."
+                                  wrapText="true"
+                                  prefRowCount="3"
+                                  style="-fx-background-color: #ffffff; -fx-border-color: #cbd5e1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 13;"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Button text="Envoyer feedback"
+                                    onAction="#envoyerFeedback"
+                                    style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 16; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                            <Label fx:id="lblFeedbackEtat"
+                                   text=""
+                                   style="-fx-text-fill: #64748b; -fx-font-size: 12;"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Bouton Quiz de test -->
+                    <!-- L'utilisateur a demandé un truc sur le quiz avant? Non, pas de bouton quiz ici -->
+                </VBox>
+            </ScrollPane>
+        </SplitPane>
+    </center>
+
+</BorderPane>

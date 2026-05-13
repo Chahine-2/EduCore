@@ -1,0 +1,340 @@
+package controllers;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import models.Cours;
+import services.ServiceCours;
+import utils.NavigationManager;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+
+@SuppressWarnings({
+    "FieldCanBeLocal",  // Les champs @FXML sont assignés par le framework
+    "unused"            // Les méthodes sont appelées par FXML
+})
+public class GestionCoursController {
+
+    /** When set, "Retour" returns to TeacherDashboard instead of Accueil.fxml. */
+    private Runnable teacherDashboardBack;
+    private java.util.function.Consumer<Cours> openDetailsCallback;
+
+    /**
+     * When embedded in the teacher dashboard, {@link #retourAccueil} runs {@code back} instead of navigating to Accueil.
+     */
+    public void setTeacherDashboardEmbedMode(boolean enabled, Runnable backToTeacherDashboard, java.util.function.Consumer<Cours> openDetails) {
+        this.teacherDashboardBack = (enabled && backToTeacherDashboard != null) ? backToTeacherDashboard : null;
+        this.openDetailsCallback = (enabled && openDetails != null) ? openDetails : null;
+    }
+
+    // fx:id du FXML → doivent correspondre exactement
+    @FXML private TextField tfTitre;
+    @FXML private TextArea taDescription;
+    @FXML private TextArea taObjectifs;
+    @FXML private Spinner<Integer> spinDuree;
+    @FXML private ComboBox<String> cbNiveau;
+    @FXML private ComboBox<String> cbCategorie;
+    @FXML private CheckBox cbCertifiant;
+    @FXML private CheckBox cbVisible;
+    @FXML private DatePicker dpDebut;
+    @FXML private DatePicker dpFin;
+    @FXML private TableView<Cours> tableViewCours;
+
+    @FXML private TableColumn<Cours, String> colTitre;
+    @FXML private TableColumn<Cours, String> colNiveau;
+    @FXML private TableColumn<Cours, String> colCategorie;
+    @FXML private TableColumn<Cours, Integer> colDuree;
+    @FXML private TableColumn<Cours, Boolean> colCertifiant;
+
+    private Cours coursEnEdition = null;  // Stocke le cours en cours de modification
+    private int lastSelectedIndex = -1;  // Pour permettre la désélection
+
+    @FXML
+    void initialize() {
+        try {
+            System.out.println("🔧 Initialisation GestionCoursController...");
+
+            cbNiveau.getItems().addAll("debutant", "intermediaire", "avance");
+            cbCategorie.getItems().addAll("informatique", "mecanique", "electrique");
+
+            // Configurer le Spinner pour les heures (1 à 200)
+            spinDuree.setValueFactory(
+                    new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 200, 1)
+            );
+
+            // Configurer les colonnes de la TableView
+            colTitre.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("titre"));
+            colNiveau.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("niveau"));
+            colCategorie.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("categorie"));
+            colDuree.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("dureeHeures"));
+            colCertifiant.setCellValueFactory(
+                    new javafx.scene.control.cell.PropertyValueFactory<>("estCertifiant"));
+
+            // Ajouter listener pour sélectionner une ligne dans la table
+            tableViewCours.setOnMouseClicked(this::selectCoursInTable);
+
+            // Charger les cours dans la table
+            refreshTable();
+
+            System.out.println("✅ GestionCoursController initialisé avec succès");
+        } catch (Exception e) {
+            System.out.println("❌ ERREUR lors de l'initialisation de GestionCoursController :");
+            System.out.println("    Message : " + e.getMessage());
+            e.printStackTrace();
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur d'initialisation");
+            alert.setHeaderText("Impossible de charger l'interface");
+            alert.setContentText("Erreur : " + e.getMessage() + "\n\nVérifiez la console pour plus de détails.");
+            alert.showAndWait();
+        }
+    }
+
+    private void refreshTable() {
+        ServiceCours sc = new ServiceCours();
+        tableViewCours.getItems().setAll(sc.getAll());
+    }
+
+    // Remplir le formulaire avec les données du cours sélectionné
+    private void selectCoursInTable(MouseEvent event) {
+        int selectedIndex = tableViewCours.getSelectionModel().getSelectedIndex();
+        Cours selected = tableViewCours.getSelectionModel().getSelectedItem();
+        
+        // Permettre la désélection en cliquant à nouveau sur le même cours
+        if (selectedIndex == lastSelectedIndex && selected != null) {
+            tableViewCours.getSelectionModel().clearSelection();
+            clearForm();
+            lastSelectedIndex = -1;
+        } else if (selected != null) {
+            coursEnEdition = selected;
+            remplirFormulaire(selected);
+            lastSelectedIndex = selectedIndex;
+        }
+    }
+
+    // Remplir le formulaire avec les données d'un cours
+    private void remplirFormulaire(Cours c) {
+        tfTitre.setText(c.getTitre());
+        taDescription.setText(c.getDescription());
+        taObjectifs.setText(c.getObjectifs());
+        spinDuree.getValueFactory().setValue(c.getDureeHeures());
+        cbNiveau.setValue(c.getNiveau());
+        cbCategorie.setValue(c.getCategorie());
+        cbCertifiant.setSelected(c.isEstCertifiant());
+        cbVisible.setSelected(c.isVisible());
+        dpDebut.setValue(c.getDateDebut());
+        dpFin.setValue(c.getDateFin());
+    }
+
+    // Nettoyer/réinitialiser le formulaire
+    private void clearForm() {
+        tfTitre.clear();
+        taDescription.clear();
+        taObjectifs.clear();
+        spinDuree.getValueFactory().setValue(1);
+        cbNiveau.setValue(null);
+        cbCategorie.setValue(null);
+        cbCertifiant.setSelected(false);
+        cbVisible.setSelected(true);
+        dpDebut.setValue(LocalDate.now());
+        dpFin.setValue(LocalDate.now().plusMonths(6));
+        tableViewCours.getSelectionModel().clearSelection();
+        coursEnEdition = null;
+    }
+
+    @FXML
+    public void ajouterCours(ActionEvent event) {
+        // Valider les champs obligatoires
+        if (tfTitre.getText().isEmpty() || cbNiveau.getValue() == null || cbCategorie.getValue() == null) {
+            showAlert("Erreur", "Veuillez remplir tous les champs obligatoires!", Alert.AlertType.WARNING);
+            return;
+        }
+
+        ServiceCours sc = new ServiceCours();
+        Cours c = new Cours();
+        c.setTitre(tfTitre.getText());
+        c.setDescription(taDescription.getText());
+        c.setObjectifs(taObjectifs.getText());
+        c.setDureeHeures(spinDuree.getValue());
+        c.setNiveau(cbNiveau.getValue());
+        c.setCategorie(cbCategorie.getValue());
+        c.setEstCertifiant(cbCertifiant.isSelected());
+        c.setVisible(cbVisible.isSelected());
+        c.setDateDebut(dpDebut.getValue() != null ? dpDebut.getValue() : LocalDate.now());
+        c.setDateFin(dpFin.getValue() != null ? dpFin.getValue() : LocalDate.now().plusMonths(6));
+
+        try {
+            int generatedId = sc.addAndReturnId(c);
+            c.setId(generatedId);
+            System.out.println("✅ Cours ajouté avec ID: " + c.getId());
+        } catch (SQLException e) {
+            showAlert("Erreur SQL", "❌ Impossible d'ajouter le cours.\nDétail: " + e.getMessage(), Alert.AlertType.ERROR);
+            return;
+        }
+
+        if (c.getId() <= 0) {
+            showAlert("Erreur", "❌ Le cours a été saisi mais son identifiant n'a pas été récupéré.\n" +
+                    "Vérifiez que la colonne 'id' de la table cours est AUTO_INCREMENT.", Alert.AlertType.ERROR);
+            refreshTable();
+            return;
+        }
+
+        refreshTable();
+        clearForm();
+        showAlert("Succès", "✅ Cours ajouté avec succès!", Alert.AlertType.INFORMATION);
+
+        if (teacherDashboardBack != null) {
+            return;
+        }
+        // Passer à la scène des détails (hors intégration tableau enseignant)
+        try {
+            System.out.println("📌 Navigation vers DetailsCoursController avec ID=" + c.getId());
+            DetailsCoursController.cours = c;
+            System.out.println("   - DetailsCoursController.cours.getId() = " + DetailsCoursController.cours.getId());
+
+            Scene scene = tfTitre.getScene();
+            if (scene != null) {
+                NavigationManager.navigateTo(scene, "/DetailsCours.fxml");
+            } else {
+                System.out.println("⚠️ Erreur : Scène non trouvée");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void modifierCours(ActionEvent event) {
+        if (coursEnEdition == null) {
+            showAlert("Erreur", "❌ Veuillez sélectionner un cours à modifier!", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Valider les champs
+        if (tfTitre.getText().isEmpty() || cbNiveau.getValue() == null || cbCategorie.getValue() == null) {
+            showAlert("Erreur", "Veuillez remplir tous les champs obligatoires!", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Mettre à jour les données du cours
+        coursEnEdition.setTitre(tfTitre.getText());
+        coursEnEdition.setDescription(taDescription.getText());
+        coursEnEdition.setObjectifs(taObjectifs.getText());
+        coursEnEdition.setDureeHeures(spinDuree.getValue());
+        coursEnEdition.setNiveau(cbNiveau.getValue());
+        coursEnEdition.setCategorie(cbCategorie.getValue());
+        coursEnEdition.setEstCertifiant(cbCertifiant.isSelected());
+        coursEnEdition.setVisible(cbVisible.isSelected());
+        coursEnEdition.setDateDebut(dpDebut.getValue());
+        coursEnEdition.setDateFin(dpFin.getValue());
+
+        // Persister en base de données
+        ServiceCours sc = new ServiceCours();
+        sc.update(coursEnEdition);
+
+        refreshTable();
+        clearForm();
+        showAlert("Succès", "✅ Cours modifié avec succès!", Alert.AlertType.INFORMATION);
+    }
+
+    @FXML
+    public void supprimerCours(ActionEvent event) {
+        Cours selected = tableViewCours.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert("Erreur", "❌ Veuillez sélectionner un cours à supprimer!", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Demander confirmation
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Supprimer le cours");
+        alert.setContentText("Êtes-vous sûr de vouloir supprimer le cours \"" + selected.getTitre() + "\" ?");
+        
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            ServiceCours sc = new ServiceCours();
+            sc.delete(selected);
+            refreshTable();
+            clearForm();
+            showAlert("Succès", "✅ Cours supprimé avec succès!", Alert.AlertType.INFORMATION);
+        }
+    }
+
+    @FXML
+    public void afficherDetails(ActionEvent event) {
+        Cours selected = tableViewCours.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert("Erreur", "❌ Veuillez sélectionner un cours!", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // ✅ Logging détaillé pour debugguer
+        System.out.println("📌 Affichage détails du cours:");
+        System.out.println("   - ID: " + selected.getId());
+        System.out.println("   - Titre: " + selected.getTitre());
+        System.out.println("   - Niveau: " + selected.getNiveau());
+        System.out.println("   - Catégorie: " + selected.getCategorie());
+
+        // Passer le cours sélectionné au contrôleur des détails
+        DetailsCoursController.cours = selected;
+
+        System.out.println("✅ DetailsCoursController.cours assigné");
+        System.out.println("   - DetailsCoursController.cours.getId() = " + DetailsCoursController.cours.getId());
+        System.out.println("   - DetailsCoursController.cours.getTitre() = " + DetailsCoursController.cours.getTitre());
+
+        if (openDetailsCallback != null) {
+            openDetailsCallback.accept(selected);
+            return;
+        }
+
+        try {
+            Scene scene = tableViewCours.getScene();
+            if (scene != null) {
+                NavigationManager.navigateTo(scene, "/DetailsCours.fxml");
+            } else {
+                System.out.println("⚠️ Erreur : Scène non trouvée");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void retourAccueil(ActionEvent event) {
+        if (teacherDashboardBack != null) {
+            teacherDashboardBack.run();
+            return;
+        }
+        try {
+            Scene scene = tableViewCours.getScene();
+            if (scene != null) {
+                NavigationManager.navigateTo(scene, "/Accueil.fxml");
+            } else {
+                System.out.println("⚠️ Erreur : Scène non trouvée");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Afficher une alerte
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}

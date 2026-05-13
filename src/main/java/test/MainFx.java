@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import utils.AppStageLayout;
 
 import java.io.IOException;
 
@@ -16,12 +17,13 @@ public class MainFx extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionReservation.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
         try {
             Parent root = loader.load();
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Site Éducatif — Gestion des Réservations");
+            AppStageLayout.maximizeWorkArea(primaryStage);
             primaryStage.show();
         } catch (IOException e) {
             System.out.println(e.getMessage());

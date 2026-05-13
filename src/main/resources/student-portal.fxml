@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="root"
+            fx:controller="controllers.StudentPortalController"
+            styleClass="root-portal portal-root"
+            stylesheets="@styles/student-portal.css"
+            prefWidth="1100" prefHeight="820">
+
+    <top>
+        <VBox fx:id="portalTopChrome" spacing="0">
+            <HBox styleClass="portal-hero" alignment="CENTER_LEFT" spacing="24">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label fx:id="lblPortalEyebrow" text="EDUCORE" styleClass="portal-brand"/>
+                    <Label fx:id="lblPortalTitle" text="Évaluations ouvertes" styleClass="portal-title"/>
+                    <Label fx:id="lblPortalSubtitle" styleClass="portal-sub" wrapText="true"
+                           text="Les évaluations actives s'affichent ci-dessous. Vos résultats sont liés à votre compte."/>
+                </VBox>
+                <VBox fx:id="sessionColumn" alignment="CENTER_RIGHT" spacing="6" styleClass="portal-session-column">
+                    <Label fx:id="lblSessionContext" styleClass="portal-session-chip" text=" "/>
+                </VBox>
+            </HBox>
+            <HBox styleClass="portal-toolbar" spacing="12" alignment="CENTER_LEFT">
+                <Label fx:id="countLabel" text="0 évaluation ouverte" styleClass="portal-count"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnPortalBack" text="Retour Home" onAction="#handleBackHome"
+                        styleClass="portal-btn-ghost" mnemonicParsing="false"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="0" styleClass="portal-center-wrap">
+            <HBox fx:id="portalEmbedToolbar" managed="false" visible="false" styleClass="portal-embed-toolbar"
+                  alignment="CENTER_LEFT">
+                <Label fx:id="countLabelCompact" text="—" styleClass="portal-embed-count"/>
+            </HBox>
+            <StackPane styleClass="portal-main" VBox.vgrow="ALWAYS">
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="portal-scroll">
+                    <FlowPane fx:id="cardsFlow" hgap="18" vgap="18" alignment="TOP_LEFT" styleClass="portal-flow"/>
+                </ScrollPane>
+                <Label fx:id="emptyLabel"
+                       text="Aucune évaluation n'est ouverte pour le moment. Revenez lorsque votre enseignant activera une fenêtre de quiz."
+                       styleClass="portal-empty"
+                       visible="false"
+                       managed="false"
+                       wrapText="true"
+                       StackPane.alignment="CENTER"/>
+            </StackPane>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox fx:id="bottomBar" styleClass="portal-footer" alignment="CENTER_LEFT" spacing="16">
+            <Label text="Gestion des cours et des évaluations" styleClass="portal-footer-text"/>
+            <Hyperlink text="Ouvrir l'administration" onAction="#handleOpenAdmin" styleClass="portal-link"/>
+        </HBox>
+    </bottom>
+</BorderPane>

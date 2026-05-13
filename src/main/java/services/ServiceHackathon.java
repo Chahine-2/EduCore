@@ -1,6 +1,7 @@
 package services;
 
 import interfaces.IService;
+import interfaces.IServiceHackatons;
 import models.Hackathon;
 import utils.MyDataBase;
 
@@ -8,7 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceHackathon implements IService<Hackathon> {
+public class ServiceHackathon implements IServiceHackatons<Hackathon> {
 
     @Override
     public void add(Hackathon a) {

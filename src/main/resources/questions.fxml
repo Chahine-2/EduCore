@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="root"
+            fx:controller="controllers.QuestionsController"
+            styleClass="root-questions"
+            stylesheets="@styles/questions-management.css"
+            style="-fx-font-family: 'Segoe UI'; -fx-background-color: linear-gradient(to bottom right, #eef2ff, #f8fafc);"
+            prefWidth="960" prefHeight="760">
+
+    <left>
+        <Region styleClass="q-sidebar"/>
+    </left>
+
+    <top>
+        <VBox spacing="0">
+            <VBox spacing="4" styleClass="q-header">
+                <Label text="Administration / Questions" styleClass="q-breadcrumb"/>
+                <Label text="Gestion des questions" styleClass="q-title"/>
+                <Label fx:id="evaluationTitleLabel" text="Évaluation" styleClass="q-eval-name"/>
+                <Label text="Construisez votre questionnaire : options QCM et vrai/faux uniquement."
+                       wrapText="true" styleClass="q-sub"/>
+            </VBox>
+            <HBox alignment="CENTER_LEFT" spacing="14" styleClass="q-toolbar">
+                <Button fx:id="addQuestionBtn" text="+ Ajouter une question" onAction="#handleAddQuestion" styleClass="btn-q-accent"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="questionCountLabel" text="0 questions" styleClass="q-count"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <StackPane style="-fx-background-color: transparent; -fx-padding: 12;">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="q-scroll-pane-shell">
+                <VBox fx:id="questionsContainer" styleClass="questions-list" spacing="12">
+                    <padding>
+                        <Insets top="12" right="12" bottom="12" left="12"/>
+                    </padding>
+                </VBox>
+            </ScrollPane>
+            <Label fx:id="emptyLabel"
+                   text="Pas encore de questions. Utilisez Ajouter une question pour créer votre premier élément."
+                   styleClass="empty-questions"
+                   visible="true"
+                   StackPane.alignment="CENTER"/>
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" styleClass="q-footer">
+            <Label fx:id="statusLabel" text="Prêt" styleClass="q-status-ok"/>
+        </HBox>
+    </bottom>
+</BorderPane>
