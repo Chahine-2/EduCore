@@ -16,9 +16,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
 import models.Evaluation;
-import models.Resultat;
 import services.EvaluationDAOImpl;
-import services.ResultatDAOImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,7 +24,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,8 +62,6 @@ public class EvaluationController {
 
     private IService<Evaluation> evaluationDAO;
     private Evaluation selectedEvaluation;
-    /** When set (embedded in TeacherDashboard), "Retour Home" runs this instead of opening home.fxml. */
-    private Runnable teacherDashboardBack;
     /** Full list from persistence (unfiltered). */
     private final ObservableList<Evaluation> masterEvaluations = FXCollections.observableArrayList();
     private List<Evaluation> viewPipeline = new ArrayList<>();
@@ -109,13 +104,6 @@ public class EvaluationController {
         });
 
         loadAllEvaluations();
-    }
-
-    /**
-     * When embedded in the teacher dashboard, back leaves the evaluation module for the dashboard home.
-     */
-    public void setTeacherDashboardEmbedMode(boolean enabled, Runnable backToTeacherDashboard) {
-        this.teacherDashboardBack = (enabled && backToTeacherDashboard != null) ? backToTeacherDashboard : null;
     }
 
     private void initAvailabilityControls() {
@@ -307,16 +295,20 @@ public class EvaluationController {
         btnQuestions.getStyleClass().addAll("btn-row", "btn-row-questions");
         btnQuestions.setOnAction(e -> handleManageQuestions(evaluation));
 
-        Button btnStats = new Button("Statistique");
-        btnStats.getStyleClass().addAll("btn-row", "btn-row-stats");
-        btnStats.setOnAction(e -> handleShowStatistics(evaluation));
+        Button btnAI = new Button("Generate AI");
+        // Reuse existing 'questions' pill style so the new button matches the UI
+        btnAI.getStyleClass().addAll("btn-row", "btn-row-questions");
+        btnAI.setOnAction(e -> {
+            // Open the AI quiz generator attached to this evaluation
+            controllers.QuizGeneratorController.openModalForEvaluation(evaluation);
+        });
 
-        for (Button b : new Button[] { btnView, btnEdit, btnDelete, btnQuestions, btnStats }) {
+        for (Button b : new Button[] { btnView, btnEdit, btnDelete, btnQuestions, btnAI }) {
             b.setMinWidth(Region.USE_PREF_SIZE);
             b.setMaxWidth(Region.USE_PREF_SIZE);
         }
 
-        actionBox.getChildren().addAll(btnView, btnEdit, btnDelete, btnQuestions, btnStats);
+        actionBox.getChildren().addAll(btnView, btnEdit, btnDelete, btnQuestions, btnAI);
         return actionBox;
     }
 
@@ -366,25 +358,6 @@ public class EvaluationController {
     private void handleNewEvaluation() {
         handleClear();
         setStatus("New evaluation — fill the form and click Save (create).", false);
-    }
-
-    @FXML
-    private void handleBackHome() {
-        if (teacherDashboardBack != null) {
-            teacherDashboardBack.run();
-            return;
-        }
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
-            Parent homeRoot = loader.load();
-            if (evaluationTable.getScene() != null && evaluationTable.getScene().getWindow() instanceof Stage stage) {
-                stage.setScene(new Scene(homeRoot));
-                stage.setTitle("EDUCORE");
-                stage.centerOnScreen();
-            }
-        } catch (Exception e) {
-            showError("Could not open home page: " + e.getMessage());
-        }
     }
 
     @FXML
@@ -578,44 +551,6 @@ public class EvaluationController {
             e.printStackTrace();
             showError("Could not open questions: " + e.getMessage());
         }
-    }
-
-    private void handleShowStatistics(Evaluation evaluation) {
-        List<Resultat> attempts = new ResultatDAOImpl().getAll().stream()
-                .filter(r -> r.getEvaluationId() == evaluation.getId())
-                .toList();
-
-        long participants = attempts.stream()
-                .map(Resultat::getStudentId)
-                .distinct()
-                .count();
-        long graded = attempts.stream().filter(r -> r.getScore() != null).count();
-
-        DoubleSummaryStatistics scoreStats = attempts.stream()
-                .filter(r -> r.getScore() != null)
-                .mapToDouble(r -> r.getScore())
-                .summaryStatistics();
-
-        double passThreshold = evaluation.getNotePassage();
-        long passed = attempts.stream()
-                .filter(r -> r.getScore() != null && r.getScore() >= passThreshold)
-                .count();
-        double passRate = graded == 0 ? 0 : (passed * 100.0) / graded;
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Statistique");
-        alert.setHeaderText("Evaluation — " + evaluation.getTitre());
-        alert.setContentText(
-                "Participants: " + participants + "\n"
-                        + "Attempts: " + attempts.size() + "\n"
-                        + "Graded attempts: " + graded + "\n"
-                        + "Average score: " + (graded == 0 ? "—" : String.format(Locale.ENGLISH, "%.2f", scoreStats.getAverage())) + "\n"
-                        + "Min score: " + (graded == 0 ? "—" : String.format(Locale.ENGLISH, "%.2f", scoreStats.getMin())) + "\n"
-                        + "Max score: " + (graded == 0 ? "—" : String.format(Locale.ENGLISH, "%.2f", scoreStats.getMax())) + "\n"
-                        + "Pass mark: " + String.format(Locale.ENGLISH, "%.2f", evaluation.getNotePassage()) + "\n"
-                        + "Pass rate: " + (graded == 0 ? "—" : String.format(Locale.ENGLISH, "%.1f%%", passRate))
-        );
-        alert.showAndWait();
     }
 
     private void loadAllEvaluations() {

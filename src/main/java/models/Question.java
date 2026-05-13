@@ -5,6 +5,7 @@ public class Question {
     private String texte;
     private QuestionType type;
     private float points;
+    private String explication;
     private int evaluationId;
 
     public Question() {
@@ -57,6 +58,14 @@ public class Question {
         this.points = points;
     }
 
+    public String getExplication() {
+        return explication;
+    }
+
+    public void setExplication(String explication) {
+        this.explication = explication;
+    }
+
 
     public int getEvaluationId() {
         return evaluationId;
@@ -73,6 +82,7 @@ public class Question {
                 ", texte='" + texte + '\'' +
                 ", type=" + type +
                 ", points=" + points +
+                ", explication='" + explication + '\'' +
                 ", evaluationId=" + evaluationId +
                 '}';
     }

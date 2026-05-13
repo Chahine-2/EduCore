@@ -278,6 +278,15 @@ public class StudentPortalController {
         top.setAlignment(Pos.CENTER_LEFT);
         Label badge = new Label(submitted == null ? "En cours" : "Soumis");
         badge.getStyleClass().add(submitted == null ? "portal-badge-live" : "portal-badge-done");
+
+        // Add fraud badge if detected
+        if (submitted != null && submitted.isFraudeDetecte()) {
+            Label fraudBadge = new Label("FRAUDE");
+            fraudBadge.getStyleClass().add("portal-badge-fraud");
+            fraudBadge.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-padding: 4 10; -fx-background-radius: 4; -fx-font-weight: bold;");
+            top.getChildren().add(fraudBadge);
+        }
+
         Region sp = new Region();
         HBox.setHgrow(sp, Priority.ALWAYS);
         top.getChildren().addAll(badge, sp);
@@ -295,8 +304,16 @@ public class StudentPortalController {
             float totalPoints = questionDAO.findByEvaluationId(ev.getId()).stream()
                     .map(q -> q.getPoints())
                     .reduce(0f, Float::sum);
-            Label titleScore = new Label(formatScore(submitted.getScore()) + " / " + formatScore(totalPoints));
-            titleScore.getStyleClass().add("portal-title-score");
+
+            Label titleScore;
+            if (submitted.isFraudeDetecte()) {
+                // Show fraud status instead of score
+                titleScore = new Label("FRAUDE");
+                titleScore.setStyle("-fx-text-fill: #ef4444; -fx-font-weight: bold; -fx-font-size: 14;");
+            } else {
+                titleScore = new Label(formatScore(submitted.getScore()) + " / " + formatScore(totalPoints));
+                titleScore.getStyleClass().add("portal-title-score");
+            }
             titleRow.getChildren().add(titleScore);
         }
 

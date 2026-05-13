@@ -29,27 +29,19 @@
             <VBox styleClass="teacher-sidebar-nav" spacing="5">
                 <Button fx:id="btnNavDashboard" styleClass="teacher-nav-button teacher-nav-button-active"
                         onAction="#onNavDashboard" text="Dashboard" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="teacher-nav-icon" text="📊"/></graphic>
+                    <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
                 </Button>
                 <Button fx:id="btnNavCourses" styleClass="teacher-nav-button"
                         onAction="#onNavCourses" text="Course Management" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="teacher-nav-icon" text="📚"/></graphic>
+                    <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
                 </Button>
                 <Button fx:id="btnNavEvaluations" styleClass="teacher-nav-button"
                         onAction="#onNavEvaluations" text="Evaluation Management" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="teacher-nav-icon" text="📝"/></graphic>
-                </Button>
-                <Button fx:id="btnNavReservationMateriel" styleClass="teacher-nav-button"
-                        onAction="#onNavReservationMateriel" text="Réservation matériel" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="teacher-nav-icon" text="📦"/></graphic>
+                    <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
                 </Button>
                 <Button fx:id="btnNavAbsence" styleClass="teacher-nav-button"
                         onAction="#onNavAbsence" text="Absence Management" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="teacher-nav-icon" text="📋"/></graphic>
-                </Button>
-                <Button fx:id="btnNavStudents" styleClass="teacher-nav-button"
-                        onAction="#onNavStudents" text="Students" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="teacher-nav-icon" text="🎓"/></graphic>
+                    <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
                 </Button>
                 <Button fx:id="btnNavFraud" styleClass="teacher-nav-button"
                         onAction="#onNavFraud" text="Fraud Reports" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
@@ -57,15 +49,15 @@
                 </Button>
                 <Button fx:id="btnNavStatistics" styleClass="teacher-nav-button"
                         onAction="#onNavStatistics" text="Results &amp; Statistics" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="teacher-nav-icon" text="📈"/></graphic>
+                    <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
                 </Button>
                 <Button fx:id="btnNavStatHackathon" styleClass="teacher-nav-button"
                         onAction="#onNavStatHackathon" text="Stat Hackathon" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="teacher-nav-icon" text="🎯"/></graphic>
+                    <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
                 </Button>
                 <Button fx:id="btnNavProfile" styleClass="teacher-nav-button"
                         onAction="#onNavProfile" text="Profile" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="teacher-nav-icon" text="👤"/></graphic>
+                    <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
                 </Button>
             </VBox>
 
@@ -75,7 +67,7 @@
                 <Region styleClass="teacher-sidebar-footer-line"/>
                 <Button fx:id="btnNavLogout" styleClass="teacher-nav-button teacher-nav-logout"
                         onAction="#onLogout" text="Logout" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
-                    <graphic><Label styleClass="teacher-nav-icon" text="🚪"/></graphic>
+                    <graphic><Label styleClass="teacher-nav-icon" text=""/></graphic>
                 </Button>
             </VBox>
         </VBox>
@@ -83,43 +75,24 @@
 
     <center>
         <BorderPane styleClass="teacher-main-region">
-            <top>
-                <HBox styleClass="teacher-header" alignment="CENTER_LEFT" spacing="20">
-                    <VBox spacing="4" HBox.hgrow="ALWAYS">
-                        <Label fx:id="lblWelcome" styleClass="teacher-welcome-title" text="Welcome, Professor"/>
-                        <Label fx:id="lblWelcomeSub" styleClass="teacher-welcome-sub"
-                               text="Manage courses, evaluations, attendance, and integrity monitoring."/>
-                    </VBox>
-                    <Label fx:id="lblDateTime" styleClass="teacher-header-datetime" text="—"/>
-                    <HBox spacing="6" alignment="CENTER">
-                        <Button fx:id="btnNotifications" styleClass="teacher-icon-button" onAction="#onNotifications" text="🔔" mnemonicParsing="false"/>
-                        <Label text="2" style="-fx-background-color: #f97316; -fx-text-fill: white; -fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 8;"/>
-                    </HBox>
-                    <StackPane>
-                        <Circle radius="22" styleClass="teacher-avatar-circle"/>
-                        <Label fx:id="lblAvatarInitials" styleClass="teacher-avatar-initials" text="?"/>
-                    </StackPane>
-                </HBox>
-            </top>
-
             <center>
                 <ScrollPane fitToWidth="true" styleClass="teacher-content-scroll" hbarPolicy="NEVER">
                     <StackPane minHeight="420" maxWidth="1.7976931348623157E308" minWidth="0.0">
                         <VBox fx:id="paneDashboard" spacing="16" styleClass="teacher-content-body">
                             <HBox styleClass="teacher-dashboard-header-embed" alignment="CENTER_LEFT" spacing="20" maxWidth="1.7976931348623157E308">
                                 <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                    <Label fx:id="lblWelcomeDash" styleClass="teacher-welcome-title" text="Welcome, Professor"/>
-                                    <Label fx:id="lblWelcomeSubDash" styleClass="teacher-welcome-sub"
+                                    <Label fx:id="lblWelcome" styleClass="teacher-welcome-title" text="Welcome, Professor"/>
+                                    <Label fx:id="lblWelcomeSub" styleClass="teacher-welcome-sub"
                                            text="Manage courses, evaluations, attendance, and integrity monitoring."/>
                                 </VBox>
-                                <Label fx:id="lblDateTimeDash" styleClass="teacher-header-datetime" text="—"/>
+                                <Label fx:id="lblDateTime" styleClass="teacher-header-datetime" text="—"/>
                                 <StackPane styleClass="teacher-notify-stack">
-                                    <Button fx:id="btnNotificationsDash" styleClass="teacher-icon-button" onAction="#onNotifications" text="🔔" mnemonicParsing="false"/>
+                                    <Button fx:id="btnNotifications" styleClass="teacher-icon-button" onAction="#onNotifications" text="" mnemonicParsing="false"/>
                                     <Label text="2" styleClass="teacher-notify-badge" mouseTransparent="true" StackPane.alignment="TOP_RIGHT"/>
                                 </StackPane>
                                 <StackPane>
                                     <Circle radius="22" styleClass="teacher-avatar-circle"/>
-                                    <Label fx:id="lblAvatarDash" styleClass="teacher-avatar-initials" text="?"/>
+                                    <Label fx:id="lblAvatarInitials" styleClass="teacher-avatar-initials" text="?"/>
                                 </StackPane>
                             </HBox>
                             <Label text="Overview" styleClass="teacher-section-title"/>
@@ -127,21 +100,21 @@
                             <FlowPane styleClass="teacher-cards-flow" hgap="18" vgap="18">
                                 <VBox styleClass="teacher-stat-card" spacing="10" onMouseClicked="#onCardCourses">
                                     <Region styleClass="teacher-stat-accent, accent-teach-courses"/>
-                                    <Label styleClass="teacher-stat-icon" text="📚"/>
+                                    <Label styleClass="teacher-stat-icon" text=""/>
                                     <Label text="Total courses" styleClass="teacher-stat-label"/>
                                     <Label fx:id="lblStatCourses" styleClass="teacher-stat-value" text="0"/>
                                     <Label text="Published &amp; draft modules" styleClass="teacher-stat-foot"/>
                                 </VBox>
                                 <VBox styleClass="teacher-stat-card" spacing="10" onMouseClicked="#onCardEvaluations">
                                     <Region styleClass="teacher-stat-accent, accent-teach-eval"/>
-                                    <Label styleClass="teacher-stat-icon" text="📝"/>
+                                    <Label styleClass="teacher-stat-icon" text=""/>
                                     <Label text="Total evaluations" styleClass="teacher-stat-label"/>
                                     <Label fx:id="lblStatEvaluations" styleClass="teacher-stat-value" text="0"/>
                                     <Label text="Quizzes, exams &amp; assignments" styleClass="teacher-stat-foot"/>
                                 </VBox>
-                                <VBox styleClass="teacher-stat-card" spacing="10" onMouseClicked="#onCardStudents">
+                                <VBox styleClass="teacher-stat-card" spacing="10">
                                     <Region styleClass="teacher-stat-accent, accent-teach-students"/>
-                                    <Label styleClass="teacher-stat-icon" text="🎓"/>
+                                    <Label styleClass="teacher-stat-icon" text=""/>
                                     <Label text="Total students" styleClass="teacher-stat-label"/>
                                     <Label fx:id="lblStatStudents" styleClass="teacher-stat-value" text="0"/>
                                     <Label text="Across your taught classes" styleClass="teacher-stat-foot"/>
@@ -151,9 +124,36 @@
                                     <Label styleClass="teacher-stat-icon" text="⚠"/>
                                     <Label text="Fraud alerts" styleClass="teacher-stat-label"/>
                                     <Label fx:id="lblStatFraud" styleClass="teacher-stat-value" text="0"/>
-                                    <Label text="Anti-cheat flags to review" styleClass="teacher-stat-foot"/>
+                                    <Label text="Flagged attempts" styleClass="teacher-stat-foot"/>
                                 </VBox>
                             </FlowPane>
+                        </VBox>
+
+                        <VBox fx:id="paneFraud" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
+                            <VBox spacing="4">
+                                <Label text="Fraud reports" styleClass="teacher-section-title"/>
+                                <Label text="Integrity events logged during online assessments. Scores for flagged attempts are handled per your evaluation rules." styleClass="teacher-section-hint" wrapText="true"/>
+                            </VBox>
+                            <HBox alignment="CENTER_LEFT" spacing="14" styleClass="teacher-toolbar">
+                                <Label fx:id="lblFraudHeadline" styleClass="teacher-section-hint" text=" "/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="Refresh" onAction="#onRefreshFraudReports" styleClass="teacher-primary-btn" mnemonicParsing="false"/>
+                            </HBox>
+                            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="teacher-metrics-row">
+                                <VBox styleClass="teacher-metric-card" spacing="4" minWidth="140">
+                                    <Label text="Log events" styleClass="teacher-metric-label"/>
+                                    <Label fx:id="lblFraudMetricEvents" styleClass="teacher-metric-value" text="0"/>
+                                </VBox>
+                                <VBox styleClass="teacher-metric-card" spacing="4" minWidth="140">
+                                    <Label text="Students involved" styleClass="teacher-metric-label"/>
+                                    <Label fx:id="lblFraudMetricStudents" styleClass="teacher-metric-value" text="0"/>
+                                </VBox>
+                                <VBox styleClass="teacher-metric-card" spacing="4" minWidth="140">
+                                    <Label text="Flagged result rows" styleClass="teacher-metric-label"/>
+                                    <Label fx:id="lblFraudMetricResults" styleClass="teacher-metric-value" text="0"/>
+                                </VBox>
+                            </HBox>
+                            <TableView fx:id="tableFraudReports" styleClass="teacher-data-table" minHeight="300" prefHeight="360" VBox.vgrow="ALWAYS"/>
                         </VBox>
 
                         <VBox fx:id="paneCourseMgmt" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
@@ -170,14 +170,6 @@
                                 <Label text="Build question banks, schedule assessments, and review submissions." styleClass="teacher-section-hint"/>
                             </VBox>
                             <BorderPane fx:id="evalMgmtShell" minHeight="520" maxWidth="1.7976931348623157E308" minWidth="0.0" VBox.vgrow="ALWAYS"/>
-                        </VBox>
-
-                        <VBox fx:id="paneReservationMateriel" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
-                            <VBox spacing="4">
-                                <Label text="Réservation matériel" styleClass="teacher-section-title"/>
-                                <Label text="Manage equipment reservations and availability." styleClass="teacher-section-hint"/>
-                            </VBox>
-                            <VBox fx:id="reservationMaterielShell" spacing="0" VBox.vgrow="ALWAYS"/>
                         </VBox>
 
                         <VBox fx:id="paneAbsence" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
@@ -206,37 +198,61 @@
                             </VBox>
                         </VBox>
 
-                        <VBox fx:id="paneStudents" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
-                            <VBox spacing="4">
-                                <Label text="Students" styleClass="teacher-section-title"/>
-                                <Label text="Monitor enrolment, progress, and participation." styleClass="teacher-section-hint"/>
-                            </VBox>
-                            <VBox styleClass="teacher-placeholder" maxWidth="Infinity" alignment="CENTER">
-                                <Label text="Student monitoring" styleClass="teacher-placeholder-title"/>
-                                <Label text="Add rosters, risk flags, and activity timelines here." styleClass="teacher-placeholder-text"/>
-                            </VBox>
-                        </VBox>
-
-                        <VBox fx:id="paneFraud" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
-                            <VBox spacing="4">
-                                <Label text="Fraud reports" styleClass="teacher-section-title"/>
-                                <Label text="Review incidents from the anti-cheat / proctoring pipeline." styleClass="teacher-section-hint"/>
-                            </VBox>
-                            <VBox styleClass="teacher-placeholder" maxWidth="Infinity" alignment="CENTER">
-                                <Label text="Integrity inbox" styleClass="teacher-placeholder-title"/>
-                                <Label text="Integrate FraudeService / FraudeLog DAO to list suspicious attempts and detections." styleClass="teacher-placeholder-text"/>
-                            </VBox>
-                        </VBox>
-
                         <VBox fx:id="paneStatistics" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
                             <VBox spacing="4">
                                 <Label text="Results &amp; statistics" styleClass="teacher-section-title"/>
-                                <Label text="Aggregate performance and item analysis." styleClass="teacher-section-hint"/>
+                                <Label text="Per-evaluation student outcomes (one attempt per student), pass rate, and integrity." styleClass="teacher-section-hint" wrapText="true"/>
                             </VBox>
-                            <VBox styleClass="teacher-placeholder" maxWidth="Infinity" alignment="CENTER">
-                                <Label text="Analytics" styleClass="teacher-placeholder-title"/>
-                                <Label text="Charts for grade distributions and pass rates can bind to your Resultat services." styleClass="teacher-placeholder-text"/>
+                            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="teacher-toolbar">
+                                <Label text="Evaluation" styleClass="teacher-section-hint"/>
+                                <ComboBox fx:id="comboEvaluationStats" prefWidth="340" promptText="Select an evaluation…"/>
+                                <Button text="Load results" onAction="#onLoadEvaluationStats" styleClass="teacher-primary-btn" mnemonicParsing="false"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="lblEvalStatsMeta" styleClass="teacher-section-hint" wrapText="true" maxWidth="420"/>
+                            </HBox>
+                            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="teacher-metrics-row">
+                                <VBox styleClass="teacher-metric-card" spacing="4" minWidth="120">
+                                    <Label text="Students" styleClass="teacher-metric-label"/>
+                                    <Label fx:id="lblEvalMetricAttempts" styleClass="teacher-metric-value" text="0"/>
+                                    <Label text="Latest result per student" styleClass="teacher-stat-foot"/>
+                                </VBox>
+                                <VBox styleClass="teacher-metric-card" spacing="4" minWidth="120">
+                                    <Label text="Average score" styleClass="teacher-metric-label"/>
+                                    <Label fx:id="lblEvalMetricAverage" styleClass="teacher-metric-value" text="—"/>
+                                </VBox>
+                                <VBox styleClass="teacher-metric-card" spacing="4" minWidth="120">
+                                    <Label text="Pass rate" styleClass="teacher-metric-label"/>
+                                    <Label fx:id="lblEvalMetricPass" styleClass="teacher-metric-value" text="—"/>
+                                </VBox>
+                                <VBox styleClass="teacher-metric-card" spacing="4" minWidth="120">
+                                    <Label text="Fraud flagged" styleClass="teacher-metric-label"/>
+                                    <Label fx:id="lblEvalMetricFraud" styleClass="teacher-metric-value" text="0"/>
+                                </VBox>
+                            </HBox>
+                            <HBox spacing="16" alignment="TOP_LEFT" styleClass="teacher-stats-charts-row">
+                                <VBox styleClass="teacher-chart-card" spacing="8" HBox.hgrow="ALWAYS" minHeight="280">
+                                    <Label text="Score distribution (% of maximum)" styleClass="teacher-chart-heading"/>
+                                    <VBox fx:id="chartScoreHolder" VBox.vgrow="ALWAYS" minHeight="240"/>
+                                </VBox>
+                                <VBox styleClass="teacher-chart-card" spacing="8" minWidth="280" prefWidth="300" maxWidth="340" minHeight="280">
+                                    <Label text="Pass vs below threshold" styleClass="teacher-chart-heading"/>
+                                    <VBox fx:id="chartOutcomePieHolder" VBox.vgrow="ALWAYS" minHeight="240"/>
+                                </VBox>
+                                <VBox styleClass="teacher-chart-card" spacing="8" minWidth="260" prefWidth="280" maxWidth="300" minHeight="280">
+                                    <Label text="Integrity" styleClass="teacher-chart-heading"/>
+                                    <VBox fx:id="chartIntegrityPieHolder" VBox.vgrow="ALWAYS" minHeight="240"/>
+                                </VBox>
+                            </HBox>
+                            <Label text="Student detail (latest attempt)" styleClass="teacher-section-hint"/>
+                            <TableView fx:id="tableEvalAttempts" styleClass="teacher-data-table" minHeight="260" prefHeight="320" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+
+                        <VBox fx:id="paneHackathon" visible="false" managed="false" spacing="14" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">
+                            <VBox spacing="4">
+                                <Label text="Stat Hackathon" styleClass="teacher-section-title"/>
+                                <Label text="Embedded analytics workspace for the hackathon dashboard." styleClass="teacher-section-hint"/>
                             </VBox>
+                            <BorderPane fx:id="hackathonShell" minHeight="520" maxWidth="1.7976931348623157E308" minWidth="0.0" VBox.vgrow="ALWAYS"/>
                         </VBox>
 
                         <VBox fx:id="paneProfile" visible="false" managed="false" spacing="16" styleClass="teacher-content-body" maxWidth="1.7976931348623157E308">

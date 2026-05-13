@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * Simplified model to match `resultat` table:
- * id, student_id, evaluation_id, score, date_passage
+ * id, student_id, evaluation_id, score, date_passage, fraude_detecte
  */
 public class Resultat {
     private int id;
@@ -12,6 +12,7 @@ public class Resultat {
     private int evaluationId;
     private Float score;
     private LocalDateTime datePassage;
+    private boolean fraudeDetecte;
 
     public Resultat() {}
 
@@ -21,6 +22,7 @@ public class Resultat {
         this.evaluationId = evaluationId;
         this.score = score;
         this.datePassage = datePassage;
+        this.fraudeDetecte = false;
     }
 
     public Resultat(int studentId, int evaluationId, Float score, LocalDateTime datePassage) {
@@ -28,6 +30,7 @@ public class Resultat {
         this.evaluationId = evaluationId;
         this.score = score;
         this.datePassage = datePassage;
+        this.fraudeDetecte = false;
     }
 
     public int getId() {
@@ -70,6 +73,14 @@ public class Resultat {
         this.datePassage = datePassage;
     }
 
+    public boolean isFraudeDetecte() {
+        return fraudeDetecte;
+    }
+
+    public void setFraudeDetecte(boolean fraudeDetecte) {
+        this.fraudeDetecte = fraudeDetecte;
+    }
+
     @Override
     public String toString() {
         return "Resultat{" +
@@ -78,6 +89,7 @@ public class Resultat {
                 ", evaluationId=" + evaluationId +
                 ", score=" + score +
                 ", datePassage=" + datePassage +
+                ", fraudeDetecte=" + fraudeDetecte +
                 '}';
     }
 }

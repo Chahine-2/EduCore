@@ -616,21 +616,6 @@
     -fx-background-color: #ddd6fe;
 }
 
-.btn-row-stats {
-    -fx-text-fill: #065f46;
-    -fx-border-color: #6ee7b7;
-    -fx-background-color: #ecfdf5;
-}
-
-.btn-row-stats:hover {
-    -fx-background-color: #d1fae5;
-    -fx-border-color: #34d399;
-}
-
-.btn-row-stats:pressed {
-    -fx-background-color: #a7f3d0;
-}
-
 /* Footer */
 .footer-bar {
     -fx-background-color: #ffffff;

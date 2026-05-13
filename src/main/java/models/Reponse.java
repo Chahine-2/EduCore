@@ -4,6 +4,8 @@ public class Reponse {
     private int id;
     private String texte;
     private boolean estCorrect;
+    private String explication;
+    private int ordre;
     private int questionId;
 
     public Reponse() {
@@ -46,6 +48,22 @@ public class Reponse {
         this.estCorrect = estCorrect;
     }
 
+    public String getExplication() {
+        return explication;
+    }
+
+    public void setExplication(String explication) {
+        this.explication = explication;
+    }
+
+    public int getOrdre() {
+        return ordre;
+    }
+
+    public void setOrdre(int ordre) {
+        this.ordre = ordre;
+    }
+
 
     public int getQuestionId() {
         return questionId;
@@ -61,6 +79,8 @@ public class Reponse {
                 "id=" + id +
                 ", texte='" + texte + '\'' +
                 ", estCorrect=" + estCorrect +
+                ", explication='" + explication + '\'' +
+                ", ordre=" + ordre +
                 ", questionId=" + questionId +
                 '}';
     }

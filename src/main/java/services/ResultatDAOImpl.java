@@ -2,22 +2,28 @@ package services;
 
 import interfaces.IService;
 import models.Resultat;
+import models.TeacherEvalAttemptRow;
 import utils.MyDataBase;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ResultatDAOImpl implements IService<Resultat> {
 
+    private static final DateTimeFormatter ATTEMPT_AT =
+            DateTimeFormatter.ofPattern("MMM d, yyyy  HH:mm", Locale.ENGLISH);
+
     @Override
     public void add(Resultat resultat) {
-        String req = "INSERT INTO resultat (student_id, evaluation_id, score, date_passage) VALUES (?, ?, ?, ?)";
+        String req = "INSERT INTO resultat (student_id, evaluation_id, score, date_passage, fraude_detecte) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req)) {
             ps.setInt(1, resultat.getStudentId());
             ps.setInt(2, resultat.getEvaluationId());
@@ -27,6 +33,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
                 ps.setFloat(3, resultat.getScore());
             }
             ps.setTimestamp(4, resultat.getDatePassage() == null ? null : Timestamp.valueOf(resultat.getDatePassage()));
+            ps.setBoolean(5, resultat.isFraudeDetecte());
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -35,7 +42,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
 
     @Override
     public void update(Resultat resultat) {
-        String req = "UPDATE resultat SET student_id = ?, evaluation_id = ?, score = ?, date_passage = ? WHERE id = ?";
+        String req = "UPDATE resultat SET student_id = ?, evaluation_id = ?, score = ?, date_passage = ?, fraude_detecte = ? WHERE id = ?";
         try (PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(req)) {
             ps.setInt(1, resultat.getStudentId());
             ps.setInt(2, resultat.getEvaluationId());
@@ -45,7 +52,8 @@ public class ResultatDAOImpl implements IService<Resultat> {
                 ps.setFloat(3, resultat.getScore());
             }
             ps.setTimestamp(4, resultat.getDatePassage() == null ? null : Timestamp.valueOf(resultat.getDatePassage()));
-            ps.setInt(5, resultat.getId());
+            ps.setBoolean(5, resultat.isFraudeDetecte());
+            ps.setInt(6, resultat.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -82,6 +90,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
                     } else {
                         resultat.setScore(s);
                     }
+                    resultat.setFraudeDetecte(rs.getBoolean("fraude_detecte"));
                     return resultat;
                 }
             }
@@ -113,6 +122,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
                 } else {
                     resultat.setScore(s);
                 }
+                resultat.setFraudeDetecte(rs.getBoolean("fraude_detecte"));
                 resultats.add(resultat);
             }
         } catch (SQLException e) {
@@ -124,7 +134,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
 
     /** Insert and return generated id, or -1 on failure. */
     public int insertAndGetId(Resultat resultat) {
-        String req = "INSERT INTO resultat (student_id, evaluation_id, score, date_passage) VALUES (?, ?, ?, ?)";
+        String req = "INSERT INTO resultat (student_id, evaluation_id, score, date_passage, fraude_detecte) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = MyDataBase.getInstance().getConnection()
                 .prepareStatement(req, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, resultat.getStudentId());
@@ -135,6 +145,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
                 ps.setFloat(3, resultat.getScore());
             }
             ps.setTimestamp(4, resultat.getDatePassage() == null ? null : Timestamp.valueOf(resultat.getDatePassage()));
+            ps.setBoolean(5, resultat.isFraudeDetecte());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
@@ -177,6 +188,7 @@ public class ResultatDAOImpl implements IService<Resultat> {
         } else {
             resultat.setScore(s);
         }
+        resultat.setFraudeDetecte(rs.getBoolean("fraude_detecte"));
         return resultat;
     }
 
@@ -187,6 +199,26 @@ public class ResultatDAOImpl implements IService<Resultat> {
             if (conn == null) {
                 System.out.println("✗ Database connection is not available");
                 return false;
+            }
+
+            // Check if fraud was detected on this resultat
+            String checkFraudSql = "SELECT fraude_detecte FROM resultat WHERE id = ?";
+            try (PreparedStatement psCheck = conn.prepareStatement(checkFraudSql)) {
+                psCheck.setInt(1, resultatId);
+                try (ResultSet rsCheck = psCheck.executeQuery()) {
+                    if (rsCheck.next()) {
+                        boolean fraudeDetecte = rsCheck.getBoolean("fraude_detecte");
+                        if (fraudeDetecte) {
+                            // If fraud detected, set score to 0
+                            final String updateSql = "UPDATE resultat SET score = 0 WHERE id = ?";
+                            try (PreparedStatement psUpdate = conn.prepareStatement(updateSql)) {
+                                psUpdate.setInt(1, resultatId);
+                                int updated = psUpdate.executeUpdate();
+                                return updated == 1;
+                            }
+                        }
+                    }
+                }
             }
 
             // Compute total score by checking student answers against correct answers.
@@ -237,5 +269,70 @@ public class ResultatDAOImpl implements IService<Resultat> {
             System.err.println("Erreur lors de la correction: " + e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * One row per student for an evaluation (latest {@code resultat} by highest id per student),
+     * with display-ready score / pass / integrity columns.
+     */
+    public List<TeacherEvalAttemptRow> findAttemptsForTeacherEvaluation(int evaluationId) {
+        List<TeacherEvalAttemptRow> rows = new ArrayList<>();
+        final String sql = """
+                SELECT r.id, r.student_id, r.score, r.date_passage, r.fraude_detecte,
+                       u.prenom, u.nom, e.note_max, e.note_passage
+                FROM resultat r
+                INNER JOIN (
+                    SELECT student_id, MAX(id) AS latest_id
+                    FROM resultat
+                    WHERE evaluation_id = ?
+                    GROUP BY student_id
+                ) latest ON latest.latest_id = r.id
+                LEFT JOIN utilisateurs u ON u.id = r.student_id
+                JOIN evaluation e ON e.id = r.evaluation_id
+                ORDER BY r.date_passage DESC, r.id DESC
+                """;
+        try (PreparedStatement ps = MyDataBase.getInstance().getConnection().prepareStatement(sql)) {
+            ps.setInt(1, evaluationId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    float noteMax = rs.getFloat("note_max");
+                    float notePassage = rs.getFloat("note_passage");
+                    boolean fraud = rs.getBoolean("fraude_detecte");
+                    String prenom = rs.getString("prenom");
+                    String nom = rs.getString("nom");
+                    String student = formatStudentName(prenom, nom, rs.getInt("student_id"));
+
+                    float scoreVal = rs.getFloat("score");
+                    boolean scoreNull = rs.wasNull();
+                    String scoreText = scoreNull ? "—" : String.format(Locale.US, "%.1f / %.0f", scoreVal, noteMax);
+                    String outcome;
+                    if (scoreNull) {
+                        outcome = "—";
+                    } else {
+                        outcome = scoreVal >= notePassage ? "Pass" : "Below threshold";
+                    }
+                    String integrity = fraud ? "Fraud flagged" : "OK";
+
+                    Timestamp ts = rs.getTimestamp("date_passage");
+                    String when = ts == null ? "—" : ts.toLocalDateTime().format(ATTEMPT_AT);
+
+                    rows.add(new TeacherEvalAttemptRow(id, student, scoreText, outcome, integrity, when));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("findAttemptsForTeacherEvaluation: " + e.getMessage());
+        }
+        return rows;
+    }
+
+    private static String formatStudentName(String prenom, String nom, int fallbackId) {
+        String p = prenom == null ? "" : prenom.trim();
+        String n = nom == null ? "" : nom.trim();
+        String name = (p + " " + n).trim();
+        if (!name.isEmpty()) {
+            return name;
+        }
+        return "Student #" + fallbackId;
     }
 }

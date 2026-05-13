@@ -18,7 +18,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import models.Evaluation;
+import models.Resultat;
 import models.Utilisateur;
+import services.EvaluationDAOImpl;
+import services.ResultatDAOImpl;
+import services.ServiceCours;
 import utils.NavigationManager;
 import utils.UserSession;
 
@@ -133,14 +138,57 @@ public class StudentDashboardController {
         });
     }
 
-    /**
-     * Replace with counts from your services (cours, évaluations, résultats, logs fraude).
-     */
     private void refreshStatistics() {
-        lblStatCourses.setText("6");
-        lblStatUpcoming.setText("2");
-        lblStatPassed.setText("11");
-        lblStatFraud.setText("0");
+        try {
+            Utilisateur user = UserSession.getCurrentUser();
+            int currentUserId = user != null ? user.getId() : -1;
+
+            ServiceCours coursService = new ServiceCours();
+            EvaluationDAOImpl evaluationDAO = new EvaluationDAOImpl();
+            ResultatDAOImpl resultatDAO = new ResultatDAOImpl();
+
+            long coursesTotal = coursService.getAll().stream()
+                    .filter(c -> c.isVisible())
+                    .count();
+
+            LocalDateTime now = LocalDateTime.now();
+            long upcomingEvaluations = evaluationDAO.getAll().stream()
+                    .map(Evaluation::getDateDebut)
+                    .filter(Objects::nonNull)
+                    .filter(start -> start.isAfter(now))
+                    .count();
+
+            List<Evaluation> evaluations = evaluationDAO.getAll();
+            List<Resultat> resultats = resultatDAO.getAll().stream()
+                    .filter(r -> currentUserId <= 0 || r.getStudentId() == currentUserId)
+                    .toList();
+
+            long passedEvaluations = resultats.stream()
+                    .filter(r -> r.getScore() != null)
+                    .filter(r -> {
+                        Evaluation eval = evaluations.stream()
+                                .filter(e -> e.getId() == r.getEvaluationId())
+                                .findFirst()
+                                .orElse(null);
+                        return eval != null && r.getScore() >= eval.getNotePassage();
+                    })
+                    .count();
+
+            long fraudAlerts = resultats.stream()
+                    .filter(Resultat::isFraudeDetecte)
+                    .count();
+
+            lblStatCourses.setText(String.valueOf(coursesTotal));
+            lblStatUpcoming.setText(String.valueOf(upcomingEvaluations));
+            lblStatPassed.setText(String.valueOf(passedEvaluations));
+            lblStatFraud.setText(String.valueOf(fraudAlerts));
+        } catch (Exception ex) {
+            // Keep dashboard usable even if one source is unavailable.
+            lblStatCourses.setText("0");
+            lblStatUpcoming.setText("0");
+            lblStatPassed.setText("0");
+            lblStatFraud.setText("0");
+        }
     }
 
     private void updateClock() {
@@ -180,6 +228,7 @@ public class StudentDashboardController {
 
     @FXML
     void onNavDashboard(ActionEvent event) {
+        refreshStatistics();
         showPane(paneDashboard);
         selectNav(btnNavDashboard);
     }

@@ -6,12 +6,19 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -21,17 +28,27 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 import models.Etudiant;
+import models.Evaluation;
+import models.Resultat;
+import models.TeacherEvalAttemptRow;
+import models.TeacherFraudAuditRow;
 import models.Utilisateur;
+import services.EvaluationDAOImpl;
+import services.FraudeLogDAOImpl;
+import services.ResultatDAOImpl;
 import services.UtilisateurService;
 import utils.UserSession;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -45,10 +62,6 @@ public class TeacherDashboardController {
     @FXML private Label lblWelcomeSub;
     @FXML private Label lblDateTime;
     @FXML private Label lblAvatarInitials;
-    @FXML private Label lblWelcomeDash;
-    @FXML private Label lblWelcomeSubDash;
-    @FXML private Label lblDateTimeDash;
-    @FXML private Label lblAvatarDash;
     @FXML private Label lblStatCourses;
     @FXML private Label lblStatEvaluations;
     @FXML private Label lblStatStudents;
@@ -62,20 +75,17 @@ public class TeacherDashboardController {
     @FXML private BorderPane courseMgmtShell;
     @FXML private VBox paneEvalMgmt;
     @FXML private BorderPane evalMgmtShell;
-    @FXML private VBox paneReservationMateriel;
-    @FXML private VBox reservationMaterielShell;
     @FXML private VBox paneAbsence;
-    @FXML private VBox paneStudents;
     @FXML private VBox paneFraud;
     @FXML private VBox paneStatistics;
+    @FXML private VBox paneHackathon;
+    @FXML private BorderPane hackathonShell;
     @FXML private VBox paneProfile;
 
     @FXML private Button btnNavDashboard;
     @FXML private Button btnNavCourses;
     @FXML private Button btnNavEvaluations;
-    @FXML private Button btnNavReservationMateriel;
     @FXML private Button btnNavAbsence;
-    @FXML private Button btnNavStudents;
     @FXML private Button btnNavFraud;
     @FXML private Button btnNavStatistics;
     @FXML private Button btnNavStatHackathon;
@@ -89,24 +99,45 @@ public class TeacherDashboardController {
     @FXML private TableColumn<Etudiant, String> colPrenom;
     @FXML private TableColumn<Etudiant, String> colStatut;
 
+    @FXML private TableView<TeacherFraudAuditRow> tableFraudReports;
+    @FXML private Label lblFraudHeadline;
+    @FXML private Label lblFraudMetricEvents;
+    @FXML private Label lblFraudMetricStudents;
+    @FXML private Label lblFraudMetricResults;
+
+    @FXML private ComboBox<Evaluation> comboEvaluationStats;
+    @FXML private Label lblEvalStatsMeta;
+    @FXML private Label lblEvalMetricAttempts;
+    @FXML private Label lblEvalMetricAverage;
+    @FXML private Label lblEvalMetricPass;
+    @FXML private Label lblEvalMetricFraud;
+    @FXML private TableView<TeacherEvalAttemptRow> tableEvalAttempts;
+    @FXML private VBox chartScoreHolder;
+    @FXML private VBox chartOutcomePieHolder;
+    @FXML private VBox chartIntegrityPieHolder;
+
+    private BarChart<String, Number> chartScoreDistribution;
+    private PieChart chartOutcomePie;
+    private PieChart chartIntegrityPie;
+
     private final IUtilisateurService service = new UtilisateurService();
+    private final FraudeLogDAOImpl fraudeLogDAO = new FraudeLogDAOImpl();
+    private final ResultatDAOImpl resultatDAO = new ResultatDAOImpl();
+    private final EvaluationDAOImpl evaluationDAO = new EvaluationDAOImpl();
     private final ObservableList<Etudiant> listeEtudiants = FXCollections.observableArrayList();
     private final List<Button> navButtons = new java.util.ArrayList<>();
     private Timeline clockTimeline;
 
     private boolean evaluationsEmbeddedLoaded;
     private boolean coursesEmbeddedLoaded;
-    private boolean reservationMaterielEmbeddedLoaded;
-    private boolean statisticsEmbeddedLoaded;
+    private boolean hackathonEmbeddedLoaded;
 
     @FXML
     void initialize() {
         navButtons.add(btnNavDashboard);
         navButtons.add(btnNavCourses);
         navButtons.add(btnNavEvaluations);
-        navButtons.add(btnNavReservationMateriel);
         navButtons.add(btnNavAbsence);
-        navButtons.add(btnNavStudents);
         navButtons.add(btnNavFraud);
         navButtons.add(btnNavStatistics);
         navButtons.add(btnNavStatHackathon);
@@ -116,6 +147,9 @@ public class TeacherDashboardController {
         colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
         colStatut.setCellValueFactory(new PropertyValueFactory<>("statutAppel"));
+
+        wireTeacherAnalyticsUi();
+        initEvalStatisticsCharts();
 
         comboClasse.getItems().setAll(service.listerToutesLesClasses());
 
@@ -139,8 +173,6 @@ public class TeacherDashboardController {
 
         refreshStatistics();
 
-        bindDashboardHeaderStrip();
-
         clockTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateClock()));
         clockTimeline.setCycleCount(Timeline.INDEFINITE);
         clockTimeline.play();
@@ -155,26 +187,16 @@ public class TeacherDashboardController {
         });
     }
 
-    private void bindDashboardHeaderStrip() {
-        if (lblWelcomeDash != null && lblWelcome != null) {
-            lblWelcomeDash.textProperty().bind(lblWelcome.textProperty());
-        }
-        if (lblWelcomeSubDash != null && lblWelcomeSub != null) {
-            lblWelcomeSubDash.textProperty().bind(lblWelcomeSub.textProperty());
-        }
-        if (lblDateTimeDash != null && lblDateTime != null) {
-            lblDateTimeDash.textProperty().bind(lblDateTime.textProperty());
-        }
-        if (lblAvatarDash != null && lblAvatarInitials != null) {
-            lblAvatarDash.textProperty().bind(lblAvatarInitials.textProperty());
-        }
-    }
-
     private void refreshStatistics() {
         lblStatCourses.setText("8");
         lblStatEvaluations.setText("14");
         lblStatStudents.setText("126");
-        lblStatFraud.setText("3");
+        try {
+            long fraudRows = resultatDAO.getAll().stream().filter(Resultat::isFraudeDetecte).count();
+            lblStatFraud.setText(String.valueOf(fraudRows));
+        } catch (Exception e) {
+            lblStatFraud.setText("—");
+        }
     }
 
     private void updateClock() {
@@ -205,8 +227,8 @@ public class TeacherDashboardController {
     }
 
     private void showPane(VBox pane) {
-        for (VBox p : List.of(paneDashboard, paneCourseMgmt, paneEvalMgmt, paneReservationMateriel, paneAbsence,
-                paneStudents, paneFraud, paneStatistics, paneProfile)) {
+        for (VBox p : List.of(paneDashboard, paneFraud, paneCourseMgmt, paneEvalMgmt, paneAbsence,
+                paneStatistics, paneHackathon, paneProfile)) {
             boolean on = p == pane;
             p.setVisible(on);
             p.setManaged(on);
@@ -268,13 +290,6 @@ public class TeacherDashboardController {
         selectNav(btnNavEvaluations);
     }
 
-    @FXML
-    void onNavReservationMateriel(ActionEvent event) {
-        ensureReservationMaterielEmbedded();
-        showPane(paneReservationMateriel);
-        selectNav(btnNavReservationMateriel);
-    }
-
     private void ensureEvaluationsEmbedded() {
         if (evaluationsEmbeddedLoaded || evalMgmtShell == null) {
             return;
@@ -283,34 +298,12 @@ public class TeacherDashboardController {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
                     getClass().getResource("/evaluation.fxml")));
             Parent evaluationRoot = loader.load();
-            EvaluationController evalCtrl = loader.getController();
-            evalCtrl.setTeacherDashboardEmbedMode(true, () -> {
-                showPane(paneDashboard);
-                selectNav(btnNavDashboard);
-            });
             evalMgmtShell.setCenter(evaluationRoot);
             evaluationsEmbeddedLoaded = true;
         } catch (IOException ex) {
             evaluationsEmbeddedLoaded = false;
             new Alert(Alert.AlertType.ERROR,
                     "Could not load evaluation module: " + ex.getMessage()).showAndWait();
-        }
-    }
-
-    private void ensureReservationMaterielEmbedded() {
-        if (reservationMaterielEmbeddedLoaded || reservationMaterielShell == null) {
-            return;
-        }
-        try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
-                    getClass().getResource("/GestionReservationMatriel.fxml")));
-            Parent reservationRoot = loader.load();
-            reservationMaterielShell.getChildren().setAll(reservationRoot);
-            reservationMaterielEmbeddedLoaded = true;
-        } catch (IOException ex) {
-            reservationMaterielEmbeddedLoaded = false;
-            new Alert(Alert.AlertType.ERROR,
-                    "Could not load reservation management: " + ex.getMessage()).showAndWait();
         }
     }
 
@@ -321,43 +314,48 @@ public class TeacherDashboardController {
     }
 
     @FXML
-    void onNavStudents(ActionEvent event) {
-        showPane(paneStudents);
-        selectNav(btnNavStudents);
-    }
-
-    @FXML
     void onNavFraud(ActionEvent event) {
+        refreshFraudReports();
         showPane(paneFraud);
         selectNav(btnNavFraud);
     }
 
     @FXML
+    void onRefreshFraudReports(ActionEvent event) {
+        refreshFraudReports();
+    }
+
+    @FXML
     void onNavStatistics(ActionEvent event) {
+        loadEvaluationsIntoCombo();
         showPane(paneStatistics);
         selectNav(btnNavStatistics);
     }
 
     @FXML
+    void onLoadEvaluationStats(ActionEvent event) {
+        loadEvaluationStatsForSelection();
+    }
+
+    @FXML
     void onNavStatHackathon(ActionEvent event) {
         ensureHackathonStatsEmbedded();
-        showPane(paneStatistics);
+        showPane(paneHackathon);
         selectNav(btnNavStatHackathon);
     }
 
     private void ensureHackathonStatsEmbedded() {
-        if (statisticsEmbeddedLoaded || paneStatistics == null) {
+        if (hackathonEmbeddedLoaded || hackathonShell == null) {
             return;
         }
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
                     getClass().getResource("/Dashboard.fxml")));
             Parent dashboardRoot = loader.load();
-            // replace the placeholder contents with the loaded dashboard
-            paneStatistics.getChildren().setAll(dashboardRoot);
-            statisticsEmbeddedLoaded = true;
+            hackathonShell.setCenter(dashboardRoot);
+            hackathonEmbeddedLoaded = true;
         } catch (IOException ex) {
-            statisticsEmbeddedLoaded = false;
+            hackathonEmbeddedLoaded = false;
             new Alert(Alert.AlertType.ERROR,
                     "Could not load hackathon statistics: " + ex.getMessage()).showAndWait();
         }
@@ -380,11 +378,6 @@ public class TeacherDashboardController {
     }
 
     @FXML
-    void onCardStudents(MouseEvent event) {
-        onNavStudents(null);
-    }
-
-    @FXML
     void onCardFraud(MouseEvent event) {
         onNavFraud(null);
     }
@@ -392,7 +385,7 @@ public class TeacherDashboardController {
     @FXML
     void onNotifications(ActionEvent event) {
         new Alert(Alert.AlertType.INFORMATION,
-                "No critical notifications.\n(Evaluation deadlines and fraud alerts will surface here.)").showAndWait();
+                "No critical notifications.\n(Evaluation deadlines and integrity alerts will surface here.)").showAndWait();
     }
 
     @FXML
@@ -457,5 +450,281 @@ public class TeacherDashboardController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void wireTeacherAnalyticsUi() {
+        TableColumn<TeacherFraudAuditRow, String> cWhen = new TableColumn<>("Detected");
+        cWhen.setPrefWidth(150);
+        cWhen.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().detectedAt()));
+
+        TableColumn<TeacherFraudAuditRow, String> cStudent = new TableColumn<>("Student");
+        cStudent.setPrefWidth(200);
+        cStudent.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().student()));
+
+        TableColumn<TeacherFraudAuditRow, String> cEval = new TableColumn<>("Evaluation");
+        cEval.setPrefWidth(180);
+        cEval.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().evaluation()));
+
+        TableColumn<TeacherFraudAuditRow, String> cType = new TableColumn<>("Event type");
+        cType.setPrefWidth(160);
+        cType.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().fraudType()));
+
+        TableColumn<TeacherFraudAuditRow, String> cDesc = new TableColumn<>("Details");
+        cDesc.setPrefWidth(360);
+        cDesc.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().description()));
+
+        tableFraudReports.getColumns().setAll(cWhen, cStudent, cEval, cType, cDesc);
+        tableFraudReports.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+
+        TableColumn<TeacherEvalAttemptRow, String> eStudent = new TableColumn<>("Student");
+        eStudent.setPrefWidth(200);
+        eStudent.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().student()));
+
+        TableColumn<TeacherEvalAttemptRow, String> eScore = new TableColumn<>("Score");
+        eScore.setPrefWidth(110);
+        eScore.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().score()));
+
+        TableColumn<TeacherEvalAttemptRow, String> eOutcome = new TableColumn<>("Outcome");
+        eOutcome.setPrefWidth(120);
+        eOutcome.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().outcome()));
+
+        TableColumn<TeacherEvalAttemptRow, String> eIntegrity = new TableColumn<>("Integrity");
+        eIntegrity.setPrefWidth(130);
+        eIntegrity.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().integrity()));
+
+        TableColumn<TeacherEvalAttemptRow, String> eWhen = new TableColumn<>("Completed");
+        eWhen.setPrefWidth(160);
+        eWhen.setCellValueFactory(f -> new ReadOnlyStringWrapper(f.getValue().completedAt()));
+
+        tableEvalAttempts.getColumns().setAll(eStudent, eScore, eOutcome, eIntegrity, eWhen);
+        tableEvalAttempts.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+
+        comboEvaluationStats.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Evaluation e) {
+                return e == null ? "" : e.getTitre();
+            }
+
+            @Override
+            public Evaluation fromString(String s) {
+                return comboEvaluationStats.getItems().stream()
+                        .filter(ev -> ev.getTitre().equals(s))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+    }
+
+    private void refreshFraudReports() {
+        List<TeacherFraudAuditRow> rows = fraudeLogDAO.findAllAuditRows();
+        tableFraudReports.setItems(FXCollections.observableArrayList(rows));
+        long distinctStudents = rows.stream().mapToInt(TeacherFraudAuditRow::studentUserId).distinct().count();
+        long flaggedResults = resultatDAO.getAll().stream().filter(Resultat::isFraudeDetecte).count();
+        lblFraudMetricEvents.setText(String.valueOf(rows.size()));
+        lblFraudMetricStudents.setText(String.valueOf(distinctStudents));
+        lblFraudMetricResults.setText(String.valueOf(flaggedResults));
+        lblFraudHeadline.setText(rows.isEmpty()
+                ? "No anti-cheat events recorded yet. Events appear when the proctoring pipeline logs an incident."
+                : rows.size() + " logged event(s) — newest first.");
+    }
+
+    private void loadEvaluationsIntoCombo() {
+        List<Evaluation> all = evaluationDAO.getAll();
+        Evaluation previous = comboEvaluationStats.getSelectionModel().getSelectedItem();
+        comboEvaluationStats.getItems().setAll(all);
+        if (previous != null) {
+            for (int i = 0; i < all.size(); i++) {
+                if (all.get(i).getId() == previous.getId()) {
+                    comboEvaluationStats.getSelectionModel().select(i);
+                    return;
+                }
+            }
+        }
+        if (!all.isEmpty()) {
+            comboEvaluationStats.getSelectionModel().selectFirst();
+        }
+    }
+
+    private void loadEvaluationStatsForSelection() {
+        Evaluation ev = comboEvaluationStats.getSelectionModel().getSelectedItem();
+        if (ev == null) {
+            afficherAlerte("Evaluation", "Please select an evaluation from the list.");
+            return;
+        }
+        List<TeacherEvalAttemptRow> rows = resultatDAO.findAttemptsForTeacherEvaluation(ev.getId());
+        tableEvalAttempts.setItems(FXCollections.observableArrayList(rows));
+
+        lblEvalStatsMeta.setText(String.format(Locale.US,
+                "Max score %.0f — Passing threshold %.0f", ev.getNoteMax(), ev.getNotePassage()));
+
+        int n = rows.size();
+        lblEvalMetricAttempts.setText(String.valueOf(n));
+
+        double sum = 0;
+        int scored = 0;
+        for (TeacherEvalAttemptRow r : rows) {
+            String s = r.score();
+            if (s != null && !s.equals("—") && s.contains("/")) {
+                try {
+                    String num = s.split("/")[0].trim();
+                    sum += Double.parseDouble(num);
+                    scored++;
+                } catch (NumberFormatException ignored) {
+                    // skip
+                }
+            }
+        }
+        if (scored > 0) {
+            lblEvalMetricAverage.setText(String.format(Locale.US, "%.1f / %.0f", sum / scored, ev.getNoteMax()));
+        } else {
+            lblEvalMetricAverage.setText("—");
+        }
+
+        long pass = rows.stream().filter(r -> "Pass".equals(r.outcome())).count();
+        if (n > 0) {
+            lblEvalMetricPass.setText(String.format(Locale.US, "%.0f%% (%d/%d)",
+                    100.0 * pass / n, pass, n));
+        } else {
+            lblEvalMetricPass.setText("—");
+        }
+
+        long fraud = rows.stream().filter(r -> r.integrity().toLowerCase(Locale.ROOT).contains("fraud")).count();
+        lblEvalMetricFraud.setText(n > 0 ? fraud + " / " + n : "0");
+
+        updateEvaluationCharts(ev, rows);
+    }
+
+    private void initEvalStatisticsCharts() {
+        if (chartScoreHolder == null || chartOutcomePieHolder == null || chartIntegrityPieHolder == null) {
+            return;
+        }
+
+        CategoryAxis scoreX = new CategoryAxis();
+        scoreX.setLabel("Score band (% of max)");
+        NumberAxis scoreY = new NumberAxis();
+        scoreY.setLabel("Students");
+        scoreY.setForceZeroInRange(true);
+        scoreY.setMinorTickVisible(false);
+        scoreY.setAutoRanging(true);
+
+        chartScoreDistribution = new BarChart<>(scoreX, scoreY);
+        chartScoreDistribution.setTitle(null);
+        chartScoreDistribution.setLegendVisible(false);
+        chartScoreDistribution.setAnimated(false);
+        chartScoreDistribution.setVerticalGridLinesVisible(false);
+        chartScoreDistribution.setHorizontalGridLinesVisible(true);
+        chartScoreDistribution.getStyleClass().add("teacher-stats-bar-chart");
+        chartScoreDistribution.setMinHeight(220);
+        VBox.setVgrow(chartScoreDistribution, Priority.ALWAYS);
+        chartScoreHolder.getChildren().setAll(chartScoreDistribution);
+
+        chartOutcomePie = new PieChart();
+        chartOutcomePie.setTitle(null);
+        chartOutcomePie.setLabelsVisible(true);
+        chartOutcomePie.setLegendSide(Side.BOTTOM);
+        chartOutcomePie.setClockwise(true);
+        chartOutcomePie.setStartAngle(90);
+        chartOutcomePie.getStyleClass().addAll("teacher-stats-pie-chart", "teacher-stats-pie-outcome");
+        chartOutcomePie.setMinHeight(220);
+        VBox.setVgrow(chartOutcomePie, Priority.ALWAYS);
+        chartOutcomePieHolder.getChildren().setAll(chartOutcomePie);
+
+        chartIntegrityPie = new PieChart();
+        chartIntegrityPie.setTitle(null);
+        chartIntegrityPie.setLabelsVisible(true);
+        chartIntegrityPie.setLegendSide(Side.BOTTOM);
+        chartIntegrityPie.setClockwise(true);
+        chartIntegrityPie.setStartAngle(90);
+        chartIntegrityPie.getStyleClass().addAll("teacher-stats-pie-chart", "teacher-stats-pie-integrity");
+        chartIntegrityPie.setMinHeight(220);
+        VBox.setVgrow(chartIntegrityPie, Priority.ALWAYS);
+        chartIntegrityPieHolder.getChildren().setAll(chartIntegrityPie);
+    }
+
+    private static Double parseScoreNumerator(String scoreText) {
+        if (scoreText == null || scoreText.isBlank() || "—".equals(scoreText) || !scoreText.contains("/")) {
+            return null;
+        }
+        try {
+            return Double.parseDouble(scoreText.split("/")[0].trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private void updateEvaluationCharts(Evaluation ev, List<TeacherEvalAttemptRow> rows) {
+        if (chartScoreDistribution == null || chartOutcomePie == null || chartIntegrityPie == null) {
+            return;
+        }
+
+        double noteMax = Math.max(1.0, ev.getNoteMax());
+        int[] bins = new int[5];
+        int pass = 0;
+        int below = 0;
+        int noscore = 0;
+        int clean = 0;
+        int fraud = 0;
+
+        for (TeacherEvalAttemptRow r : rows) {
+            Double pts = parseScoreNumerator(r.score());
+            if (pts != null) {
+                double pct = Math.min(100.0, Math.max(0.0, (pts / noteMax) * 100.0));
+                int idx = (int) Math.floor(pct / 20.0);
+                if (idx > 4) {
+                    idx = 4;
+                }
+                bins[idx]++;
+            }
+
+            String o = r.outcome();
+            if ("Pass".equals(o)) {
+                pass++;
+            } else if ("Below threshold".equals(o)) {
+                below++;
+            } else {
+                noscore++;
+            }
+
+            if (r.integrity().toLowerCase(Locale.ROOT).contains("fraud")) {
+                fraud++;
+            } else {
+                clean++;
+            }
+        }
+
+        XYChart.Series<String, Number> scoreSeries = new XYChart.Series<>();
+        scoreSeries.setName("Students");
+        String[] bandLabels = {"0–20%", "20–40%", "40–60%", "60–80%", "80–100%"};
+        for (int i = 0; i < 5; i++) {
+            scoreSeries.getData().add(new XYChart.Data<>(bandLabels[i], (double) bins[i]));
+        }
+        chartScoreDistribution.getData().setAll(scoreSeries);
+        CategoryAxis scoreXAxis = (CategoryAxis) chartScoreDistribution.getXAxis();
+        scoreXAxis.setCategories(FXCollections.observableArrayList(Arrays.asList(bandLabels)));
+        Platform.runLater(() -> {
+            chartScoreDistribution.applyCss();
+            chartScoreDistribution.layout();
+        });
+
+        ObservableList<PieChart.Data> outcomeSlices = FXCollections.observableArrayList();
+        if (pass > 0) {
+            outcomeSlices.add(new PieChart.Data("Pass", pass));
+        }
+        if (below > 0) {
+            outcomeSlices.add(new PieChart.Data("Below threshold", below));
+        }
+        if (noscore > 0) {
+            outcomeSlices.add(new PieChart.Data("No score / pending", noscore));
+        }
+        chartOutcomePie.setData(outcomeSlices);
+
+        ObservableList<PieChart.Data> integritySlices = FXCollections.observableArrayList();
+        if (clean > 0) {
+            integritySlices.add(new PieChart.Data("OK", clean));
+        }
+        if (fraud > 0) {
+            integritySlices.add(new PieChart.Data("Fraud flagged", fraud));
+        }
+        chartIntegrityPie.setData(integritySlices);
     }
 }

@@ -4,11 +4,8 @@ import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -39,6 +36,7 @@ public class QuestionsController {
     @FXML private Label statusLabel;
     @FXML private Label emptyLabel;
     @FXML private VBox questionsContainer;
+    @FXML private Button addQuestionBtn;
 
     private Evaluation evaluation;
 
@@ -53,30 +51,6 @@ public class QuestionsController {
 
     @FXML
     public void initialize() {
-    }
-
-    @FXML
-    private void handleClose() {
-        var w = root.getScene() != null ? root.getScene().getWindow() : null;
-        if (w instanceof javafx.stage.Stage stage) {
-            stage.close();
-        }
-    }
-
-    @FXML
-    private void handleBackHome() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
-            Parent homeRoot = loader.load();
-            Stage stage = root.getScene() != null && root.getScene().getWindow() instanceof Stage s ? s : null;
-            if (stage != null) {
-                stage.setScene(new Scene(homeRoot));
-                stage.setTitle("EDUCORE");
-                stage.centerOnScreen();
-            }
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Could not open home page: " + e.getMessage());
-        }
     }
 
     @FXML
@@ -106,12 +80,31 @@ public class QuestionsController {
             questionsContainer.getChildren().add(buildQuestionCard(q, reps));
         }
 
+        // Check if we've reached the evaluation's points budget
+        float totalPoints = questions.stream().map(Question::getPoints).reduce(0f, Float::sum);
+        float noteMax = evaluation.getNoteMax();
+        boolean budgetFull = totalPoints >= noteMax;
+
+        // Disable/enable the Add Question button and apply visual styling
+        if (addQuestionBtn != null) {
+            addQuestionBtn.setDisable(budgetFull);
+            if (budgetFull) {
+                addQuestionBtn.getStyleClass().add("btn-disabled-budget");
+                addQuestionBtn.setStyle("-fx-opacity: 0.5;");
+                addQuestionBtn.setTooltip(new Tooltip("Maximum score reached. No more questions can be added."));
+            } else {
+                addQuestionBtn.getStyleClass().remove("btn-disabled-budget");
+                addQuestionBtn.setStyle("");
+                addQuestionBtn.setTooltip(null);
+            }
+        }
+
         FadeTransition ft = new FadeTransition(Duration.millis(260), questionsContainer);
         ft.setFromValue(0);
         ft.setToValue(1);
         ft.play();
 
-        setFooterStatus("Ready", false);
+        setFooterStatus(budgetFull ? "Maximum score reached." : "Ready", false);
     }
 
     private VBox buildQuestionCard(Question q, List<Reponse> reponses) {
@@ -397,6 +390,13 @@ public class QuestionsController {
         TextField pointsField = new TextField(existing != null ? formatPoints(existing.getPoints()) : "1");
         pointsField.getStyleClass().add("qm-dialog-field");
 
+        // Optional professional explanation for the question (shown in review)
+        TextArea explanationArea = new TextArea(existing != null ? existing.getExplication() : "");
+        explanationArea.setPromptText("Optional: teacher / model explanation for reviewers");
+        explanationArea.setWrapText(true);
+        explanationArea.setPrefRowCount(3);
+        explanationArea.getStyleClass().add("qm-dialog-textarea");
+
         VBox answerSection = new VBox(10);
         Label ansTitle = new Label("Answer options (QCM only)");
         ansTitle.getStyleClass().add("qm-dialog-section");
@@ -453,24 +453,24 @@ public class QuestionsController {
         answerScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         answerScroll.getStyleClass().add("qm-dialog-scroll");
 
-        addOptionBtn.setOnAction(e -> addAnswerRow(answerList, answerRows, "", false, answerScroll));
+        addOptionBtn.setOnAction(e -> addAnswerRow(answerList, answerRows, "", false, "", answerScroll));
 
         refillForQcmRef[0] = () -> {
             answerList.getChildren().clear();
             answerRows.clear();
-            if (existing != null && existing.getType() == QuestionType.QCM) {
+                if (existing != null && existing.getType() == QuestionType.QCM) {
                 List<Reponse> reps = reponseDAO.findByQuestionId(existing.getId());
                 if (reps.isEmpty()) {
-                    addAnswerRow(answerList, answerRows, "", false, answerScroll);
-                    addAnswerRow(answerList, answerRows, "", false, answerScroll);
+                    addAnswerRow(answerList, answerRows, "", false, "", answerScroll);
+                    addAnswerRow(answerList, answerRows, "", false, "", answerScroll);
                 } else {
                     for (Reponse r : reps) {
-                        addAnswerRow(answerList, answerRows, r.getTexte(), r.isEstCorrect(), answerScroll);
+                        addAnswerRow(answerList, answerRows, r.getTexte(), r.isEstCorrect(), r.getExplication(), answerScroll);
                     }
                 }
             } else {
-                addAnswerRow(answerList, answerRows, "", false, answerScroll);
-                addAnswerRow(answerList, answerRows, "", false, answerScroll);
+                addAnswerRow(answerList, answerRows, "", false, "", answerScroll);
+                addAnswerRow(answerList, answerRows, "", false, "", answerScroll);
             }
         };
 
@@ -512,7 +512,11 @@ public class QuestionsController {
         grid.add(typeCombo, 1, 1);
         grid.add(lPoints, 0, 2);
         grid.add(pointsField, 1, 2);
-        grid.add(answerStack, 0, 3, 2, 1);
+        Label lExp = new Label("Explanation");
+        lExp.getStyleClass().add("qm-form-label");
+        grid.add(lExp, 0, 3);
+        grid.add(explanationArea, 1, 3);
+        grid.add(answerStack, 0, 4, 2, 1);
 
         ColumnConstraints c0 = new ColumnConstraints();
         c0.setPercentWidth(18);
@@ -542,7 +546,7 @@ public class QuestionsController {
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             persistQuestion(existing, textArea.getText(), typeCombo.getValue(), parsePoints(pointsField.getText()),
-                    answerRows, vfGroup, rbVrai);
+                    explanationArea.getText(), answerRows, vfGroup, rbVrai);
             refreshQuestions();
             setFooterStatus(existing == null ? "Question created." : "Question updated.", true);
         }
@@ -595,7 +599,7 @@ public class QuestionsController {
     }
 
     private void addAnswerRow(VBox answerList, List<AnswerRow> models, String initialText, boolean correct,
-                              ScrollPane answerScroll) {
+                              String initialExplanation, ScrollPane answerScroll) {
         HBox row = new HBox(10);
         row.setAlignment(Pos.CENTER_LEFT);
         TextField tf = new TextField(initialText);
@@ -605,14 +609,46 @@ public class QuestionsController {
         cb.setSelected(correct);
         Button remove = new Button("Remove");
         remove.getStyleClass().add("qm-btn-remove");
+
+        // small button to edit per-answer explanation (optional)
+        Button explainBtn = new Button("Explain");
+        explainBtn.getStyleClass().add("qm-btn-explain");
+
         AnswerRow model = new AnswerRow(tf, cb);
+        model.explanation = initialExplanation != null ? initialExplanation : "";
+        if (model.explanation != null && !model.explanation.isBlank()) {
+            explainBtn.setTooltip(new javafx.scene.control.Tooltip(model.explanation));
+        }
+
         models.add(model);
         remove.setOnAction(e -> {
             models.remove(model);
             answerList.getChildren().remove(row);
             syncQcmAnswerScrollViewport(answerScroll, false);
         });
-        row.getChildren().addAll(tf, cb, remove);
+
+        explainBtn.setOnAction(e -> {
+            Dialog<ButtonType> d = new Dialog<>();
+            d.setTitle("Edit answer explanation");
+            d.initOwner(root.getScene().getWindow());
+            TextArea ta = new TextArea(model.explanation != null ? model.explanation : "");
+            ta.setWrapText(true);
+            ta.setPrefRowCount(4);
+            d.getDialogPane().setContent(ta);
+            d.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            Optional<ButtonType> res = d.showAndWait();
+            if (res.isPresent() && res.get() == ButtonType.OK) {
+                model.explanation = ta.getText();
+                if (model.explanation != null && !model.explanation.isBlank()) {
+                    explainBtn.setTooltip(new javafx.scene.control.Tooltip(model.explanation));
+                } else {
+                    explainBtn.setTooltip(null);
+                }
+            }
+        });
+
+        HBox.setHgrow(tf, Priority.ALWAYS);
+        row.getChildren().addAll(tf, cb, explainBtn, remove);
         answerList.getChildren().add(row);
         syncQcmAnswerScrollViewport(answerScroll, true);
     }
@@ -665,10 +701,60 @@ public class QuestionsController {
         return Float.parseFloat(s.trim());
     }
 
-    private void persistQuestion(Question existing, String texte, QuestionType type, float points, List<AnswerRow> rows,
+    private void persistQuestion(Question existing, String texte, QuestionType type, float points, String explication, List<AnswerRow> rows,
                                  ToggleGroup vfGroup, RadioButton rbVrai) {
         if (existing == null) {
-            Question q = new Question(texte.trim(), type, points, evaluation.getId());
+            // If this question belongs to an evaluation, ensure we don't silently exceed the evaluation's max score.
+            float requestedPoints = points;
+            if (evaluation != null) {
+                try {
+                    List<Question> existingQs = questionDAO.findByEvaluationId(evaluation.getId());
+                    float sum = existingQs.stream().map(Question::getPoints).reduce(0f, Float::sum);
+                    float max = evaluation.getNoteMax();
+                    if (sum + requestedPoints > max) {
+                        float remaining = max - sum;
+                        // Use standard dialog with simple YES/NO/CANCEL buttons
+                        ButtonType adjust = new ButtonType("Adjust to remaining", ButtonBar.ButtonData.YES);
+                        ButtonType saveAnyway = new ButtonType("Save anyway (exceed)", ButtonBar.ButtonData.NO);
+                        ButtonType cancel = ButtonType.CANCEL;
+
+                        Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+                        a.initOwner(root.getScene().getWindow());
+                        a.setTitle("Points budget exceeded");
+                        a.setHeaderText("This evaluation's maximum score would be exceeded.");
+                        a.setContentText("Evaluation max: " + formatPoints(max) + " pts\n"
+                                + "Current total of saved questions: " + formatPoints(sum) + " pts\n"
+                                + "Requested for this question: " + formatPoints(requestedPoints) + " pts\n\n"
+                                + (remaining > 0 ? "Remaining points if adjusted: " + formatPoints(remaining) + " pts." : "No remaining points. Choose 'Save anyway' to exceed or cancel to abort."));
+                        a.getButtonTypes().setAll(adjust, saveAnyway, cancel);
+
+                        Optional<ButtonType> choice = a.showAndWait();
+
+                        if (choice.isEmpty()) {
+                            return; // user closed dialog
+                        }
+
+                        ButtonType selected = choice.get();
+                        if (selected == cancel) {
+                            return; // user cancelled
+                        } else if (selected == adjust) {
+                            if (remaining <= 0f) {
+                                showAlert(Alert.AlertType.ERROR, "No remaining points to assign. Increase the evaluation max score or choose 'Save anyway'.");
+                                return;
+                            }
+                            requestedPoints = remaining;
+                        }
+                        // if selected == saveAnyway -> keep requestedPoints as-is
+                    }
+                } catch (Exception ex) {
+                    // If anything goes wrong calculating totals, fall back to requested value and proceed.
+                }
+            }
+
+            Question q = new Question(texte.trim(), type, requestedPoints, evaluation.getId());
+            if (explication != null && !explication.trim().isEmpty()) {
+                q.setExplication(explication.trim());
+            }
             if (type == QuestionType.QCM) {
                 int id = questionDAO.insertAndGetId(q);
                 if (id <= 0) {
@@ -680,7 +766,11 @@ public class QuestionsController {
                     if (t.isEmpty()) {
                         continue;
                     }
-                    reponseDAO.add(new Reponse(t, row.correct.isSelected(), id));
+                    Reponse r = new Reponse(t, row.correct.isSelected(), id);
+                    if (row.explanation != null && !row.explanation.trim().isEmpty()) {
+                        r.setExplication(row.explanation.trim());
+                    }
+                    reponseDAO.add(r);
                 }
             } else if (type == QuestionType.VRAI_FAUX) {
                 int id = questionDAO.insertAndGetId(q);
@@ -692,6 +782,11 @@ public class QuestionsController {
             }
         } else {
             Question updated = new Question(existing.getId(), texte.trim(), type, points, evaluation.getId());
+            if (explication != null && !explication.trim().isEmpty()) {
+                updated.setExplication(explication.trim());
+            } else {
+                updated.setExplication(null);
+            }
             questionDAO.update(updated);
             reponseDAO.deleteByQuestionId(existing.getId());
             if (type == QuestionType.QCM) {
@@ -700,7 +795,11 @@ public class QuestionsController {
                     if (t.isEmpty()) {
                         continue;
                     }
-                    reponseDAO.add(new Reponse(t, row.correct.isSelected(), existing.getId()));
+                    Reponse r = new Reponse(t, row.correct.isSelected(), existing.getId());
+                    if (row.explanation != null && !row.explanation.trim().isEmpty()) {
+                        r.setExplication(row.explanation.trim());
+                    }
+                    reponseDAO.add(r);
                 }
             } else if (type == QuestionType.VRAI_FAUX) {
                 addVraiFauxReponses(existing.getId(), vfGroup, rbVrai);
@@ -747,10 +846,12 @@ public class QuestionsController {
     private static final class AnswerRow {
         final TextField textField;
         final CheckBox correct;
+        String explanation;
 
         AnswerRow(TextField textField, CheckBox correct) {
             this.textField = textField;
             this.correct = correct;
+            this.explanation = "";
         }
     }
 }

@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS resultat (
     date_passage DATETIME DEFAULT NOW(),
     evaluation_id INT NOT NULL,
     etudiant_id INT NOT NULL,
+    fraude_detecte BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (evaluation_id) REFERENCES evaluation(id)
 );
 

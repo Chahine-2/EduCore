@@ -57,6 +57,7 @@ public class StudentQuizController {
     @FXML private Label progressLabel;
     @FXML private VBox questionHost;
     @FXML private ScrollPane quizScroll;
+    @FXML private VBox explanationHost;
     @FXML private Button prevBtn;
     @FXML private Button nextBtn;
     @FXML private Button submitBtn;
@@ -131,9 +132,12 @@ public class StudentQuizController {
         this.fraudeDetected = false;
         this.activeResultatId = submittedResultat != null ? submittedResultat.getId() : -1;
         applyLiveChrome();
+        root.getStyleClass().remove("quiz-live");
         root.getStyleClass().add("quiz-view-mode");
         initQuestionsAndUi();
-        loadSubmittedAnswers(submittedResultat.getId());
+        if (submittedResultat != null) {
+            loadSubmittedAnswers(submittedResultat.getId());
+        }
 
         titleLabel.setText(evaluation.getTitre());
         String scorePart = submittedResultat.getScore() == null
@@ -166,6 +170,8 @@ public class StudentQuizController {
     }
 
     private void applyLiveChrome() {
+        root.getStyleClass().removeAll("quiz-view-mode", "quiz-live");
+        root.getStyleClass().add("quiz-live");
         root.setStyle("-fx-font-family: 'Segoe UI'; -fx-background-color: #f8fafc;");
     }
 
@@ -374,11 +380,21 @@ public class StudentQuizController {
 
         Question q = questions.get(currentIndex);
         List<Reponse> reps = reponseDAO.findByQuestionId(q.getId());
+        Reponse correctResponse = findCorrectResponse(reps);
+        Integer selectedResponseId = selectedReponseByQuestion.get(q.getId());
+        Reponse selectedResponse = findResponseById(reps, selectedResponseId);
+        boolean answeredCorrectly = viewMode && selectedResponse != null && correctResponse != null
+                && selectedResponse.getId() == correctResponse.getId();
+        boolean hasChosenAnswer = selectedResponseId != null;
 
         VBox card = new VBox(12);
         card.setStyle("-fx-background-color: rgba(255,255,255,0.97); -fx-background-radius: 12; -fx-border-color: #dbeafe; -fx-border-radius: 12; -fx-padding: 16;");
         card.setMaxWidth(720);
         card.setMinWidth(640);
+        if (viewMode) {
+            card.getStyleClass().add(answeredCorrectly ? "quiz-review-correct-card"
+                    : hasChosenAnswer ? "quiz-review-wrong-card" : "quiz-review-neutral-card");
+        }
 
         HBox meta = new HBox(10);
         meta.setAlignment(Pos.CENTER_LEFT);
@@ -392,19 +408,33 @@ public class StudentQuizController {
         qText.setStyle("-fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: #0f172a;");
         qText.setWrapText(true);
 
+        if (viewMode) {
+            Label reviewBadge = new Label(answeredCorrectly ? "Correct" : hasChosenAnswer ? "Incorrect" : "Not answered");
+            reviewBadge.getStyleClass().add(answeredCorrectly ? "quiz-review-badge-correct"
+                    : hasChosenAnswer ? "quiz-review-badge-wrong" : "quiz-review-badge-neutral");
+            HBox reviewHeader = new HBox(8, reviewBadge);
+            reviewHeader.setAlignment(Pos.CENTER_LEFT);
+            card.getChildren().add(reviewHeader);
+        }
+
         VBox answers = new VBox(8);
 
         switch (q.getType()) {
             case TEXTE_LIBRE -> {
-                TextArea ta = new TextArea();
-                ta.getStyleClass().add("quiz-textarea");
-                ta.setWrapText(true);
-                ta.setPromptText("Type your answer here…");
-                ta.setText(texteLibreByQuestion.getOrDefault(q.getId(), ""));
-                ta.setEditable(!viewMode);
-                ta.setFocusTraversable(!viewMode);
-                activeTextArea = ta;
-                answers.getChildren().add(ta);
+                if (viewMode) {
+                    VBox reviewBox = buildTextReviewBox(q, correctResponse);
+                    answers.getChildren().add(reviewBox);
+                } else {
+                    TextArea ta = new TextArea();
+                    ta.getStyleClass().add("quiz-textarea");
+                    ta.setWrapText(true);
+                    ta.setPromptText("Type your answer here…");
+                    ta.setText(texteLibreByQuestion.getOrDefault(q.getId(), ""));
+                    ta.setEditable(!viewMode);
+                    ta.setFocusTraversable(!viewMode);
+                    activeTextArea = ta;
+                    answers.getChildren().add(ta);
+                }
             }
             case QCM -> buildChoiceAnswers(q, reps, answers, true);
             case VRAI_FAUX -> {
@@ -421,15 +451,31 @@ public class StudentQuizController {
             }
         }
 
+        // Move explanation out to the dedicated explanationHost (so it appears alone at the bottom)
+
         card.getChildren().addAll(meta, qText, answers);
         questionHost.getChildren().add(card);
+
+        // Render the explanation in the bottom explanationHost when in view mode. Keep it hidden otherwise.
+        if (explanationHost != null) {
+            explanationHost.getChildren().clear();
+            if (viewMode) {
+                VBox panel = buildExplanationPanel(q, reps, correctResponse, selectedResponse, answeredCorrectly, hasChosenAnswer);
+                explanationHost.getChildren().add(panel);
+                explanationHost.setVisible(true);
+                explanationHost.setManaged(true);
+            } else {
+                explanationHost.setVisible(false);
+                explanationHost.setManaged(false);
+            }
+        }
 
         double progress = (currentIndex + 1.0) / questions.size();
         progressBar.setProgress(progress);
         progressLabel.setText("Question " + (currentIndex + 1) + " / " + questions.size());
 
         if (viewMode) {
-            navHintLabel.setText("Read-only · your submitted answers");
+            navHintLabel.setText("Green = correct answers · red = your incorrect answer · explanation shown below");
         } else {
             int unanswered = countUnanswered();
             navHintLabel.setText(unanswered > 0 ? unanswered + " question(s) without an answer" : "All questions visited");
@@ -437,6 +483,11 @@ public class StudentQuizController {
     }
 
     private void buildChoiceAnswers(Question q, List<Reponse> reps, VBox answers, boolean qcm) {
+        if (viewMode) {
+            buildReviewChoiceAnswers(q, reps, answers, qcm);
+            return;
+        }
+
         ToggleGroup group = new ToggleGroup();
         activeToggleGroup = group;
 
@@ -494,6 +545,149 @@ public class StudentQuizController {
             empty.setStyle("-fx-text-fill: #94a3b8;");
             answers.getChildren().add(empty);
         }
+    }
+
+    private void buildReviewChoiceAnswers(Question q, List<Reponse> reps, VBox answers, boolean qcm) {
+        Integer selectedId = selectedReponseByQuestion.get(q.getId());
+        Reponse correct = findCorrectResponse(reps);
+        Reponse selected = findResponseById(reps, selectedId);
+
+        for (int i = 0; i < reps.size(); i++) {
+            Reponse r = reps.get(i);
+            HBox row = new HBox(12);
+            row.setAlignment(Pos.CENTER_LEFT);
+            row.getStyleClass().add("quiz-review-row");
+
+            boolean isCorrect = r.isEstCorrect();
+            boolean isChosen = selected != null && selected.getId() == r.getId();
+            if (isCorrect) {
+                row.getStyleClass().add("quiz-review-row-correct");
+            } else if (isChosen) {
+                row.getStyleClass().add("quiz-review-row-wrong");
+            } else {
+                row.getStyleClass().add("quiz-review-row-neutral");
+            }
+
+            Label marker = new Label(String.valueOf((char) ('A' + i)));
+            marker.getStyleClass().addAll("quiz-answer-tag", isCorrect ? "quiz-answer-tag-correct"
+                    : isChosen ? "quiz-answer-tag-wrong" : "quiz-answer-tag-neutral");
+
+            VBox textBox = new VBox(2);
+            Label main = new Label(r.getTexte());
+            main.getStyleClass().add("quiz-review-answer");
+            main.setWrapText(true);
+            Label sub = new Label(isCorrect ? "Bonne réponse" : isChosen ? "Votre réponse" : "Réponse possible");
+            sub.getStyleClass().add(isCorrect ? "quiz-review-sub-correct"
+                    : isChosen ? "quiz-review-sub-wrong" : "quiz-review-sub-neutral");
+            textBox.getChildren().addAll(main, sub);
+            HBox.setHgrow(textBox, Priority.ALWAYS);
+
+            Label status = new Label(isCorrect ? "Correct" : isChosen ? "Incorrect" : " ");
+            status.getStyleClass().add(isCorrect ? "quiz-review-status-correct"
+                    : isChosen ? "quiz-review-status-wrong" : "quiz-review-status-neutral");
+
+            row.getChildren().addAll(marker, textBox, status);
+            answers.getChildren().add(row);
+        }
+
+        if (reps.isEmpty()) {
+            Label empty = new Label(qcm ? "No choices configured for this question." : "No choices configured.");
+            empty.getStyleClass().add("quiz-hint");
+            answers.getChildren().add(empty);
+        }
+    }
+
+    private VBox buildTextReviewBox(Question q, Reponse correct) {
+        VBox box = new VBox(10);
+        box.getStyleClass().add("quiz-review-panel");
+
+        Label heading = new Label("Your answer");
+        heading.getStyleClass().add("quiz-review-panel-title");
+
+        String studentAnswer = texteLibreByQuestion.getOrDefault(q.getId(), "");
+        Label your = new Label(studentAnswer.isBlank() ? "No answer submitted." : studentAnswer);
+        your.setWrapText(true);
+        your.getStyleClass().add("quiz-review-answer-text");
+
+        Label correctLabel = new Label("Correct answer: open response review");
+        correctLabel.getStyleClass().add("quiz-review-meta");
+
+        box.getChildren().addAll(heading, your, correctLabel);
+        return box;
+    }
+
+    private VBox buildExplanationPanel(Question q, List<Reponse> reps, Reponse correct, Reponse selected,
+                                       boolean answeredCorrectly, boolean hasChosenAnswer) {
+        VBox panel = new VBox(10);
+        panel.getStyleClass().add("quiz-review-panel");
+
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
+        Label title = new Label("Explanation");
+        title.getStyleClass().add("quiz-review-panel-title");
+        Label badge = new Label(answeredCorrectly ? "Correct" : hasChosenAnswer ? "Incorrect" : "No answer");
+        badge.getStyleClass().add(answeredCorrectly ? "quiz-review-badge-correct"
+                : hasChosenAnswer ? "quiz-review-badge-wrong" : "quiz-review-badge-neutral");
+        header.getChildren().addAll(title, badge);
+
+        Label yourAnswer = new Label("Your answer: " + (selected != null ? selected.getTexte() : "No answer submitted."));
+        yourAnswer.setWrapText(true);
+        yourAnswer.getStyleClass().add("quiz-review-meta");
+
+        Label correctAnswer = new Label("Correct answer: " + (correct != null ? correct.getTexte() : "Not available"));
+        correctAnswer.setWrapText(true);
+        correctAnswer.getStyleClass().add("quiz-review-meta");
+
+        String explanation = resolveExplanation(q, reps, correct);
+        Label explanationTitle = new Label("Teacher / AI explanation");
+        explanationTitle.getStyleClass().add("quiz-review-subtitle");
+        Label explanationText = new Label(explanation);
+        explanationText.setWrapText(true);
+        explanationText.getStyleClass().add("quiz-review-explanation");
+
+        panel.getChildren().addAll(header, yourAnswer, correctAnswer, explanationTitle, explanationText);
+        return panel;
+    }
+
+    private Reponse findCorrectResponse(List<Reponse> reps) {
+        if (reps == null) {
+            return null;
+        }
+        for (Reponse r : reps) {
+            if (r.isEstCorrect()) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    private Reponse findResponseById(List<Reponse> reps, Integer responseId) {
+        if (reps == null || responseId == null) {
+            return null;
+        }
+        for (Reponse r : reps) {
+            if (r.getId() == responseId) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    private String resolveExplanation(Question q, List<Reponse> reps, Reponse correct) {
+        if (q != null && q.getExplication() != null && !q.getExplication().isBlank()) {
+            return q.getExplication().trim();
+        }
+        if (correct != null && correct.getExplication() != null && !correct.getExplication().isBlank()) {
+            return correct.getExplication().trim();
+        }
+        if (reps != null) {
+            for (Reponse r : reps) {
+                if (r.getExplication() != null && !r.getExplication().isBlank()) {
+                    return r.getExplication().trim();
+                }
+            }
+        }
+        return "Aucune explication disponible.";
     }
 
     private int countUnanswered() {
@@ -606,6 +800,14 @@ public class StudentQuizController {
         fraudeDetected = true;
         int resultatId = ensureResultatRow();
         if (resultatId > 0) {
+            // Mark the resultat as fraudulent
+            Resultat resultat = resultatDAO.getById(resultatId);
+            if (resultat != null) {
+                resultat.setFraudeDetecte(true);
+                resultatDAO.update(resultat);
+            }
+
+            // Log the fraud details
             fraudeLogDAO.logFraude(new FraudeLog(
                     resultatId,
                     studentId,

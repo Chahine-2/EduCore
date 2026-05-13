@@ -25,14 +25,11 @@
 
     <top>
         <VBox spacing="0">
-            <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 16 18; -fx-background-color: rgba(255,255,255,0.94); -fx-border-color: #dbeafe; -fx-border-width: 0 0 1 0;">
-                <VBox spacing="4" HBox.hgrow="ALWAYS">
-                    <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Administration / Evaluations" />
-                    <Label style="-fx-font-size: 25px; -fx-font-weight: 800; -fx-text-fill: #0f172a;" text="Evaluation Management" />
-                    <Label style="-fx-text-fill: #64748b; -fx-font-size: 13px;" text="Define assessment windows, scoring rules, and manage related questions." wrapText="true" />
-                </VBox>
-                <Button minWidth="138" onAction="#handleBackHome" style="-fx-background-color: white; -fx-border-color: #93c5fd; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-weight: 700; -fx-padding: 8 14;" text="Retour Home" />
-            </HBox>
+            <VBox spacing="4" style="-fx-padding: 16 18; -fx-background-color: rgba(255,255,255,0.94); -fx-border-color: #dbeafe; -fx-border-width: 0 0 1 0;">
+                <Label style="-fx-text-fill: #64748b; -fx-font-size: 12px;" text="Administration / Evaluations" />
+                <Label style="-fx-font-size: 25px; -fx-font-weight: 800; -fx-text-fill: #0f172a;" text="Evaluation Management" />
+                <Label style="-fx-text-fill: #64748b; -fx-font-size: 13px;" text="Define assessment windows, scoring rules, and manage related questions." wrapText="true" />
+            </VBox>
 
             <HBox alignment="CENTER_LEFT" spacing="14" style="-fx-padding: 10 18; -fx-background-color: rgba(255,255,255,0.88);">
                 <Label style="-fx-font-weight: 700; -fx-text-fill: #334155;" text="Filter" />

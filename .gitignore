@@ -37,3 +37,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Local Gemini API config (keep secrets out of the repo)
+src/main/resources/config.properties

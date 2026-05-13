@@ -1,42 +1,55 @@
 package controllers;
 
 import interfaces.IUtilisateurService;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import models.Utilisateur;
+import javafx.util.Duration;
 import models.Hackathon;
-import services.UtilisateurService;
+import models.Utilisateur;
 import services.ServiceHackathon;
+import services.UtilisateurService;
+import utils.UserSession;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Alert;
-import javafx.scene.layout.AnchorPane;
-import java.util.Optional;
-import javafx.stage.Modality;
-import javafx.scene.control.ButtonType;
-
-
-
-
+/**
+ * Admin workspace — layout and styling aligned with teacher/student dashboards ({@code teacher-dashboard.css}).
+ */
 public class AdminDashboardController implements Initializable {
 
+    @FXML private Label lblWelcome;
+    @FXML private Label lblWelcomeSub;
+    @FXML private Label lblDateTime;
+    @FXML private Label lblAvatarInitials;
     @FXML private TableView<Utilisateur> tableUtilisateurs;
     @FXML private TableColumn<Utilisateur, Integer> colId;
     @FXML private TableColumn<Utilisateur, String> colNom;
@@ -44,51 +57,75 @@ public class AdminDashboardController implements Initializable {
     @FXML private TableColumn<Utilisateur, String> colEmail;
     @FXML private TableColumn<Utilisateur, String> colRole;
     @FXML private TableColumn<Utilisateur, String> colStatut;
-    @FXML private javafx.scene.control.Label lbTotalHackathonsAdmin;
-    @FXML private javafx.scene.control.Label lbPrixMoyenHackathonsAdmin;
-    @FXML private AnchorPane centerShell;
+    @FXML private Label lbTotalHackathonsAdmin;
+    @FXML private Label lbPrixMoyenHackathonsAdmin;
 
-    private IUtilisateurService service = new UtilisateurService();
+    private final IUtilisateurService service = new UtilisateurService();
     private final ServiceHackathon serviceHackathon = new ServiceHackathon();
-    private ObservableList<Utilisateur> utilisateursObservableList = FXCollections.observableArrayList();
+    private final ObservableList<Utilisateur> utilisateursObservableList = FXCollections.observableArrayList();
+    private Timeline clockTimeline;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 1. Lier les colonnes aux attributs de l'objet Utilisateur
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-
-        // 2. Traitement spécial pour les objets imbriqués (Role) et les booléens (Statut)
         colRole.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getRole().getNomRole()));
-
         colStatut.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().isStatutActif() ? "Actif ✅" : "Suspendu ❌"));
 
-        // 3. Charger les données au démarrage de l'écran
+        Utilisateur user = UserSession.getCurrentUser();
+        if (user != null) {
+            String prenom = safe(user.getPrenom());
+            String nom = safe(user.getNom());
+            String display = (prenom + " " + nom).trim();
+            lblWelcome.setText(display.isEmpty() ? "Administration" : "Bonjour, " + display);
+            lblAvatarInitials.setText(initials(prenom, nom));
+        } else {
+            lblWelcome.setText("Administration");
+            lblAvatarInitials.setText("A");
+        }
+        if (lblWelcomeSub != null) {
+            lblWelcomeSub.setText("Gérez les comptes, les classes, le matériel et les hackathons depuis un seul espace.");
+        }
+
         chargerUtilisateurs();
         chargerStatistiquesHackathon();
+
+        clockTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateClock()));
+        clockTimeline.setCycleCount(Timeline.INDEFINITE);
+        clockTimeline.play();
+
+        Platform.runLater(() -> {
+            if (lblWelcome != null && lblWelcome.getScene() != null) {
+                Stage st = (Stage) lblWelcome.getScene().getWindow();
+                st.setMinWidth(1050);
+                st.setMinHeight(640);
+            }
+        });
+    }
+
+    private static String safe(String s) {
+        return s == null ? "" : s.trim();
+    }
+
+    private static String initials(String prenom, String nom) {
+        String a = prenom.isEmpty() ? "?" : prenom.substring(0, 1);
+        String b = nom.isEmpty() ? "" : nom.substring(0, 1);
+        return (a + b).toUpperCase(Locale.FRENCH);
+    }
+
+    private void updateClock() {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEE d MMM yyyy '·' HH:mm", Locale.FRENCH);
+        lblDateTime.setText(fmt.format(LocalDateTime.now()));
     }
 
     @FXML
     void chargerUtilisateurs() {
-        // On vide la liste, on appelle le backend, et on remplit la liste
-        // Ensure the users table is visible in the center shell (restore if another view replaced it)
-        if (centerShell != null && !centerShell.getChildren().contains(tableUtilisateurs)) {
-            centerShell.getChildren().setAll(tableUtilisateurs);
-            AnchorPane.setTopAnchor(tableUtilisateurs, 0.0);
-            AnchorPane.setBottomAnchor(tableUtilisateurs, 0.0);
-            AnchorPane.setLeftAnchor(tableUtilisateurs, 0.0);
-            AnchorPane.setRightAnchor(tableUtilisateurs, 0.0);
-        }
-
         utilisateursObservableList.clear();
-        List<Utilisateur> usersFromDB = service.listerUtilisateurs();
-        utilisateursObservableList.addAll(usersFromDB);
-
-        // On injecte la liste dans le tableau JavaFX
+        utilisateursObservableList.addAll(service.listerUtilisateurs());
         tableUtilisateurs.setItems(utilisateursObservableList);
     }
 
@@ -100,7 +137,7 @@ public class AdminDashboardController implements Initializable {
                 .mapToDouble(Hackathon::getPrix)
                 .average()
                 .orElse(0.0);
-        lbPrixMoyenHackathonsAdmin.setText(String.format("%.1f DT", prixMoyen));
+        lbPrixMoyenHackathonsAdmin.setText(String.format(Locale.FRENCH, "%.1f DT", prixMoyen));
     }
 
     @FXML
@@ -112,16 +149,9 @@ public class AdminDashboardController implements Initializable {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Ajouter un Étudiant");
-
-            // Ceci empêche de cliquer sur le tableau de bord tant que la pop-up est ouverte
             stage.initModality(Modality.APPLICATION_MODAL);
-
-            // On attend que la fenêtre se ferme...
             stage.showAndWait();
-
-            // ... et on rafraîchit le tableau automatiquement !
             chargerUtilisateurs();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,16 +166,9 @@ public class AdminDashboardController implements Initializable {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Ajouter un Enseignant");
-
-            // Fenêtre modale qui bloque l'arrière-plan
             stage.initModality(Modality.APPLICATION_MODAL);
-
-            // On attend la fermeture de la popup
             stage.showAndWait();
-
-            // Dès que c'est fermé, on rafraîchit le tableau principal !
             chargerUtilisateurs();
-
         } catch (IOException e) {
             e.printStackTrace();
             afficherAlerte("Erreur", "Impossible de charger l'interface d'ajout d'enseignant.", Alert.AlertType.ERROR);
@@ -161,7 +184,7 @@ public class AdminDashboardController implements Initializable {
 
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent() && !result.get().trim().isEmpty()) {
-            String nouvelleClasse = result.get().trim().toUpperCase();
+            String nouvelleClasse = result.get().trim().toUpperCase(Locale.ROOT);
 
             if (service.ajouterClasse(nouvelleClasse)) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -214,7 +237,7 @@ public class AdminDashboardController implements Initializable {
     }
 
     @FXML
-    void handleStatHackathon(ActionEvent event) {
+    void handleStatHackathon(Event event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
             Parent root = loader.load();
@@ -231,8 +254,7 @@ public class AdminDashboardController implements Initializable {
     }
 
     @FXML
-    void handleGestionHackathonSection(ActionEvent event) {
-        // Open GestionHackathon.fxml in a separate modal window (consistent with other admin actions)
+    void handleGestionHackathonSection(Event event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionHackathon.fxml"));
             Parent root = loader.load();
@@ -250,9 +272,12 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     void handleDeconnexion(ActionEvent event) {
+        if (clockTimeline != null) {
+            clockTimeline.stop();
+        }
+        UserSession.clear();
         try {
-            // Retourner à l'écran de Login
-            Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/views/Login.fxml")));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 400, 500));
             stage.setTitle("EduCore - Connexion");
@@ -261,9 +286,7 @@ public class AdminDashboardController implements Initializable {
             e.printStackTrace();
         }
     }
-    // --- NOUVEAUX BOUTONS DU MENU CLI ---
 
-    // --- MÉTHODE UTILITAIRE POUR AFFICHER LES ERREURS ---
     private void afficherAlerte(String titre, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(titre);
@@ -272,7 +295,6 @@ public class AdminDashboardController implements Initializable {
         alert.showAndWait();
     }
 
-    // --- 3. MODIFIER EMAIL ---
     @FXML
     void handleModifierEmail(ActionEvent event) {
         Utilisateur userSelectionne = tableUtilisateurs.getSelectionModel().getSelectedItem();
@@ -286,7 +308,6 @@ public class AdminDashboardController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/ModifierUtilisateur.fxml"));
             Parent root = loader.load();
 
-            // Pass the selected user to the controller
             ModifierUtilisateurController controller = loader.getController();
             controller.initData(userSelectionne);
 
@@ -294,18 +315,13 @@ public class AdminDashboardController implements Initializable {
             stage.setScene(new Scene(root));
             stage.setTitle("Modifier Utilisateur");
             stage.initModality(Modality.APPLICATION_MODAL);
-
             stage.showAndWait();
-
-            // Refresh table when window closes
             chargerUtilisateurs();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // --- 4. SUPPRIMER UTILISATEUR ---
     @FXML
     void handleSupprimerUtilisateur(ActionEvent event) {
         Utilisateur userSelectionne = tableUtilisateurs.getSelectionModel().getSelectedItem();
@@ -315,7 +331,6 @@ public class AdminDashboardController implements Initializable {
             return;
         }
 
-        // Fenêtre de confirmation pour éviter les suppressions accidentelles
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmer la suppression");
         alert.setHeaderText("Attention, action irréversible !");
@@ -325,14 +340,13 @@ public class AdminDashboardController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             if (service.supprimerUtilisateur(userSelectionne.getId())) {
                 afficherAlerte("Succès", "L'utilisateur a été supprimé.", Alert.AlertType.INFORMATION);
-                chargerUtilisateurs(); // Rafraîchissement
+                chargerUtilisateurs();
             } else {
                 afficherAlerte("Erreur", "Impossible de supprimer cet utilisateur.", Alert.AlertType.ERROR);
             }
         }
     }
 
-    // --- 5. SUSPENDRE / ACTIVER ---
     @FXML
     void handleSuspendreCompte(ActionEvent event) {
         Utilisateur userSelectionne = tableUtilisateurs.getSelectionModel().getSelectedItem();
@@ -342,7 +356,6 @@ public class AdminDashboardController implements Initializable {
             return;
         }
 
-        // On inverse le statut actuel (Si actif -> on veut suspendre. Si suspendu -> on veut activer)
         boolean nouveauStatut = !userSelectionne.isStatutActif();
         String actionTexte = nouveauStatut ? "ACTIVER" : "SUSPENDRE";
 
@@ -354,14 +367,13 @@ public class AdminDashboardController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             if (service.changerStatutCompte(userSelectionne.getId(), nouveauStatut)) {
-                chargerUtilisateurs(); // Le tableau mettra à jour la colonne Statut instantanément !
+                chargerUtilisateurs();
             } else {
                 afficherAlerte("Erreur", "Impossible de modifier le statut.", Alert.AlertType.ERROR);
             }
         }
     }
 
-    // --- 6. HISTORIQUE DE CONNEXION ---
     @FXML
     void handleHistorique(ActionEvent event) {
         try {
@@ -371,11 +383,8 @@ public class AdminDashboardController implements Initializable {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Sécurité - Journal des connexions");
-
-            // Rend la fenêtre modale (bloque le fond tant qu'elle est ouverte)
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
             afficherAlerte("Erreur", "Impossible de charger l'interface d'historique.", Alert.AlertType.ERROR);
